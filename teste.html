@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle do Slot - Design CSS</title>
+    <style>
+        /* --- ESTILOS GERAIS E CSS RESET --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0d121b; /* Cor de fundo escura do painel original */
+            color: #d1d5db; /* Cor de texto cinza claro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- CONTÊINER PRINCIPAL --- */
+        .painel-principal {
+            background: linear-gradient(145deg, #181c25, #11151e); /* Neumorfismo suave */
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px;
+            box-shadow: 10px 10px 20px #080a0f, -10px -10px 20px #121823;
+            display: grid;
+            grid-template-areas: 
+                "header header header"
+                "icon power color-group"
+                "icon power input-group"
+                "btn-icone btn-icone btn-icone";
+            grid-template-columns: 2fr 1fr 4fr;
+            grid-gap: 20px;
+        }
+
+        /* --- CABEÇALHO --- */
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .titulo-slot {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f9fafb;
+            letter-spacing: 0.5px;
+        }
+
+        .id-timer {
+            color: #10b981; /* Verde do timer original */
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        /* --- SEÇÃO DO ÍCONE (ESQUERDA) --- */
+        .secao-icone {
+            grid-area: icon;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #2d3748;
+        }
+
+        .icon-svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            stroke: #d1d5db;
+        }
+
+        .text-icone-big {
+            font-size: 1rem;
+            color: #f9fafb;
+            font-weight: bold;
+        }
+
+        /* --- SEÇÃO DO BOTÃO POWER (MEIO) --- */
+        .secao-power {
+            grid-area: power;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-power {
+            background: linear-gradient(145deg, #221a0d, #3d2a0e);
+            border: 2px solid #b7791f;
+            color: #b7791f; /* Laranja/Bronze do original */
+            border-radius: 12px;
+            width: 90px;
+            height: 90px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            box-shadow: inset 2px 2px 5px #111, inset -2px -2px 5px #444, 0px 0px 15px rgba(183, 121, 31, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-power:hover {
+            box-shadow: inset 1px 1px 3px #111, inset -1px -1px 3px #444, 0px 0px 20px rgba(183, 121, 31, 0.5);
+            transform: scale(1.02);
+        }
+
+        .btn-power svg {
+            width: 45px;
+            height: 45px;
+            fill: #b7791f;
+        }
+
+        /* --- GRUPO DE CORES (DIREITA) --- */
+        .color-group-container {
+            grid-area: color-group;
+            display: flex;
+            gap: 15px;
+        }
+
+        .color-group-box {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.15); /* Efeito rebaixado */
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #1f2937;
+            box-shadow: inset 3px 3px 8px #080a0f, inset -1px -1px 3px #2d3748;
+        }
+
+        .color-group-box h3 {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .color-pair {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .color-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .state-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .color-well-off {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #4b5563;
+            background: radial-gradient(circle at 30% 30%, #4b5563, #202631);
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
+        }
+
+        /* --- Estados 'ON' com brilho CSS --- */
+        .on-label { color: #f9fafb; }
+
+        .on-icon { 
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .on-back { 
+            background: #221a0d; 
+            box-shadow: 0 0 10px rgba(183, 121, 31, 0.3);
+        }
+
+        .on-border { 
+            background: #be123c; /* Vermelho rubi */
+            box-shadow: 0 0 10px #be123c;
+        }
+
+        /* --- GRUPO DE ENTRADA (DIREITA) --- */
+        .input-group-box {
+            grid-area: input-group;
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #1f2937;
+            box-shadow: inset 3px 3px 8px #080a0f, inset -1px -1px 3px #2d3748;
+        }
+
+        .input-group-box h3 {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .input-text {
+            width: 100%;
+            background-color: #0d121b;
+            color: #b7791f; /* Laranja */
+            border: 1px solid #4b5563;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-text:focus {
+            border-color: #b7791f;
+        }
+
+        /* --- BOTÃO INFERIOR --- */
+        .btn-icone {
+            grid-area: btn-icone;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid #2d3748;
+            color: #9ca3af;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-icone:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #f9fafb;
+        }
+
+        /* --- RESPONSIVIDADE PARA CELULARES --- */
+        @media (max-width: 768px) {
+            .painel-principal {
+                grid-template-areas: 
+                    "header header"
+                    "power power"
+                    "icon icon"
+                    "color-group color-group"
+                    "input-group input-group"
+                    "btn-icone btn-icone";
+                grid-template-columns: 1fr 1fr;
+            }
+            .color-group-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="painel-principal">
+    <header class="header">
+        <div class="titulo-slot">SLOT 1 (PRINCIPAL)</div>
+        <div class="id-timer">ID: 10:01</div>
+    </header>
+
+    <div class="secao-icone">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <polyline points="21 15 21 21 15 21"></polyline>
+            <polyline points="3 9 3 3 9 3"></polyline>
+            <rect x="7" y="7" width="10" height="10"></rect>
+        </svg>
+        <div class="text-icone-big">STOMP</div>
+    </div>
+
+    <div class="secao-power">
+        <button class="btn-power">
+            <svg viewBox="0 0 24 24">
+                <path d="M12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33L3,19.74a1,1,0,1,0,1.42,1.42L5.67,19.9A10,10,0,1,0,12,2ZM12,18a6,6,0,1,1,6-6A6,6,0,0,1,12,18Z"/>
+                <path d="M12,6a1,1,0,0,0-1,1v5a1,1,0,0,0,2,0V7A1,1,0,0,0,12,6Z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="color-group-container">
+        <div class="color-group-box">
+            <h3>Icon Color</h3>
+            <div class="color-pair">
+                <div class="color-state">
+                    <div class="state-label">Off</div>
+                    <div class="color-well-off"></div>
+                </div>
+                <div class="color-state">
+                    <div class="state-label on-label">On</div>
+                    <div class="color-well-off on-icon"></div>
+                </div>
+            </div>
+        </div>
+        <div class="color-group-box">
+            <h3>Back Color</h3>
+            <div class="color-pair">
+                <div class="color-state">
+                    <div class="state-label">Off</div>
+                    <div class="color-well-off"></div>
+                </div>
+                <div class="color-state">
+                    <div class="state-label on-label">On</div>
+                    <div class="color-well-off on-back"></div>
+                </div>
+            </div>
+        </div>
+        <div class="color-group-box">
+            <h3>Borda Color</h3>
+            <div class="color-pair">
+                <div class="color-state">
+                    <div class="state-label">Off</div>
+                    <div class="color-well-off"></div>
+                </div>
+                <div class="color-state">
+                    <div class="state-label on-label">On</div>
+                    <div class="color-well-off on-border"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-group-box">
+        <h3>Nome do Ícone</h3>
+        <input type="text" class="input-text" value="STOMP">
+    </div>
+
+    <div class="btn-icone">Ícone</div>
+
+</div>
+
+</body>
+</html>

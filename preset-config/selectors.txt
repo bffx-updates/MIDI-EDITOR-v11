@@ -1,0 +1,470 @@
+﻿
+          }
+  
+>         
+.grid-btn-selector,
+          .grid-btn {
+              
+position: relative;
+              
+background: linear-grad
+ient(145deg, #2a2a2d, 
+#1f1f22);
+              border: 
+1px solid #333336;
+              color: 
+#888;
+              
+font-weight: 700;
+              
+border-radius: 6px;
+              cursor: 
+pointer;
+              
+transition: all 0.15s 
+ease;
+              
+box-shadow: 0 2px 4px 
+rgba(0, 0, 0, 0.3), 
+inset 0 1px 0 
+rgba(255, 255, 255, 
+0.05);
+          }
+  
+>         .grid-btn-sel
+ector:active,
+          
+.grid-btn:active {
+              
+transform: 
+translateY(1px);
+              
+box-shadow: inset 0 
+2px 4px rgba(0, 0, 0, 
+0.4);
+          }
+  
+>         .grid-btn-sel
+ector.active,
+          
+.grid-btn.active {
+              
+background: linear-grad
+ient(145deg, #FFB300, 
+#e6a200);
+              color: 
+#121214;
+              
+border-color: #FFB300;
+              
+box-shadow: 0 0 15px 
+rgba(255, 179, 0, 
+0.3), inset 0 1px 0 
+rgba(255, 255, 255, 
+0.2);
+              
+text-shadow: 0 1px 0 
+rgba(255, 255, 255, 
+0.2);
+          }
+  
+          .grid-btn.foo
+t-button.active {
+              
+background: linear-grad
+ient(145deg, #2a2a2d, 
+#1f1f22);
+                       
+   <label 
+class="text-[10px] 
+font-bold 
+text-gray-500 mb-2 
+block 
+tracking-wider">BANK 
+ROW</label>
+                       
+   <div class="grid 
+grid-cols-5 gap-2" 
+id="presetRowSelector">
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-row="0">A</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-row="1">B</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-row="2">C</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-row="3">D</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-row="4">E</button>
+                       
+   </div>
+                      
+</div>
+                      
+<div class="flex-1">
+                       
+   <label 
+class="text-[10px] 
+font-bold 
+text-gray-500 mb-2 
+block 
+tracking-wider">PRESET 
+SLOT</label>
+                       
+   <div class="grid 
+grid-cols-6 gap-2" 
+id="presetColSelector">
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-col="0">1</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-col="1">2</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-col="2">3</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-col="3">4</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-col="4">5</button>
+>                      
+       <button class="g
+rid-btn-selector h-12" 
+data-col="5">6</button>
+                       
+   </div>
+                      
+</div>
+                  
+</div>
+              </div>
+              <div 
+class="grid 
+grid-cols-1 
+lg:grid-cols-2 gap-6">
+                  <div 
+class="bg-[#232326] 
+border 
+border-[#333336] 
+rounded-xl p-6 
+shadow-xl">
+                      
+<h2 class="text-xs 
+font-bold 
+text-gray-500 
+uppercase 
+tracking-widest mb-4 
+flex items-center 
+gap-2">
+                       
+   <span class="w-1 
+h-3 bg-amber-500 
+rounded-full"></span> 
+General Info
+                      
+</h2>
+                      
+<div class="space-y-4">
+  
+      <div id="compat-p
+laceholders" 
+style="display:none 
+!important;">
+>         <button 
+id="btnRowSelector" 
+type="button"></button>
+>         <button 
+id="btnColSelector" 
+type="button"></button>
+          <button 
+id="extrasSendToggle" 
+type="button"></button>
+          <button 
+id="spinSendPcBtn" 
+type="button"></button>
+          <button id="l
+iveLayerToggleButton" 
+type="button"></button>
+          <button 
+id="autoRampToggle" 
+type="button"></button>
+          <button 
+id="footer-main" 
+type="button"></button>
+          <input 
+id="rowLabel" />
+          <input 
+id="colLabel" />
+          <input 
+id="singleValueInput" 
+/>
+          <input 
+id="switchCC2Start" />
+          <input 
+id="switchCCHold" />
+                  try {
+                      
+const 
+updateGridVisuals = () 
+=> {
+>                      
+   document.querySelect
+orAll('#presetRowSelect
+or .grid-btn-selector')
+.forEach(b => {
+                       
+       if (parseInt(b.d
+ataset.row, 10) === 
+currentPresetRowIndex) 
+b.classList.add('active
+');
+                       
+       else b.classList
+.remove('active');
+                       
+   });
+>                      
+   document.querySelect
+orAll('#presetColSelect
+or .grid-btn-selector')
+.forEach(b => {
+                       
+       if (parseInt(b.d
+ataset.col, 10) === cur
+rentPresetColumnIndex) 
+b.classList.add('active
+');
+                       
+       else b.classList
+.remove('active');
+                       
+   });
+                      
+};
+                      
+// Init visuals
+                      s
+etTimeout(updateGridVis
+uals, 100);
+  
+                      
+// Rows
+>                     d
+ocument.querySelectorAl
+l('#presetRowSelector .
+grid-btn-selector').for
+Each(btn => {
+                       
+   btn.addEventListener
+('click', async () => {
+                       
+       const row = pars
+eInt(btn.dataset.row, 
+10);
+                       
+       if (row === 
+currentPresetRowIndex) 
+return;
+                       
+       const now = 
+Date.now();
+                       
+       if (window.prese
+tNavLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+       if (window.isPre
+setLoadInProgress) 
+return;
+                       
+       
+window.presetNavLastTs 
+= now;
+                       
+       
+suppressModelUpdate = 
+true;
+                       
+       
+currentPresetRowIndex 
+= row;
+                       
+       
+currentSwitchIndex = 
+-1;
+                      
+});
+                      
+// Cols
+>                     d
+ocument.querySelectorAl
+l('#presetColSelector .
+grid-btn-selector').for
+Each(btn => {
+                       
+   btn.addEventListener
+('click', async () => {
+                       
+       const col = pars
+eInt(btn.dataset.col, 
+10);
+                       
+       if (col === curr
+entPresetColumnIndex) 
+return;
+                       
+       const now = 
+Date.now();
+                       
+       if (window.prese
+tNavLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+       if (window.isPre
+setLoadInProgress) 
+return;
+                       
+       
+window.presetNavLastTs 
+= now;
+                       
+       
+suppressModelUpdate = 
+true;
+                       
+       currentPresetCol
+umnIndex = col;
+                       
+       
+currentSwitchIndex = 
+-1;
+                  // 
+BANK ROW (A..E) 
+selector: advance row 
+and reload preset
+                  try {
+>                     
+const btnRow = document
+.getElementById('btnRow
+Selector');
+                      
+const rowLabel = docume
+nt.getElementById('rowL
+abel');
+                      
+if (btnRow && 
+rowLabel) {
+                       
+   btnRow.addEventListe
+ner('click', async () 
+=> {
+                       
+       const now = 
+Date.now();
+                       
+       if (window.prese
+tNavLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+       if (window.isPre
+setLoadInProgress) 
+return;
+                       
+       
+window.presetNavLastTs 
+= now;
+                       
+       
+suppressModelUpdate = 
+true; // Bloqueia updat
+eLocalPresetDataFromUI 
+durante troca
+                       
+       
+currentPresetRowIndex 
+= 
+(currentPresetRowIndex 
++ 1) % 
+NUM_PRESET_ROWS; // 
+0..4
+                       
+       const rowChar = 
+String.fromCharCode(65 
++ currentPresetRowIndex
+); // A..E
+                  // 
+PRESET SLOT (1..6) 
+selector: advance 
+column and reload 
+preset
+                  try {
+>                     
+const btnCol = document
+.getElementById('btnCol
+Selector');
+                      
+const colLabel = docume
+nt.getElementById('colL
+abel');
+                      
+if (btnCol && 
+colLabel) {
+                       
+   btnCol.addEventListe
+ner('click', async () 
+=> {
+                       
+       const now = 
+Date.now();
+                       
+       if (window.prese
+tNavLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+       if (window.isPre
+setLoadInProgress) 
+return;
+                       
+       
+window.presetNavLastTs 
+= now;
+                       
+       
+suppressModelUpdate = 
+true; // Bloqueia updat
+eLocalPresetDataFromUI 
+durante troca
+                       
+       currentPresetCol
+umnIndex = (currentPres
+etColumnIndex + 1) % 
+NUM_PRESET_COLUMNS; // 
+0..5
+                       
+       
+colLabel.textContent = 
+String(currentPresetCol
+umnIndex + 1); // 1..6
+
+

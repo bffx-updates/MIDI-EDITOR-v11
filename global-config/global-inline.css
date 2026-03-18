@@ -1,0 +1,555 @@
+/* global-inline.css - Dynamic element styles for global config page */
+
+/* ── Extras Group (dynamically generated for SPIN/CONTROL/CUSTOM/RAMPA) ── */
+.extras-group {
+    margin-bottom: 12px;
+    padding: 12px;
+    background-color: #1a1a1d;
+    border-radius: 8px;
+    border: 1px solid #333336;
+}
+.extras-group h4 {
+    font-size: 0.9em;
+    margin: 0 0 10px 0;
+    color: #ddd;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+/* ── Spin Slider ── */
+.spin-slider-container {
+    width: 100%;
+}
+.spin-slider-container label {
+    display: block;
+    margin-bottom: 6px;
+    color: #bbb;
+    font-size: 0.85em;
+}
+.spin-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #7fa6e8 0%, #2a2e33 0%);
+    border: 1px solid #494c50;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.55);
+    cursor: pointer;
+}
+.spin-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #9ea3ab 0%, #6e737a 100%);
+    border: 1px solid #cfd4db;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.25);
+    cursor: pointer;
+}
+.spin-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #9ea3ab 0%, #6e737a 100%);
+    border: 1px solid #cfd4db;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.25);
+    cursor: pointer;
+}
+
+/* ── Single Toggle Button ── */
+.single-toggle-button {
+    height: 40px;
+    min-width: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    box-sizing: border-box;
+    font-size: 0.85em;
+    font-weight: 700;
+    background: linear-gradient(180deg, #3a3a3e 0%, #2c2c30 100%);
+    border: 1px solid #45454a;
+    color: #d8dde4;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    border-radius: 8px;
+    margin-left: 0;
+}
+.single-toggle-button.active {
+    background: #87CEEB;
+    border-color: #87CEEB;
+    color: #123;
+}
+.single-toggle-button.cc-mode {
+    border-color: #87CEEB;
+    color: #87CEEB;
+    box-shadow: 0 0 10px rgba(135,206,235,0.35);
+}
+.single-toggle-button.pc-mode {
+    border-color: #ffcc00;
+    color: #ffcc00;
+    box-shadow: 0 0 10px rgba(255,204,0,0.35);
+    background: transparent;
+}
+#startToggleBtnCc2_global {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+}
+
+/* ── Ramp Layout ── */
+.ramp-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+.ramp-toggle-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: stretch;
+}
+.ramp-sliders > .spin-slider-container {
+    margin-bottom: 12px;
+}
+@media (min-width: 560px) {
+    .ramp-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+    .ramp-toggle-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ── Spin Values Row ── */
+.spin-values-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.spin-value-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+.spin-value-item label {
+    margin-bottom: 4px;
+    font-size: 0.8em;
+    color: #bbb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Control Inline Group ── */
+.control-inline-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+.control-cc-container {
+    flex: 2;
+    min-width: 0;
+}
+.control-toggle-container {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+}
+.control-toggle-container .toggle-label-custom-text {
+    font-size: 0.8em;
+    color: #bbb;
+    margin-bottom: 3px;
+    display: block;
+}
+
+/* ── Custom Inline Group ── */
+.custom-inline-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+.custom-value-container {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Spin Knob Progress Bar ── */
+.spin-knob-placeholder {
+    height: 8px;
+    background-color: #151518;
+    border: 1px solid #333;
+    border-radius: 999px;
+    margin-top: 6px;
+    padding: 1px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.spin-knob-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ffc433 0%, #FFB300 100%);
+    border-radius: 999px;
+    transition: width 0.2s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.spin-knob-progress-bar span {
+    color: #333;
+    font-size: 0.7em;
+    font-weight: bold;
+    white-space: nowrap;
+    padding: 0 3px;
+    display: none;
+}
+
+/* ── Color Options Panel Overlay (popup color picker) ── */
+.color-options-panel-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+.color-options-panel-overlay.active {
+    display: flex;
+}
+
+.color-options-panel {
+    background-color: #1c1c1f;
+    border: 1px solid #444;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    z-index: 101;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 16px;
+    width: auto;
+    max-width: 320px;
+    position: relative;
+}
+.color-options-panel-title {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #e5e5e5;
+    font-weight: bold;
+    font-size: 0.85em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.color-options-panel .color-swatch {
+    width: 48px;
+    height: 48px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-sizing: border-box;
+}
+.color-options-panel .color-swatch:hover {
+    transform: scale(1.1);
+    border-color: #fff;
+    box-shadow: 0 0 12px rgba(255,255,255,0.2);
+}
+
+/* ── Save Banner ── */
+.save-banner {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #27ae60;
+    color: #ffffff;
+    padding: 16px 28px;
+    border-radius: 12px;
+    font-weight: bold;
+    z-index: 2000;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    opacity: 0;
+    transition: opacity 0.12s ease-in-out;
+    pointer-events: none;
+    display: none;
+    font-size: 1.2em;
+}
+.save-banner.show {
+    display: block;
+    opacity: 1;
+}
+
+/* ── Toggle Switch (legacy, for dynamically created toggles) ── */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    margin-left: 10px;
+}
+.form-group label.toggle-label input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #151518;
+    border: 1px solid #333;
+    transition: background-color 0.3s, border-color 0.3s;
+    border-radius: 26px;
+    box-sizing: border-box;
+}
+.toggle-slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #9ca3af;
+    transition: transform 0.3s, background-color 0.3s;
+    border-radius: 50%;
+    z-index: 1;
+}
+.toggle-slider::after {
+    content: "";
+    display: none;
+}
+.form-group label.toggle-label input[type="checkbox"]:checked + .toggle-switch .toggle-slider {
+    background-color: #FFB300;
+    border-color: #FFB300;
+}
+.form-group label.toggle-label input[type="checkbox"]:checked + .toggle-switch .toggle-slider:before {
+    background-color: white;
+    transform: translate(22px, -50%);
+}
+.form-group label.toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.form-group label.toggle-label .toggle-text {
+    margin-right: 10px;
+}
+
+/* ── Live Layer Button ── */
+.live-layer-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-primary, #FFB300);
+    background: linear-gradient(180deg, rgba(255,179,0,0.18), rgba(255,179,0,0.05));
+    color: var(--accent-primary, #FFB300);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    min-width: 140px;
+    height: 36px;
+    font-size: 0.8em;
+    transition: all 0.2s ease;
+}
+.live-layer-btn:hover {
+    background: linear-gradient(180deg, rgba(255,179,0,0.26), rgba(255,179,0,0.10));
+}
+.live-layer-btn.off {
+    border-color: #ff00aa;
+    color: #ff00aa;
+    background: linear-gradient(180deg, rgba(255,0,170,0.20), rgba(255,0,170,0.06));
+}
+.live-layer-btn.off:hover {
+    background: linear-gradient(180deg, rgba(255,0,170,0.28), rgba(255,0,170,0.12));
+}
+
+/* ── Custom Select Wrapper (legacy, for dynamically created selects via JS) ── */
+.custom-select-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+.custom-select-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 30px 8px 10px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #e5e7eb;
+    background-color: #1a1a1d;
+    border: 1px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.custom-select-wrapper .custom-select-trigger:focus,
+.custom-select-wrapper.open .custom-select-trigger {
+    border-color: #FFB300;
+    outline: none;
+}
+.custom-select-trigger::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #9ca3af;
+    transition: transform 0.2s ease;
+}
+.custom-select-wrapper.open .custom-select-trigger::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+.custom-options-panel {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    background-color: #1a1a1d;
+    border: 1px solid #333;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.custom-select-wrapper.open .custom-options-panel {
+    display: block;
+}
+.custom-select-wrapper.open .custom-options-panel {
+    border-color: #555;
+}
+.custom-option {
+    padding: 8px 10px;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+    font-size: 0.85em;
+}
+.custom-option:hover {
+    background-color: #333;
+}
+.custom-option.selected {
+    background-color: #2a2a2d;
+    font-weight: bold;
+}
+.custom-select-wrapper select {
+    display: none !important;
+}
+
+/* ── Selected Color Preview (for dynamically created color pickers) ── */
+.selected-color-preview {
+    width: 100%;
+    height: 32px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+    box-sizing: border-box;
+    background-color: #1a1a1d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease;
+}
+.selected-color-preview:hover {
+    border-color: #FFB300;
+}
+.selected-color-preview-box {
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+}
+
+/* ── Hidden Input Utility ── */
+.hidden-input {
+    display: none !important;
+}
+
+/* ── Slider Value Display ── */
+.slider-value {
+    font-weight: bold;
+    min-width: 45px;
+    text-align: right;
+    color: #FFB300;
+    font-size: 0.85em;
+}
+
+/* ── Form Group (for dynamically generated form groups) ── */
+.form-group {
+    margin-bottom: 12px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #9ca3af;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ── No Extra Config message ── */
+.swglobal-no-extra {
+    border: 1px dashed #45454a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #9ca3af;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* ── Rect-toggle state classes (used by JS for visual state toggling) ── */
+.rect-toggle-fx-on {
+    border-color: #FFB300 !important;
+    color: #FFB300 !important;
+}
+.rect-toggle-fx-off {
+    border-color: #555 !important;
+    color: #9ca3af !important;
+}
+.rect-toggle-fx-live {
+    border-color: #9b59b6 !important;
+    color: #f39c12 !important;
+}
+.rect-toggle-bg-on {
+    border-color: #FFB300 !important;
+    color: #FFB300 !important;
+}
+.rect-toggle-bg-off {
+    border-color: #555 !important;
+    color: #9ca3af !important;
+}

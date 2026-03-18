@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BFMIDI - Config Globais</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<style type="text/tailwindcss">
+    :root {
+      --bg-body: #121214;
+      --bg-sidebar: #1c1c1f;
+      --bg-card: #232326;
+      --bg-card-inner: #1a1a1d;
+      --accent-primary: #FFB300;
+      --accent-hover: #ffc400;
+      --text-primary: #f2f2f2;
+      --text-secondary: #a1a1aa;
+      --border-subtle: #333336;
+      --shadow-hardware: inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05);
+      --shadow-knob: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+    }
+    .studio-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .studio-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    }
+    .studio-inset {
+      background-color: var(--bg-card-inner);
+      border-radius: 8px;
+      box-shadow: var(--shadow-hardware);
+      border: 1px solid #151518;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-sidebar);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    input[type=range] {
+      @apply w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      @apply appearance-none w-4 h-4 bg-[var(--accent-primary)] rounded-full shadow-[0_0_10px_rgba(255,179,0,0.4)];
+      border: 2px solid #232326;
+      transform: translateY(-1px);
+    }
+    .toggle-switch-ui {
+      @apply relative inline-block w-11 h-6 rounded-full bg-[#151518] border border-[#333] transition-colors duration-300 ease-in-out cursor-pointer shadow-inner;
+    }
+    .toggle-checkbox:checked + .toggle-switch-ui {
+      background-color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+    .toggle-dot {
+      @apply absolute left-1 top-1 bg-gray-400 w-3.5 h-3.5 rounded-full transition-transform duration-300 ease-out shadow-sm;
+    }
+    .toggle-checkbox:checked + .toggle-switch-ui .toggle-dot {
+      @apply translate-x-5 bg-white;
+    }
+    .btn-studio {
+      background: linear-gradient(180deg, #3a3a3e 0%, #2c2c30 100%);
+      border: 1px solid #45454a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: all 0.2s ease;
+      color: #e5e5e5;
+    }
+    .btn-studio:hover {
+      background: linear-gradient(180deg, #444449 0%, #333338 100%);
+      color: #fff;
+    }
+    .btn-studio:active {
+      background: #232326;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+      transform: translateY(1px);
+    }
+    .btn-studio-accent {
+      background: linear-gradient(180deg, rgba(255, 179, 0, 0.9) 0%, rgba(229, 161, 0, 0.9) 100%);
+      border: 1px solid rgba(255, 179, 0, 0.5);
+      color: #121214;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .btn-studio-accent:hover {
+      background: linear-gradient(180deg, #ffc133 0%, #ffb300 100%);
+      box-shadow: 0 0 15px rgba(255,179,0,0.3);
+    }
+    .studio-select-wrapper {
+      @apply relative bg-[#1a1a1d] border border-[#333] rounded-lg shadow-inner text-sm transition-colors hover:border-[#555];
+    }
+    .studio-select-wrapper select {
+      @apply bg-transparent text-gray-200 border-none w-full py-2.5 pl-3 pr-10 focus:ring-1 focus:ring-[var(--accent-primary)] rounded-lg appearance-none text-xs font-medium tracking-wide;
+    }
+    .studio-select-wrapper select option {
+      background: #1a1a1d;
+      color: #e5e7eb;
+    }
+    .color-swatch-ring {
+      @apply ring-2 ring-offset-2 ring-offset-[#232326] ring-[var(--accent-primary)] scale-110;
+    }
+    .preset-box.selected {
+      background-color: rgba(255, 179, 0, 0.15);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(255, 179, 0, 0.1);
+    }
+    .hidden-input { display: none !important; }
+</style>
+
+<link rel="stylesheet" href="./global-inline.css" />
+<link rel="stylesheet" href="../css/visual-refresh-global.css" />
+<script src="../js/parity-bridge-client.js"></script>
+</head>
+<body class="antialiased h-screen flex flex-col overflow-hidden selection:bg-amber-500 selection:text-black">
+
+<span id="fwMain" style="display:none;"></span>
+
+<!-- HEADER -->
+<header class="h-20 flex items-center justify-between px-8 border-b border-[#333] bg-[var(--bg-body)] z-10 shrink-0">
+  <div>
+    <h1 class="text-xl font-bold text-white tracking-wide">Config Globais</h1>
+    <p class="text-xs text-[var(--text-secondary)] mt-0.5">Parametros globais, modos MIDI e cores da interface</p>
+  </div>
+  <div class="flex gap-3">
+      <button class="btn-studio h-9 px-4 rounded-md text-xs font-bold uppercase tracking-wider flex items-center gap-2" onclick="window.location.href='../'">
+        <span class="material-symbols-outlined text-sm">arrow_back</span> Voltar
+      </button>
+      <button class="btn-studio-accent h-9 px-6 rounded-md text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2" onclick="saveGlobalConfig()">
+        <span class="material-symbols-outlined text-sm">save</span> Salvar
+      </button>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 overflow-y-auto p-8 relative">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 pb-24">
+
+  <!-- Hidden form and inputs -->
+  <div class="hidden-input">
+    <form id="globalConfigForm">
+      <input id="mostrarTelaFX" name="mostrarTelaFX" type="checkbox"/>
+      <input id="mostrarCadeia" name="mostrarCadeia" type="checkbox"/>
+      <input id="mostrarFxModo" name="mostrarFxModo" type="hidden" value="1"/>
+      <input id="mostrarFxQuando" name="mostrarFxQuando" type="hidden" value="0"/>
+      <input id="bgColorEnabled" name="bgColorEnabled" type="checkbox"/>
+      <input id="ledPreview" name="ledPreview" type="checkbox"/>
+      <input id="kemperGetNames" name="kemperGetNames" type="checkbox"/>
+      <input id="kemperAutoLoader" name="kemperAutoLoader" type="checkbox"/>
+      <input id="autoStartEnabled" name="autoStartEnabled" type="checkbox"/>
+      <input id="autoStartRow" name="autoStartRow" type="hidden" value="0"/>
+      <input id="autoStartCol" name="autoStartCol" type="hidden" value="0"/>
+      <input id="autoStartLiveMode" name="autoStartLiveMode" type="checkbox"/>
+      <input id="ledModeNumeros" name="ledModeNumeros" type="checkbox"/>
+      <input id="liveLayer2Enabled" name="liveLayer2Enabled" type="checkbox"/>
+      <div id="hiddenColorContainer"></div>
+      <div class="hidden" id="dynamicModeConfigArea"></div>
+    </form>
+  </div>
+
+  <!-- ===================== LEFT COLUMN ===================== -->
+  <div class="lg:col-span-8 space-y-8">
+
+    <!-- Interface & Display -->
+    <section class="studio-card p-6">
+      <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+        <span class="material-symbols-outlined text-[var(--accent-primary)]">desktop_windows</span>
+        <h2 class="text-sm font-bold uppercase tracking-widest text-white">Interface &amp; Display</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Screen Config -->
+        <div class="studio-inset p-5 flex flex-col justify-between">
+          <h3 class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-wider">Screen Config</h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between" id="showFxChainRow" style="display:none;">
+              <label class="text-xs font-medium text-gray-300">Show FX Chain</label>
+              <button class="btn-studio px-3 py-1 text-[10px] font-bold rounded" id="btnMostrarCadeia" data-target-checkbox="mostrarCadeia" type="button">TOGGLE</button>
+            </div>
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-medium text-gray-300">Gig View Mode</label>
+              <button class="btn-studio px-3 py-1.5 min-w-[80px] text-[10px] font-bold rounded uppercase tracking-wide" data-target-checkbox="mostrarFxQuando" id="btnMostrarFxQuando" type="button">
+                <span id="btnMostrarFxQuandoLabel">SEMPRE</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-medium text-gray-300">Background</label>
+              <div class="flex items-center gap-3">
+                <button class="btn-studio px-3 py-1.5 min-w-[80px] text-[10px] font-bold rounded uppercase tracking-wide" data-target-checkbox="bgColorEnabled" id="btnBackgroundMode" type="button">
+                  <span id="btnBackgroundModeLabel">PADRAO</span>
+                </button>
+                <div class="w-6 h-6 rounded border border-gray-600 cursor-pointer hover:border-[var(--accent-primary)] transition-colors selected-color-preview" id="backgroundSelectedColorPreview" style="display:none;" tabindex="0">
+                  <div class="h-full w-full rounded-[2px]" id="backgroundSelectedColorPreviewBox"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- LED Control -->
+        <div class="studio-inset p-5 flex flex-col justify-between">
+          <h3 class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-wider">LED Control</h3>
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-medium text-gray-300">Brightness</label>
+                <span class="text-[10px] text-[var(--accent-primary)] font-mono" id="ledBrilhoValueDisplay">60%</span>
+              </div>
+              <button class="w-full btn-studio py-2 rounded text-xs font-bold text-gray-300 hover:text-[var(--accent-primary)] transition-colors border-dashed border border-gray-600" id="ledBrilhoButton" type="button">
+                ADJUST LEVEL
+              </button>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-[#2a2a2d]">
+              <label class="text-xs font-medium text-gray-300">LED Preview Mode</label>
+              <button class="btn-studio px-3 py-1 text-[10px] font-bold rounded" id="ledPreviewButton" type="button">
+                <span>OFF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hardware Setup -->
+    <section class="studio-card p-6">
+      <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+        <span class="material-symbols-outlined text-[var(--accent-primary)]">settings_input_component</span>
+        <h2 class="text-sm font-bold uppercase tracking-widest text-white">Hardware Setup</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="studio-select-wrapper">
+          <label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="modoMidi">Target Device</label>
+          <select id="modoMidi" name="modoMidi">
+            <option value="MODO AVANCADO">MODO AVANCADO</option>
+            <option value="" disabled>---- MODOS STANDALONE ----</option>
+            <option value="GLOBAL">GLOBAL</option>
+            <option value="AMPERO AS2">AMPERO AS2</option>
+            <option value="AMPERO MINI">AMPERO MINI</option>
+            <option value="HX STOMP">HX STOMP</option>
+            <option value="A. STAGE 2">A. STAGE 2</option>
+            <option value="GP-200LT">GP-200LT</option>
+            <option value="VALETON GP5">VALETON GP5</option>
+            <option value="POCKET MASTER">POCKET MASTER</option>
+            <option value="TONEX">TONEX</option>
+            <option value="KEMPER PLAYER">KEMPER PLAYER</option>
+            <option value="AMPERO MP350">AMPERO MP350</option>
+            <option value="MX5">MX5</option>
+            <option value="NANO CORTEX">NANO CORTEX</option>
+            <option value="QUAD CORTEX">QUAD CORTEX</option>
+            <option value="SYNERGY AMPS">SYNERGY AMPS</option>
+            <option value="BigSky">BigSky</option>
+            <option value="BlueSky">BlueSky</option>
+            <option value="TimeLine">TimeLine</option>
+            <option value="ELCAPISTAN">ELCAPISTAN</option>
+            <option value="FLINT">FLINT</option>
+            <option value="HX-ONE">HX-ONE</option>
+            <option value="VTR NARCISO">VTR NARCISO</option>
+            <option value="VTR LOKI">VTR LOKI</option>
+          </select>
+          <div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+            <span class="material-symbols-outlined text-sm">expand_more</span>
+          </div>
+        </div>
+        <div class="studio-select-wrapper">
+          <label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="selectModeIndex">Footswitch Logic</label>
+          <select id="selectModeIndex" name="selectModeIndex">
+            <option value="0">Mode 1 (Short/Long)</option>
+            <option value="1">Mode 2 (Short Only)</option>
+            <option value="2">Mode 3 (Short for Slow)</option>
+          </select>
+          <div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+            <span class="material-symbols-outlined text-sm">expand_more</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="advMidiChWrap" style="display:none;" class="mb-8 rounded-lg border border-[#333] bg-[#1c1c1f] p-4">
+        <div class="mb-3 flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-widest text-gray-300">Advanced MIDI Channels</span>
+          <span class="text-[10px] text-gray-500">MODO AVANCADO</span>
+        </div>
+        <div id="advMidiChRows" class="space-y-3">
+          <div class="grid grid-cols-[72px_minmax(0,1fr)] gap-3 items-center">
+            <div class="studio-select-wrapper">
+              <select id="advMidiChNum0" style="text-align:center;">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+              </select>
+            </div>
+            <div class="studio-select-wrapper"><select id="advMidiChMode0"></select></div>
+          </div>
+          <div class="grid grid-cols-[72px_minmax(0,1fr)] gap-3 items-center">
+            <div class="studio-select-wrapper">
+              <select id="advMidiChNum1" style="text-align:center;">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+              </select>
+            </div>
+            <div class="studio-select-wrapper"><select id="advMidiChMode1"></select></div>
+          </div>
+          <div class="grid grid-cols-[72px_minmax(0,1fr)] gap-3 items-center">
+            <div class="studio-select-wrapper">
+              <select id="advMidiChNum2" style="text-align:center;">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+              </select>
+            </div>
+            <div class="studio-select-wrapper"><select id="advMidiChMode2"></select></div>
+          </div>
+          <div class="grid grid-cols-[72px_minmax(0,1fr)] gap-3 items-center">
+            <div class="studio-select-wrapper">
+              <select id="advMidiChNum3" style="text-align:center;">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+              </select>
+            </div>
+            <div class="studio-select-wrapper"><select id="advMidiChMode3"></select></div>
+          </div>
+          <div class="grid grid-cols-[72px_minmax(0,1fr)] gap-3 items-center">
+            <div class="studio-select-wrapper">
+              <select id="advMidiChNum4" style="text-align:center;">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option>
+              </select>
+            </div>
+            <div class="studio-select-wrapper"><select id="advMidiChMode4"></select></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="kemperGetNamesWrap" style="display:none;" class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <button class="btn-studio py-3 rounded-lg text-xs font-bold uppercase tracking-widest" id="kemperGetNamesBtn" type="button">
+          <span id="kemperGetNamesLabel">GET NAMES OFF</span>
+        </button>
+        <button class="btn-studio py-3 rounded-lg text-xs font-bold uppercase tracking-widest" id="kemperAutoLoaderBtn" type="button">
+          <span id="kemperAutoLoaderLabel">AUTO LOADER OFF</span>
+        </button>
+      </div>
+
+      <!-- Global Switch Sub-panel -->
+      <div class="bg-[#1c1c1f] rounded-lg border border-[#333] p-1" id="switchConfigArea">
+        <div class="bg-[#232326] px-4 py-3 rounded-t-lg border-b border-[#333] flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-xs text-gray-400">toggle_on</span>
+            <span class="text-xs font-bold text-gray-300 uppercase tracking-wide">Global Switch</span>
+          </div>
+        </div>
+        <div class="p-5 grid grid-cols-1 md:grid-cols-12 gap-5">
+          <div class="md:col-span-4 studio-select-wrapper">
+            <label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="switchMode">Function</label>
+            <select id="switchMode" name="switchMode"></select>
+            <div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+              <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+          </div>
+          <div class="md:col-span-3 studio-select-wrapper" id="ccFieldFormGroup">
+            <label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="switchCC">CC#</label>
+            <select id="switchCC" name="switchCC"></select>
+            <div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+              <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+          </div>
+          <div class="md:col-span-2 studio-select-wrapper">
+            <label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="switchChannel">Ch</label>
+            <select id="switchChannel" name="switchChannel"></select>
+            <div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+              <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+          </div>
+          <div class="md:col-span-3 flex items-center justify-between gap-2 pl-2">
+            <div class="flex flex-col items-center gap-1">
+              <span class="text-[9px] font-bold text-gray-500 uppercase">State</span>
+              <label class="toggle-label flex items-center cursor-pointer">
+                <input class="sr-only toggle-checkbox" id="switchStart" name="switchStart" type="checkbox"/>
+                <div class="toggle-switch-ui !w-9 !h-5">
+                  <div class="toggle-dot !w-3 !h-3"></div>
+                </div>
+              </label>
+            </div>
+            <div class="flex flex-col items-center gap-1 flex-1">
+              <span class="text-[9px] font-bold text-gray-500 uppercase">Color</span>
+              <div class="h-5 w-full rounded border border-gray-600 cursor-pointer hover:border-[var(--accent-primary)] transition-colors shadow-inner bg-black selected-color-preview" id="selectedLedColorPreview" tabindex="0">
+                <div class="h-full w-full rounded-[2px]" id="selectedLedColorPreviewBox"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Color Palette -->
+    <section class="studio-card p-6">
+      <div class="flex items-center justify-between mb-6 border-b border-[#333] pb-4">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-[var(--accent-primary)]">palette</span>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-white">Color Palette</h2>
+        </div>
+        <button class="btn-studio px-3 py-1.5 text-[10px] font-bold rounded uppercase tracking-wide border border-[#444]" id="ledModeToggleButton" type="button">
+          <span id="ledModeToggleLabel">LED LETRAS</span>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+          <label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetALabel">PRESET A</label>
+          <div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer selected-color-preview" id="presetASelectedColorPreview" tabindex="0">
+            <div class="h-full w-full selected-color-preview-box" id="presetASelectedColorPreviewBox"></div>
+          </div>
+        </div>
+        <div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+          <label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetBLabel">PRESET B</label>
+          <div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer selected-color-preview" id="presetBSelectedColorPreview" tabindex="0">
+            <div class="h-full w-full selected-color-preview-box" id="presetBSelectedColorPreviewBox"></div>
+          </div>
+        </div>
+        <div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+          <label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetCLabel">PRESET C</label>
+          <div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer selected-color-preview" id="presetCSelectedColorPreview" tabindex="0">
+            <div class="h-full w-full selected-color-preview-box" id="presetCSelectedColorPreviewBox"></div>
+          </div>
+        </div>
+        <div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+          <label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetDLabel">PRESET D</label>
+          <div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer selected-color-preview" id="presetDSelectedColorPreview" tabindex="0">
+            <div class="h-full w-full selected-color-preview-box" id="presetDSelectedColorPreviewBox"></div>
+          </div>
+        </div>
+        <div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+          <label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetELabel">PRESET E</label>
+          <div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer selected-color-preview" id="presetESelectedColorPreview" tabindex="0">
+            <div class="h-full w-full selected-color-preview-box" id="presetESelectedColorPreviewBox"></div>
+          </div>
+        </div>
+        <div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer" id="presetFColorItem" style="display:none;">
+          <label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetFLabel">SW 6</label>
+          <div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer selected-color-preview" id="presetFSelectedColorPreview" tabindex="0">
+            <div class="h-full w-full selected-color-preview-box" id="presetFSelectedColorPreviewBox"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Live Mode Colors & Layer 2 -->
+      <div class="pt-4 border-t border-[#333] grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <div class="flex gap-4">
+          <div class="flex-1 studio-inset p-3 flex items-center justify-between">
+            <span class="text-[10px] font-bold text-gray-400">MODE 1</span>
+            <div class="w-8 h-8 rounded border border-gray-600 cursor-pointer selected-color-preview" id="liveModeSelectedColorPreview" tabindex="0">
+              <div class="h-full w-full rounded-[2px]" id="liveModeSelectedColorPreviewBox"></div>
+            </div>
+          </div>
+          <div class="flex-1 studio-inset p-3 flex items-center justify-between">
+            <span class="text-[10px] font-bold text-gray-400">MODE 2</span>
+            <div class="w-8 h-8 rounded border border-gray-600 cursor-pointer selected-color-preview" id="liveMode2SelectedColorPreview" tabindex="0">
+              <div class="h-full w-full rounded-[2px]" id="liveMode2SelectedColorPreviewBox"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <div class="flex items-center gap-3 bg-[#151518] px-4 py-2 rounded-lg border border-[#333]">
+            <span class="text-xs font-medium text-gray-300">Layer 2 (Live Mode)</span>
+            <button class="btn-studio px-3 py-1 text-[10px] font-bold rounded" id="liveLayer2ToggleButton" type="button">
+              <span id="liveLayer2ToggleLabel">Layer 2 OFF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===================== RIGHT COLUMN ===================== -->
+  <div class="lg:col-span-4 space-y-8">
+
+    <!-- Auto Start -->
+    <section class="studio-card p-6">
+      <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+        <span class="material-symbols-outlined text-[var(--accent-primary)]">play_circle</span>
+        <h2 class="text-sm font-bold uppercase tracking-widest text-white">Auto Start</h2>
+      </div>
+      <div class="flex items-center justify-between mb-6 bg-[#1a1a1d] p-3 rounded-lg border border-[#333]">
+        <span class="text-xs font-bold text-gray-300">Enabled</span>
+        <button class="w-12 h-6 rounded-full bg-[#151518] border border-[#444] relative transition-all" id="autoStartToggleBtn" type="button">
+          <span class="absolute inset-0 flex items-center justify-center text-[9px] font-black text-gray-500" id="autoStartToggleLabel">OFF</span>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <button class="aspect-square btn-studio rounded-xl text-3xl font-bold flex flex-col items-center justify-center gap-1 group" id="autoStartRowBtn" type="button">
+          <span class="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-[var(--accent-primary)]">Bank</span>
+          <span id="autoStartRowLabel">A</span>
+        </button>
+        <button class="aspect-square btn-studio rounded-xl text-3xl font-bold flex flex-col items-center justify-center gap-1 group" id="autoStartColBtn" type="button">
+          <span class="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-[var(--accent-primary)]">Patch</span>
+          <span id="autoStartColLabel">1</span>
+        </button>
+      </div>
+      <button class="w-full btn-studio py-3 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white border border-[#444]" id="autoStartLiveModeBtn" type="button">
+        <span id="autoStartLiveModeLabel">PRESET MODE</span>
+      </button>
+    </section>
+
+    <!-- Active Channels -->
+    <section class="studio-card p-6">
+      <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+        <span class="material-symbols-outlined text-[var(--accent-primary)]">graphic_eq</span>
+        <h2 class="text-sm font-bold uppercase tracking-widest text-white">Active Channels</h2>
+      </div>
+      <div class="flex justify-between gap-2 studio-inset p-4" id="presetLevelsContainer">
+        <div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md preset-level-box" data-level="A">A</div>
+        <div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md preset-level-box" data-level="B">B</div>
+        <div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md preset-level-box" data-level="C">C</div>
+        <div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md preset-level-box" data-level="D">D</div>
+        <div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md preset-level-box" data-level="E">E</div>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+</main>
+
+<!-- Status Message -->
+<div id="statusMessage" class="hidden"></div>
+
+<!-- Save Banner -->
+<div class="fixed top-6 right-6 bg-green-500/10 border border-green-500/50 text-green-400 px-6 py-3 rounded-lg font-bold shadow-[0_0_20px_rgba(34,197,94,0.2)] backdrop-blur-md transform transition-all duration-300 translate-y-[-150%] z-[60] flex items-center gap-3" id="saveBanner">
+  <span class="material-symbols-outlined">check_circle</span>
+  <span>Settings Saved</span>
+</div>
+
+<!-- Hidden background color picker group reference -->
+<div id="backgroundColorPickerGroup" style="display:none;"></div>
+
+<script src="./global-inline.js"></script>
+</body></html>

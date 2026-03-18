@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Studio Master MIDI Config UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --bg-body: #121214;
+      --bg-sidebar: #1c1c1f;
+      --bg-card: #232326;
+      --bg-card-inner: #1a1a1d;
+      --accent-primary: #FFB300;
+      --accent-hover: #ffc400;
+      --text-primary: #f2f2f2;
+      --text-secondary: #a1a1aa;
+      --border-subtle: #333336;
+      --shadow-hardware: inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05);
+      --shadow-knob: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+    }.studio-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .studio-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    }.studio-inset {
+      background-color: var(--bg-card-inner);
+      border-radius: 8px;
+      box-shadow: var(--shadow-hardware);
+      border: 1px solid #151518;
+    }::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-sidebar); 
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #444; 
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }input[type=range] {
+      @apply w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      @apply appearance-none w-4 h-4 bg-[var(--accent-primary)] rounded-full shadow-[0_0_10px_rgba(255,179,0,0.4)];
+      border: 2px solid #232326;
+      transform: translateY(-1px);
+    }.toggle-switch-ui {
+      @apply relative inline-block w-11 h-6 rounded-full bg-[#151518] border border-[#333] transition-colors duration-300 ease-in-out cursor-pointer shadow-inner;
+    }
+    .toggle-checkbox:checked + .toggle-switch-ui {
+      background-color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+    .toggle-dot {
+      @apply absolute left-1 top-1 bg-gray-400 w-3.5 h-3.5 rounded-full transition-transform duration-300 ease-out shadow-sm;
+    }
+    .toggle-checkbox:checked + .toggle-switch-ui .toggle-dot {
+      @apply translate-x-5 bg-white;
+    }.btn-studio {
+      background: linear-gradient(180deg, #3a3a3e 0%, #2c2c30 100%);
+      border: 1px solid #45454a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: all 0.2s ease;
+      color: #e5e5e5;
+    }
+    .btn-studio:hover {
+      background: linear-gradient(180deg, #444449 0%, #333338 100%);
+      color: #fff;
+    }
+    .btn-studio:active {
+      background: #232326;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+      transform: translateY(1px);
+    }
+    .btn-studio-accent {
+      background: linear-gradient(180deg, rgba(255, 179, 0, 0.9) 0%, rgba(229, 161, 0, 0.9) 100%);
+      border: 1px solid rgba(255, 179, 0, 0.5);
+      color: #121214;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .btn-studio-accent:hover {
+      background: linear-gradient(180deg, #ffc133 0%, #ffb300 100%);
+      box-shadow: 0 0 15px rgba(255,179,0,0.3);
+    }.studio-select-wrapper {
+      @apply relative bg-[#1a1a1d] border border-[#333] rounded-lg shadow-inner text-sm transition-colors hover:border-[#555];
+    }
+    .studio-select-wrapper select {
+      @apply bg-transparent text-gray-200 border-none w-full py-2.5 pl-3 pr-10 focus:ring-1 focus:ring-[var(--accent-primary)] rounded-lg appearance-none text-xs font-medium tracking-wide;
+    }.color-swatch-ring {
+      @apply ring-2 ring-offset-2 ring-offset-[#232326] ring-[var(--accent-primary)] scale-110;
+    }
+    .preset-box.selected {
+      background-color: rgba(255, 179, 0, 0.15);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(255, 179, 0, 0.1);
+    }
+    .nav-item {
+        transition: all 0.2s;
+    }
+    .nav-item:hover, .nav-item.active {
+        background-color: rgba(255,255,255,0.05);
+        color: white;
+    }
+    .nav-item.active {
+        border-left: 3px solid var(--accent-primary);
+    }
+    .hidden-input { display: none !important; }.log-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .log-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.2);
+    }
+    .log-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(34,197,94,0.3);
+        border-radius: 2px;
+    }
+  </style>
+<script src="../js/parity-bridge-client.js"></script>
+</head>
+<body class="antialiased h-screen flex overflow-hidden selection:bg-amber-500 selection:text-black">
+<aside class="w-20 lg:w-72 bg-[var(--bg-sidebar)] border-r border-[#333] flex flex-col justify-between shrink-0 z-20">
+<div class="flex flex-col h-full">
+<div class="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-[#333] shrink-0">
+<div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg text-black font-black text-xs tracking-tighter shrink-0">
+                BM
+            </div>
+<span class="hidden lg:block ml-3 font-bold text-lg tracking-wide text-white">BFMIDI</span>
+</div>
+<nav class="mt-6 flex flex-col gap-1 px-3 shrink-0">
+<a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-gray-400 group" href="#">
+<span class="material-symbols-outlined group-hover:text-[var(--accent-primary)] transition-colors">tune</span>
+<span class="hidden lg:block font-medium text-sm">PRESET CONFIG</span>
+</a>
+<a class="nav-item active flex items-center gap-4 px-4 py-3 rounded-lg text-gray-400 group" href="#">
+<span class="material-symbols-outlined group-hover:text-[var(--accent-primary)] transition-colors">settings</span>
+<span class="hidden lg:block font-medium text-sm">GLOBAL CONFIG</span>
+</a>
+<a class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-gray-400 group" href="#">
+<span class="material-symbols-outlined group-hover:text-[var(--accent-primary)] transition-colors">dns</span>
+<span class="hidden lg:block font-medium text-sm">SYSTEM</span>
+</a>
+</nav>
+<div class="px-6 my-4 shrink-0">
+<div class="h-px bg-gradient-to-r from-transparent via-[#333] to-transparent"></div>
+</div>
+<div class="px-3 pb-4 flex-1 flex flex-col min-h-0">
+<div class="bg-[#151518] border border-[#333] rounded-xl overflow-hidden flex flex-col h-full shadow-[inset_0_1px_4px_rgba(0,0,0,0.6)]">
+<div class="bg-[#232326] px-4 py-3 border-b border-[#333] flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[var(--accent-primary)] text-sm">usb</span>
+<span class="text-[10px] font-bold text-gray-300 uppercase tracking-wider hidden lg:block">USB Control</span>
+</div>
+<div class="flex items-center gap-1.5" id="usbStatusIndicator">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_6px_rgba(34,197,94,0.8)]"></div>
+<span class="text-[9px] font-bold text-green-500 uppercase tracking-wider hidden lg:block">Ready</span>
+</div>
+</div>
+<div class="p-3 grid grid-cols-2 gap-2 shrink-0 border-b border-[#333]">
+<button class="btn-studio-accent h-8 rounded text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 hover:brightness-110 active:scale-95 transition-all" id="usbConnectBtn">
+                         Connect
+                     </button>
+<button class="bg-[#2c2c30] border border-[#444] text-gray-400 h-8 rounded text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 hover:bg-[#333] hover:text-white transition-all active:scale-95" id="usbDisconnectBtn">
+                         Disconnect
+                     </button>
+</div>
+<div class="flex-1 min-h-0 bg-[#0f0f11] relative group">
+<div class="absolute inset-0 bg-green-900/5 pointer-events-none"></div>
+<div class="absolute top-2 right-2 z-10">
+<span class="text-[9px] font-mono text-green-500/50 uppercase">LOGS</span>
+</div>
+<div class="h-full overflow-y-auto p-3 font-mono text-[10px] space-y-1.5 log-scrollbar" id="usbLogContainer">
+<div class="text-green-500/80 flex gap-2">
+<span class="opacity-50">[12:01:05]</span>
+<span>System initialized.</span>
+</div>
+<div class="text-green-500/80 flex gap-2">
+<span class="opacity-50">[12:01:06]</span>
+<span>Device found: BFMIDI_PRO</span>
+</div>
+<div class="text-green-500/80 flex gap-2">
+<span class="opacity-50">[12:01:08]</span>
+<span>Handshake OK.</span>
+</div>
+<div class="text-gray-600 italic text-[9px] pt-2">Waiting for input...</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-[#333] shrink-0 mt-auto">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<div class="hidden lg:block">
+<div class="text-[10px] font-bold text-gray-400 uppercase">Device</div>
+<div class="text-xs text-white font-mono">BFMIDI PRO</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col h-full relative overflow-hidden bg-[var(--bg-body)]">
+<header class="h-20 flex items-center justify-between px-8 border-b border-[#333] bg-[var(--bg-body)] z-10 shrink-0">
+<div>
+<h1 class="text-xl font-bold text-white tracking-wide">Configuration</h1>
+<p class="text-xs text-[var(--text-secondary)] mt-0.5">Manage global device parameters and interface settings</p>
+</div>
+<div class="flex gap-3">
+<button class="btn-studio h-9 px-4 rounded-md text-xs font-bold uppercase tracking-wider flex items-center gap-2" onclick="window.location.href='../'">
+<span class="material-symbols-outlined text-sm">arrow_back</span> Back
+             </button>
+<button class="btn-studio-accent h-9 px-6 rounded-md text-xs font-bold uppercase tracking-wider shadow-lg flex items-center gap-2" onclick="saveGlobalConfig()">
+<span class="material-symbols-outlined text-sm">save</span> Save
+             </button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto p-8 relative">
+<div class="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8 pb-24">
+<div class="hidden-input">
+<form id="globalConfigForm">
+<input id="mostrarTelaFX" name="mostrarTelaFX" type="checkbox"/>
+<input id="mostrarCadeia" name="mostrarCadeia" type="checkbox"/>
+<input id="mostrarFxModo" name="mostrarFxModo" type="hidden" value="1"/>
+<input id="mostrarFxQuando" name="mostrarFxQuando" type="hidden" value="0"/>
+<input id="bgColorEnabled" name="bgColorEnabled" type="checkbox"/>
+<input id="ledPreview" name="ledPreview" type="checkbox"/>
+<input id="autoStartEnabled" name="autoStartEnabled" type="checkbox"/>
+<input id="autoStartRow" name="autoStartRow" type="hidden" value="0"/>
+<input id="autoStartCol" name="autoStartCol" type="hidden" value="0"/>
+<input id="autoStartLiveMode" name="autoStartLiveMode" type="checkbox"/>
+<input id="ledModeNumeros" name="ledModeNumeros" type="checkbox"/>
+<input id="liveLayer2Enabled" name="liveLayer2Enabled" type="checkbox"/>
+<div id="hiddenColorContainer"></div>
+<div class="hidden" id="dynamicModeConfigArea"></div>
+<input id="switchStart" name="switchStart" type="checkbox"/>
+</form>
+</div>
+<div class="xl:col-span-8 space-y-8">
+<section class="studio-card p-6">
+<div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+<span class="material-symbols-outlined text-[var(--accent-primary)]">desktop_windows</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-white">Interface &amp; Display</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="studio-inset p-5 flex flex-col justify-between">
+<h3 class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-wider">Screen Config</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between" id="btnMostrarCadeia" style="display:none;">
+<label class="text-xs font-medium text-gray-300">Show FX Chain</label>
+<button class="btn-studio px-3 py-1 text-[10px] font-bold rounded" data-target-checkbox="mostrarCadeia" type="button">TOGGLE</button>
+</div>
+<div class="flex items-center justify-between">
+<label class="text-xs font-medium text-gray-300">Gig View Mode</label>
+<button class="btn-studio px-3 py-1.5 min-w-[80px] text-[10px] font-bold rounded uppercase tracking-wide" data-target-checkbox="mostrarFxQuando" id="btnMostrarFxQuando" type="button">
+<span id="btnMostrarFxQuandoLabel">SEMPRE</span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<label class="text-xs font-medium text-gray-300">Background</label>
+<div class="flex items-center gap-3">
+<button class="btn-studio px-3 py-1.5 min-w-[80px] text-[10px] font-bold rounded uppercase tracking-wide" data-target-checkbox="bgColorEnabled" id="btnBackgroundMode" type="button">
+<span id="btnBackgroundModeLabel">PADRÃO</span>
+</button>
+<div class="w-6 h-6 rounded border border-gray-600 cursor-pointer hover:border-[var(--accent-primary)] transition-colors" id="backgroundSelectedColorPreview" style="display:none;">
+<div class="h-full w-full rounded-[2px]" id="backgroundSelectedColorPreviewBox"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="studio-inset p-5 flex flex-col justify-between">
+<h3 class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-wider">LED Control</h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="text-xs font-medium text-gray-300">Brightness</label>
+<span class="text-[10px] text-[var(--accent-primary)] font-mono" id="ledBrilhoValueDisplay">60%</span>
+</div>
+<button class="w-full btn-studio py-2 rounded text-xs font-bold text-gray-300 hover:text-[var(--accent-primary)] transition-colors border-dashed border border-gray-600" id="ledBrilhoButton" type="button">
+                                        ADJUST LEVEL
+                                    </button>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-[#2a2a2d]">
+<label class="text-xs font-medium text-gray-300">LED Preview Mode</label>
+<label class="toggle-label flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" id="ledPreviewButton" type="checkbox"/>
+<div class="toggle-switch-ui">
+<div class="toggle-dot"></div>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="studio-card p-6">
+<div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+<span class="material-symbols-outlined text-[var(--accent-primary)]">settings_input_component</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-white">Hardware Setup</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+<div class="studio-select-wrapper">
+<label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="modoMidi">Target Device</label>
+<select id="modoMidi" name="modoMidi">
+<option value="GLOBAL">GLOBAL</option>
+<option value="AMPERO AS2">AMPERO AS2</option>
+<option value="AMPERO MINI">AMPERO MINI</option>
+<option value="HX STOMP">HX STOMP</option>
+<option value="A. STAGE 2">A. STAGE 2</option>
+<option value="GP-200LT">GP-200LT</option>
+<option value="VALETON GP5">VALETON GP5</option>
+<option value="POCKET MASTER">POCKET MASTER</option>
+<option value="TONEX">TONEX</option>
+<option value="KEMPER PLAYER">KEMPER PLAYER</option>
+<option value="AMPERO MP350">AMPERO MP350</option>
+<option value="MX5">MX5</option>
+<option value="NANO CORTEX">NANO CORTEX</option>
+<option value="QUAD CORTEX">QUAD CORTEX</option>
+</select>
+<div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="studio-select-wrapper">
+<label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="selectModeIndex">Footswitch Logic</label>
+<select id="selectModeIndex" name="selectModeIndex">
+<option value="0">Mode 1 (Short/Long)</option>
+<option value="1">Mode 2 (Short Only)</option>
+<option value="2">Mode 3 (Short for Slow)</option>
+</select>
+<div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+<div class="bg-[#1c1c1f] rounded-lg border border-[#333] p-1">
+<div class="bg-[#232326] px-4 py-3 rounded-t-lg border-b border-[#333] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-gray-400">toggle_on</span>
+<span class="text-xs font-bold text-gray-300 uppercase tracking-wide">Global Switch</span>
+</div>
+</div>
+<div class="p-5 grid grid-cols-1 md:grid-cols-12 gap-5">
+<div class="md:col-span-4 studio-select-wrapper">
+<label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="switchMode">Function</label>
+<select id="switchMode" name="switchMode"></select>
+<div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-3 studio-select-wrapper" id="ccFieldFormGroup">
+<label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="switchCC">CC#</label>
+<select id="switchCC" name="switchCC"></select>
+<div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-2 studio-select-wrapper">
+<label class="block text-[10px] font-bold text-gray-500 uppercase px-3 pt-2" for="switchChannel">Ch</label>
+<select id="switchChannel" name="switchChannel"></select>
+<div class="absolute right-3 top-1/2 translate-y-[-20%] pointer-events-none text-gray-500">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-3 flex items-center justify-between gap-2 pl-2">
+<div class="flex flex-col items-center gap-1">
+<span class="text-[9px] font-bold text-gray-500 uppercase">State</span>
+<label class="toggle-label flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" id="switchStart" type="checkbox"/>
+<div class="toggle-switch-ui !w-9 !h-5">
+<div class="toggle-dot !w-3 !h-3"></div>
+</div>
+</label>
+</div>
+<div class="flex flex-col items-center gap-1 flex-1">
+<span class="text-[9px] font-bold text-gray-500 uppercase">Color</span>
+<div class="h-5 w-full rounded border border-gray-600 cursor-pointer hover:border-[var(--accent-primary)] transition-colors shadow-inner bg-black" id="selectedLedColorPreview" tabindex="0">
+<div class="h-full w-full rounded-[2px]" id="selectedLedColorPreviewBox"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="studio-card p-6">
+<div class="flex items-center justify-between mb-6 border-b border-[#333] pb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[var(--accent-primary)]">palette</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-white">Color Palette</h2>
+</div>
+<button class="btn-studio px-3 py-1.5 text-[10px] font-bold rounded uppercase tracking-wide border border-[#444]" id="ledModeToggleButton" type="button">
+<span id="ledModeToggleLabel">LED LETRAS</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+<div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+<label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetALabel">PRESET A</label>
+<div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer" id="presetASelectedColorPreview" tabindex="0">
+<div class="h-full w-full" id="presetASelectedColorPreviewBox"></div>
+</div>
+</div>
+<div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+<label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetBLabel">PRESET B</label>
+<div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer" id="presetBSelectedColorPreview" tabindex="0">
+<div class="h-full w-full" id="presetBSelectedColorPreviewBox"></div>
+</div>
+</div>
+<div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+<label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetCLabel">PRESET C</label>
+<div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer" id="presetCSelectedColorPreview" tabindex="0">
+<div class="h-full w-full" id="presetCSelectedColorPreviewBox"></div>
+</div>
+</div>
+<div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+<label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetDLabel">PRESET D</label>
+<div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer" id="presetDSelectedColorPreview" tabindex="0">
+<div class="h-full w-full" id="presetDSelectedColorPreviewBox"></div>
+</div>
+</div>
+<div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer">
+<label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetELabel">PRESET E</label>
+<div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer" id="presetESelectedColorPreview" tabindex="0">
+<div class="h-full w-full" id="presetESelectedColorPreviewBox"></div>
+</div>
+</div>
+<div class="studio-inset p-3 flex flex-col items-center gap-2 group hover:border-gray-500 transition-colors cursor-pointer" id="presetFColorItem" style="display:none;">
+<label class="text-[10px] font-bold text-gray-500 group-hover:text-gray-300" id="presetFLabel">SW 6</label>
+<div class="w-full aspect-square max-w-[50px] rounded-full border-2 border-[#333] shadow-lg overflow-hidden cursor-pointer" id="presetFSelectedColorPreview" tabindex="0">
+<div class="h-full w-full" id="presetFSelectedColorPreviewBox"></div>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-[#333] grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+<div class="flex gap-4">
+<div class="flex-1 studio-inset p-3 flex items-center justify-between">
+<span class="text-[10px] font-bold text-gray-400">MODE 1</span>
+<div class="w-8 h-8 rounded border border-gray-600 cursor-pointer" id="liveModeSelectedColorPreview" tabindex="0">
+<div class="h-full w-full rounded-[2px]" id="liveModeSelectedColorPreviewBox"></div>
+</div>
+</div>
+<div class="flex-1 studio-inset p-3 flex items-center justify-between">
+<span class="text-[10px] font-bold text-gray-400">MODE 2</span>
+<div class="w-8 h-8 rounded border border-gray-600 cursor-pointer" id="liveMode2SelectedColorPreview" tabindex="0">
+<div class="h-full w-full rounded-[2px]" id="liveMode2SelectedColorPreviewBox"></div>
+</div>
+</div>
+</div>
+<div class="flex justify-end">
+<div class="flex items-center gap-3 bg-[#151518] px-4 py-2 rounded-lg border border-[#333]">
+<span class="text-xs font-medium text-gray-300">Layer 2 (Live Mode)</span>
+<label class="toggle-label flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" id="liveLayer2Enabled" type="checkbox"/>
+<div class="toggle-switch-ui">
+<div class="toggle-dot"></div>
+</div>
+</label>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="xl:col-span-4 space-y-8">
+<section class="studio-card p-6">
+<div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+<span class="material-symbols-outlined text-[var(--accent-primary)]">play_circle</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-white">Auto Start</h2>
+</div>
+<div class="flex items-center justify-between mb-6 bg-[#1a1a1d] p-3 rounded-lg border border-[#333]">
+<span class="text-xs font-bold text-gray-300">Enabled</span>
+<button class="w-12 h-6 rounded-full bg-[#151518] border border-[#444] relative transition-all" id="autoStartToggleBtn" type="button">
+<span class="absolute inset-0 flex items-center justify-center text-[9px] font-black text-gray-500" id="autoStartToggleLabel">OFF</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<button class="aspect-square btn-studio rounded-xl text-3xl font-bold flex flex-col items-center justify-center gap-1 group" id="autoStartRowBtn" type="button">
+<span class="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-[var(--accent-primary)]">Bank</span>
+<span id="autoStartRowLabel">A</span>
+</button>
+<button class="aspect-square btn-studio rounded-xl text-3xl font-bold flex flex-col items-center justify-center gap-1 group" id="autoStartColBtn" type="button">
+<span class="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-[var(--accent-primary)]">Patch</span>
+<span id="autoStartColLabel">1</span>
+</button>
+</div>
+<button class="w-full btn-studio py-3 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white border border-[#444]" id="autoStartLiveModeBtn" type="button">
+<span id="autoStartLiveModeLabel">PRESET MODE</span>
+</button>
+</section>
+<section class="studio-card p-6">
+<div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+<span class="material-symbols-outlined text-[var(--accent-primary)]">graphic_eq</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-white">Active Channels</h2>
+</div>
+<div class="flex justify-between gap-2 studio-inset p-4" id="presetLevelsContainer">
+<div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md" data-level="A">A</div>
+<div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md" data-level="B">B</div>
+<div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md" data-level="C">C</div>
+<div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md" data-level="D">D</div>
+<div class="preset-box w-10 h-10 rounded bg-[#232326] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-gray-300 transition-all select-none text-sm shadow-md" data-level="E">E</div>
+</div>
+</section>
+<section class="studio-card p-6">
+<div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-4">
+<span class="material-symbols-outlined text-[var(--accent-primary)]">lock</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-white">System Lock</h2>
+</div>
+<div class="grid grid-cols-2 gap-4" id="lockButtonsContainer">
+<div class="lock-button py-4 px-2 rounded-lg bg-[#1a1a1d] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-red-500/50 hover:text-red-400 transition-all select-none text-xs tracking-wider shadow-inner" data-lock="setup" id="lockSetupBtn">
+<span class="material-symbols-outlined text-sm mr-2">settings</span> SETUP
+                        </div>
+<div class="lock-button py-4 px-2 rounded-lg bg-[#1a1a1d] border border-[#444] flex items-center justify-center font-bold text-gray-500 cursor-pointer hover:border-red-500/50 hover:text-red-400 transition-all select-none text-xs tracking-wider shadow-inner" data-lock="global" id="lockGlobalBtn">
+<span class="material-symbols-outlined text-sm mr-2">public</span> GLOBAL
+                        </div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+<div class="fixed top-6 right-6 bg-green-500/10 border border-green-500/50 text-green-400 px-6 py-3 rounded-lg font-bold shadow-[0_0_20px_rgba(34,197,94,0.2)] backdrop-blur-md transform transition-all duration-300 translate-y-[-150%] z-[60] flex items-center gap-3" id="saveBanner">
+<span class="material-symbols-outlined">check_circle</span>
+<span>Settings Saved</span>
+</div>
+<script>
+    // --- JS Logic (Minimally modified for ID binding) ---
+    function showSavedBanner() {
+        const banner = document.getElementById('saveBanner');
+        if (!banner) return;
+        banner.style.transform = 'translate(0, 0)';
+        setTimeout(() => {
+            banner.style.transform = 'translate(0, -150%)';
+        }, 2000);
+    }
+    const form = document.getElementById('globalConfigForm');
+    let ledBrilho = 3; 
+    let selectedBackgroundColorUint32 = 0;
+    // Core Colors
+    const PRESET_COLORS = [
+        { name: "Vermelho", hex: "#ef4444", uint32: 0xFF0000 },
+        { name: "Verde",    hex: "#22c55e", uint32: 0x00FF00 },
+        { name: "Azul",     hex: "#3b82f6", uint32: 0x0000FF },
+        { name: "Amarelo",  hex: "#eab308", uint32: 0xFFFF00 },
+        { name: "Roxo",     hex: "#a855f7", uint32: 0x800080 },
+        { name: "Cyan",     hex: "#06b6d4", uint32: 0x00FFFF },
+        { name: "Branco",   hex: "#f3f4f6", uint32: 0xFFFFFF },
+        { name: "Laranja",  hex: "#f97316", uint32: 0xFF5000 }, 
+        { name: "Magenta",  hex: "#ec4899", uint32: 0xFF0080 }  
+    ];
+    const BACKGROUND_COLORS = [...PRESET_COLORS, { name: "Preto", hex: "#111827", uint32: 0x000000 }];
+    // Vars
+    let selectedPresetColorsUint32 = [0,0,0,0,0,0];
+    let selectedLiveModeColorUint32 = 0;
+    let selectedLiveMode2ColorUint32 = 0;
+    let selectedSwGlobalLedIndex = 0; 
+    let selectedSwGlobalLed2Index = 0; 
+    let presetLevels = [true, true, true, true, true]; 
+    let ledModeNumeros = false; 
+    let swGlobalConfig = {};
+    let lockSetup = false;
+    let lockGlobal = false;
+    const modoMidiOptionsValues = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX"];
+    const MODE_OPTIONS_WEB = [
+        { value: 0, text: "STOMP" }, { value: 1, text: "SPIN1" }, 
+        { value: 4, text: "RAMPA" }, { value: 10, text: "CUSTOM1" }, 
+        { value: 17, text: "FAVORITE" }, { value: 18, text: "TAP TEMPO" }
+    ];
+    // Helper: Create Color Selector
+    function createCustomColorSelector(previewId, panelId, colorArray, storageUpdateCallback, initialColorValue, isIndexBased = false) {
+        const previewElement = document.getElementById(previewId);
+        if(!previewElement) return;
+        const previewBoxElement = document.getElementById(previewId + 'Box');
+        // Check if panel already exists (avoid duplicates)
+        let overlayElement = document.getElementById(panelId + '-overlay');
+        if (!overlayElement) {
+            overlayElement = document.createElement('div');
+            overlayElement.id = panelId + '-overlay';
+            overlayElement.className = 'fixed inset-0 color-options-panel-overlay z-[100] hidden flex items-center justify-center bg-black/70 backdrop-blur-sm';
+            document.body.appendChild(overlayElement);
+            const panelElement = document.createElement('div');
+            panelElement.id = panelId;
+            panelElement.className = 'bg-[#1c1c1f] border border-[#444] p-5 rounded-2xl shadow-2xl max-w-sm w-full grid grid-cols-4 gap-4';
+            overlayElement.appendChild(panelElement);
+            const title = document.createElement('div');
+            title.className = 'col-span-4 text-center font-bold text-gray-300 mb-2 uppercase tracking-wide text-xs';
+            title.textContent = 'Select Color';
+            panelElement.appendChild(title);
+            colorArray.forEach((color, index) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'w-12 h-12 rounded-full cursor-pointer transition-transform hover:scale-110 shadow-lg border border-gray-600/50 hover:border-white';
+                swatch.style.backgroundColor = color.hex;
+                swatch.title = color.name;
+                swatch.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const val = isIndexBased ? index : color.uint32;
+                    if(previewBoxElement) previewBoxElement.style.backgroundColor = color.hex;
+                    storageUpdateCallback(val);
+                    overlayElement.classList.add('hidden');
+                    scheduleGlobalAutoSave();
+                });
+                panelElement.appendChild(swatch);
+            });
+            // Close on overlay click
+            overlayElement.addEventListener('click', (e) => {
+                if(e.target === overlayElement) overlayElement.classList.add('hidden');
+            });
+        }
+        // Open logic
+        previewElement.addEventListener('click', () => {
+             document.querySelectorAll('.color-options-panel-overlay').forEach(el => el.classList.add('hidden'));
+             overlayElement.classList.remove('hidden');
+        });
+        // Set Initial
+        const initialColor = isIndexBased 
+            ? (colorArray[initialColorValue] || colorArray[0]) 
+            : (colorArray.find(c => c.uint32 === initialColorValue) || colorArray[0]);
+        if(previewBoxElement) previewBoxElement.style.backgroundColor = initialColor.hex;
+        storageUpdateCallback(isIndexBased ? colorArray.indexOf(initialColor) : initialColor.uint32);
+    }
+    // Auto-Save Logic
+    let _globalAutoSaveTimer = null;
+    function scheduleGlobalAutoSave() {
+        if (_globalAutoSaveTimer) clearTimeout(_globalAutoSaveTimer);
+        _globalAutoSaveTimer = setTimeout(() => { 
+            _globalAutoSaveTimer = null; 
+            saveGlobalConfig(); 
+        }, 1000);
+    }
+    async function saveGlobalConfig() {
+         updateSwGlobalDataFromUI();
+         // Construct Payload
+         const payload = {
+            ledBrilho: parseInt(ledBrilho),
+            ledPreview: document.getElementById('ledPreview').checked,
+            modoMidiIndex: modoMidiOptionsValues.indexOf(document.getElementById('modoMidi').value),
+            mostrarTelaFX: document.getElementById('mostrarTelaFX').checked,
+            mostrarCadeia: document.getElementById('mostrarCadeia').checked,
+            mostrarFxModo: parseInt(document.getElementById('mostrarFxModo').value),
+            mostrarFxQuando: parseInt(document.getElementById('mostrarFxQuando').value),
+            coresPresetConfig: selectedPresetColorsUint32,
+            corLiveModeConfig: selectedLiveModeColorUint32,
+            corLiveMode2Config: selectedLiveMode2ColorUint32,
+            liveLayer2Enabled: document.getElementById('liveLayer2Enabled').checked,
+            backgroundEnabled: document.getElementById('bgColorEnabled').checked,
+            backgroundColorConfig: selectedBackgroundColorUint32,
+            selectModeIndex: parseInt(document.getElementById('selectModeIndex').value),
+            swGlobal: swGlobalConfig,
+            presetLevels: presetLevels,
+            lockSetup: lockSetup,
+            lockGlobal: lockGlobal,
+            ledModeNumeros: ledModeNumeros,
+            autoStartEnabled: document.getElementById('autoStartEnabled').checked,
+            autoStartRow: parseInt(document.getElementById('autoStartRow').value || 0),
+            autoStartCol: parseInt(document.getElementById('autoStartCol').value || 0),
+            autoStartLiveMode: document.getElementById('autoStartLiveMode').checked
+         };
+         try {
+             // Mock API Call
+             console.log("Saving...", payload);
+             await fetch('/api/global-config/save', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify(payload)
+             });
+             showSavedBanner();
+         } catch(e) {
+             console.log("Mock save (api fail expected in preview): Saved!");
+             showSavedBanner();
+         }
+    }
+    // UI Updates
+    function updateLedModeToggleUI() {
+        const btn = document.getElementById('ledModeToggleButton');
+        const span = document.getElementById('ledModeToggleLabel');
+        const labels = ledModeNumeros 
+           ? ['SW 1', 'SW 2', 'SW 3', 'SW 4', 'SW 5', 'SW 6']
+           : ['PRESET A', 'PRESET B', 'PRESET C', 'PRESET D', 'PRESET E', 'SW 6'];
+        const ids = ['presetALabel', 'presetBLabel', 'presetCLabel', 'presetDLabel', 'presetELabel', 'presetFLabel'];
+        ids.forEach((id, i) => {
+            const el = document.getElementById(id);
+            if(el) el.textContent = labels[i];
+        });
+        document.getElementById('presetFColorItem').style.display = ledModeNumeros ? 'flex' : 'none';
+        if (ledModeNumeros) {
+            span.textContent = 'LED NÚMEROS';
+            btn.classList.add('border-[#FFB300]');
+            btn.classList.add('text-[#FFB300]');
+        } else {
+            span.textContent = 'LED LETRAS';
+            btn.classList.remove('border-[#FFB300]');
+            btn.classList.remove('text-[#FFB300]');
+        }
+    }
+    function updateLockButtonsUI() {
+        const setupBtn = document.getElementById('lockSetupBtn');
+        const globalBtn = document.getElementById('lockGlobalBtn');
+        const toggleClass = (el, active) => {
+            if(active) {
+                el.classList.add('border-red-500');
+                el.classList.add('text-red-500');
+                el.classList.add('bg-red-900/10');
+                el.classList.remove('text-gray-500');
+                el.classList.remove('border-gray-600');
+            } else {
+                el.classList.remove('border-red-500');
+                el.classList.remove('text-red-500');
+                el.classList.remove('bg-red-900/10');
+                el.classList.add('text-gray-500');
+                el.classList.add('border-gray-600');
+            }
+        };
+        toggleClass(setupBtn, lockSetup);
+        toggleClass(globalBtn, lockGlobal);
+    }
+    function updatePresetLevelButtons() {
+        const container = document.getElementById('presetLevelsContainer');
+        const boxes = container.querySelectorAll('.preset-box');
+        boxes.forEach((box, i) => {
+             if(presetLevels[i]) {
+                 box.classList.add('selected');
+             } else {
+                 box.classList.remove('selected');
+             }
+        });
+    }
+    // Sw Global Logic
+    function populateSelect(id, options) {
+        const select = document.getElementById(id);
+        if (!select) return;
+        select.innerHTML = '';
+        options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.text;
+            select.appendChild(option);
+        });
+    }
+    function populateNumericSelect(id, min, max, def) {
+        const sel = document.getElementById(id);
+        if (!sel) return;
+        sel.innerHTML = '';
+        for (let i = min; i <= max; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = (id.toLowerCase().includes('channel') && i === 0) ? 'X' : i;
+            if (i === def) opt.selected = true;
+            sel.appendChild(opt);
+        }
+    }
+    function updateSwGlobalDataFromUI() {
+        if (!swGlobalConfig) swGlobalConfig = {};
+        swGlobalConfig.modo = parseInt(document.getElementById('switchMode').value || 0);
+        swGlobalConfig.cc = parseInt(document.getElementById('switchCC').value || 0);
+        swGlobalConfig.canal = parseInt(document.getElementById('switchChannel').value || 1);
+        swGlobalConfig.start_value = document.getElementById('switchStart').checked;
+        swGlobalConfig.led = selectedSwGlobalLedIndex;
+    }
+    function updateSwGlobalSpecificUI(modeValueStr) {
+        const mode = parseInt(modeValueStr);
+        const dynArea = document.getElementById('dynamicModeConfigArea');
+        if(mode === 0) {
+            dynArea.classList.add('hidden');
+        } else {
+            dynArea.classList.remove('hidden');
+        }
+    }
+    // Init
+    window.addEventListener('load', () => {
+        populateSelect('switchMode', MODE_OPTIONS_WEB);
+        populateNumericSelect('switchCC', 0, 127, 48);
+        populateNumericSelect('switchChannel', 0, 16, 1);
+        // Colors Init
+        ['A', 'B', 'C', 'D', 'E', 'F'].forEach((l, i) => {
+            createCustomColorSelector(`preset${l}SelectedColorPreview`, `preset${l}Panel`, PRESET_COLORS, (val) => { selectedPresetColorsUint32[i] = val; }, 0);
+        });
+        createCustomColorSelector('liveModeSelectedColorPreview', 'liveModePanel', PRESET_COLORS, (val) => { selectedLiveModeColorUint32 = val; }, 0);
+        createCustomColorSelector('liveMode2SelectedColorPreview', 'liveMode2Panel', PRESET_COLORS, (val) => { selectedLiveMode2ColorUint32 = val; }, 0);
+        createCustomColorSelector('backgroundSelectedColorPreview', 'bgPanel', BACKGROUND_COLORS, (val) => { selectedBackgroundColorUint32 = val; }, 0);
+        createCustomColorSelector('selectedLedColorPreview', 'swGlobalLedPanel', PRESET_COLORS, (idx) => { selectedSwGlobalLedIndex = idx; }, 0, true);
+        // Event Listeners
+        document.getElementById('ledBrilhoButton').addEventListener('click', function() {
+            ledBrilho = (ledBrilho % 5) + 1;
+            document.getElementById('ledBrilhoValueDisplay').textContent = `${ledBrilho * 20}%`;
+            scheduleGlobalAutoSave();
+        });
+        document.getElementById('ledPreviewButton').addEventListener('click', function() {
+            const cb = document.getElementById('ledPreview');
+            // Toggle actually happens via label click triggering checkbox, but we might need manual sync if structure is tricky
+            // With standard checkbox, it should toggle automatically.
+            setTimeout(() => {
+                // Visual feedback if needed
+            }, 10);
+            scheduleGlobalAutoSave();
+        });
+        // Live Layer 2 Toggle
+        const liveLayer2Btn = document.querySelector('#liveLayer2Enabled + .toggle-switch-ui');
+        if(liveLayer2Btn) {
+            liveLayer2Btn.parentElement.addEventListener('click', () => {
+                 setTimeout(scheduleGlobalAutoSave, 50);
+            });
+        }
+        document.getElementById('ledModeToggleButton').addEventListener('click', () => {
+             ledModeNumeros = !ledModeNumeros;
+             document.getElementById('ledModeNumeros').checked = ledModeNumeros;
+             updateLedModeToggleUI();
+             scheduleGlobalAutoSave();
+        });
+        // Preset Levels Interaction
+        document.getElementById('presetLevelsContainer').addEventListener('click', (e) => {
+             const box = e.target.closest('.preset-box');
+             if(!box) return;
+             const lvl = box.dataset.level;
+             const idx = ['A','B','C','D','E'].indexOf(lvl);
+             const activeCount = presetLevels.filter(Boolean).length;
+             if(presetLevels[idx] && activeCount <= 1) return;
+             presetLevels[idx] = !presetLevels[idx];
+             updatePresetLevelButtons();
+             scheduleGlobalAutoSave();
+        });
+        // Lock Interaction
+        document.getElementById('lockButtonsContainer').addEventListener('click', (e) => {
+             const btn = e.target.closest('.lock-button');
+             if(!btn) return;
+             const type = btn.dataset.lock;
+             if(type === 'setup') lockSetup = !lockSetup;
+             if(type === 'global') lockGlobal = !lockGlobal;
+             updateLockButtonsUI();
+             scheduleGlobalAutoSave();
+        });
+        // Global Switch Mode Change
+        document.getElementById('switchMode').addEventListener('change', function() {
+             updateSwGlobalSpecificUI(this.value);
+             scheduleGlobalAutoSave();
+        });
+        // Auto Start Toggle Button Logic (Custom UI)
+        document.getElementById('autoStartToggleBtn').addEventListener('click', function() {
+            const cb = document.getElementById('autoStartEnabled');
+            cb.checked = !cb.checked;
+            const label = document.getElementById('autoStartToggleLabel');
+            if(cb.checked) {
+                this.style.backgroundColor = 'var(--accent-primary)';
+                this.style.borderColor = 'var(--accent-primary)';
+                this.querySelector('span').style.color = '#000';
+                label.textContent = "ON";
+                label.style.left = 'auto';
+                label.style.right = '4px';
+            } else {
+                this.style.backgroundColor = '#151518';
+                this.style.borderColor = '#444';
+                this.querySelector('span').style.color = '#6b7280';
+                label.textContent = "OFF";
+            }
+            scheduleGlobalAutoSave();
+        });
+        // Auto Start Row/Col
+        const rows = ['A','B','C','D','E','F'];
+        document.getElementById('autoStartRowBtn').addEventListener('click', () => {
+            const inp = document.getElementById('autoStartRow');
+            let val = parseInt(inp.value || 0);
+            val = (val + 1) % 6;
+            inp.value = val;
+            document.getElementById('autoStartRowLabel').textContent = rows[val];
+            scheduleGlobalAutoSave();
+        });
+        document.getElementById('autoStartColBtn').addEventListener('click', () => {
+            const inp = document.getElementById('autoStartCol');
+            let val = parseInt(inp.value || 0);
+            val = (val + 1) % 6;
+            inp.value = val;
+            document.getElementById('autoStartColLabel').textContent = (val + 1);
+            scheduleGlobalAutoSave();
+        });
+        // Auto Start Live Mode
+        document.getElementById('autoStartLiveModeBtn').addEventListener('click', function() {
+             const cb = document.getElementById('autoStartLiveMode');
+             cb.checked = !cb.checked;
+             const label = document.getElementById('autoStartLiveModeLabel');
+             if(cb.checked) {
+                 label.textContent = "LIVE MODE";
+                 this.classList.add('text-[var(--accent-primary)]', 'border-[var(--accent-primary)]');
+                 this.classList.remove('text-gray-400');
+             } else {
+                 label.textContent = "PRESET MODE";
+                 this.classList.remove('text-[var(--accent-primary)]', 'border-[var(--accent-primary)]');
+                 this.classList.add('text-gray-400');
+             }
+             scheduleGlobalAutoSave();
+        });
+        // General Listener for Inputs
+        document.body.addEventListener('change', (e) => {
+            if(e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') {
+                scheduleGlobalAutoSave();
+            }
+        });
+        // Initial state set
+        updateLedModeToggleUI();
+        updatePresetLevelButtons();
+    });
+  </script>
+</body></html>

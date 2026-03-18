@@ -1,0 +1,205 @@
+/* Visual refresh for root shell (no behavior changes) */
+:root {
+  --vr-bg-main: #0f1016;
+  --vr-bg-panel: #1a1d26;
+  --vr-bg-panel-2: #141720;
+  --vr-border: #2f3340;
+  --vr-text: #f4f5f8;
+  --vr-muted: #9ba1b3;
+  --vr-accent: #ffb300;
+  --vr-accent-2: #f59e0b;
+  --vr-green: #22c55e;
+}
+
+html,
+body {
+  background:
+    radial-gradient(circle at 10% -10%, rgba(255, 179, 0, 0.08), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(36, 83, 209, 0.08), transparent 34%),
+    linear-gradient(160deg, #0b0c12 0%, var(--vr-bg-main) 52%, #0c1018 100%) !important;
+}
+
+.editor-shell {
+  background: transparent;
+}
+
+aside {
+  width: 308px;
+  background: linear-gradient(180deg, #171922 0%, #171a23 56%, #141821 100%);
+  border-right: 1px solid var(--vr-border);
+  box-shadow: 14px 0 42px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-brand {
+  height: 84px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--vr-border);
+}
+
+.brand-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  margin-right: 10px;
+  color: #101010;
+  background: linear-gradient(135deg, #ffcb45 0%, var(--vr-accent) 58%, #e28a00 100%);
+  box-shadow: 0 10px 22px rgba(255, 179, 0, 0.32);
+  font-size: 0.78rem;
+}
+
+.brand-text h1 {
+  font-size: 1.02rem;
+  letter-spacing: 0.03em;
+  color: var(--vr-text);
+}
+
+.brand-text h1 span {
+  color: var(--vr-accent);
+}
+
+.brand-text .brand-sub {
+  letter-spacing: 0.2em;
+  font-size: 0.62rem;
+  color: #717990;
+}
+
+nav {
+  padding: 14px 10px 0;
+}
+
+nav .nav-list {
+  gap: 6px;
+}
+
+.nav-item {
+  padding: 11px 12px;
+  border-radius: 11px;
+  border-left: 3px solid transparent;
+  border-top: 1px solid transparent;
+  border-right: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  color: #8f96aa;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  background: transparent;
+}
+
+.nav-item:hover {
+  color: #e8ebf2;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: #2f3340;
+}
+
+.nav-item.active {
+  color: var(--vr-text);
+  border-color: #353a4a;
+  border-left-color: var(--vr-accent);
+  background: linear-gradient(90deg, rgba(255, 179, 0, 0.1), rgba(255, 179, 0, 0.02));
+}
+
+.nav-item .material-symbols-outlined {
+  color: #b6bccb;
+  font-size: 19px;
+}
+
+.nav-item.active .material-symbols-outlined {
+  color: var(--vr-accent);
+}
+
+.sidebar-sep {
+  margin: 12px 18px;
+  background: linear-gradient(90deg, transparent, #2f3340, transparent);
+}
+
+.usb-section {
+  padding: 0 10px 10px;
+}
+
+.usb-panel {
+  border-radius: 10px;
+  border: 1px solid var(--vr-border);
+  background: linear-gradient(180deg, var(--vr-bg-panel) 0%, #10141d 100%);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.68);
+}
+
+.usb-header {
+  background: linear-gradient(180deg, #232733 0%, #1e232e 100%);
+  border-bottom: 1px solid var(--vr-border);
+  padding: 9px 11px;
+}
+
+.usb-header-left .material-symbols-outlined {
+  color: var(--vr-accent);
+}
+
+.usb-header-left span:last-child {
+  color: #d5dae7;
+}
+
+.usb-status[data-state="connected"] {
+  background: rgba(34, 197, 94, 0.11);
+  border-color: rgba(34, 197, 94, 0.32);
+}
+
+.usb-buttons {
+  padding: 10px;
+  gap: 7px;
+}
+
+.btn-connect {
+  background: linear-gradient(180deg, var(--vr-accent) 0%, var(--vr-accent-2) 100%);
+  border-color: rgba(255, 179, 0, 0.45);
+  color: #111317;
+}
+
+.btn-connect:hover:not(:disabled) {
+  box-shadow: 0 0 18px rgba(255, 179, 0, 0.36);
+}
+
+.btn-disconnect {
+  border-color: #454b5e;
+  background: linear-gradient(180deg, #333846 0%, #2a2f3d 100%);
+  color: #b5bccd;
+}
+
+.usb-logs-area {
+  background: #0c1314;
+}
+
+.usb-logs-area::before {
+  background: rgba(22, 163, 74, 0.06);
+}
+
+.usb-logs-label {
+  color: rgba(34, 197, 94, 0.36);
+}
+
+.usb-logs {
+  color: rgba(34, 197, 94, 0.78);
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--vr-border);
+  background: rgba(9, 10, 15, 0.38);
+}
+
+.device-label {
+  color: #8a91a6;
+}
+
+.main-content {
+  background:
+    radial-gradient(circle at 80% 10%, rgba(255, 179, 0, 0.04), transparent 32%),
+    linear-gradient(180deg, #0d1018 0%, #0b0e15 100%);
+}
+
+iframe {
+  background: transparent;
+}
+
+@media (max-width: 860px) {
+  aside {
+    width: 72px;
+  }
+}

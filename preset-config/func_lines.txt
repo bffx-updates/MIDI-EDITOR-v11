@@ -1,0 +1,18 @@
+5090:                loadPresetDataToUI(col, row);
+5375:            async function fetchAndLoadSinglePreset(colIndex, rowIndex, activateEsp = false) {
+5404:                    loadPresetDataToUI(colIndex, rowIndex);
+5405:                    // Nota: loadPresetDataToUI já chama updateCustomSelect para bank/channel
+5611:                    loadPresetDataToUI(currentPresetColumnIndex, currentPresetRowIndex);
+5784:                        fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex).then(() => {
+5807:                        fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex).then(() => {
+5861:                    try { await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, false); } catch (e) { console.warn('fetchAndLoadSinglePreset falhou:', e); }
+7565:            function loadPresetDataToUI(colIndex, rowIndex) {
+10131:                    // await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, false);
+10295:                            await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, true);
+10312:                            await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, true);
+10344:                            await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, true);
+10366:                            await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, true);
+10396:                                                    await fetchAndLoadSinglePreset(col, row, true);
+10397:                                                    return; // fetchAndLoadSinglePreset jÃ¡ atualiza toda a UI
+10407:                            loadPresetDataToUI(col, row);
+10454:                    // try { await fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex, false); } catch(_) {}

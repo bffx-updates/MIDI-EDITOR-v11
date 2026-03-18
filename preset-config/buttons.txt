@@ -1,0 +1,195 @@
+﻿
+                    
+<button
+                    
+<button
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-row="0">A</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-row="1">B</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-row="2">C</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-row="3">D</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-row="4">E</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-col="0">1</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-col="1">2</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-col="2">3</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-col="3">4</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-col="4">5</button>
+                       
+     <button class="gri
+d-btn-selector h-12" 
+data-col="5">6</button>
+                       
+ <button 
+class="live-layer-tab 
+active" 
+id="layer1TabBtn" 
+type="button" aria-pres
+sed="true">LAYER 
+1</button>
+                       
+ <button 
+class="live-layer-tab" 
+id="layer2TabBtn" 
+type="button" aria-pres
+sed="false">LAYER 
+2</button>
+                       
+                     
+<button
+                       
+                       
+  <button
+                       
+     <button class="act
+ion-utility-btn" 
+title="Copy current 
+footswitch settings">
+                       
+     <button class="act
+ion-utility-btn" 
+title="Paste settings">
+                       
+     <button 
+aria-pressed="false"
+                       
+                 
+<button id="gigViewStat
+eToggle" 
+data-state="on" onclick
+="toggleGigViewState()"
+                       
+                     
+<button
+                       
+                 
+<button id="gigViewStat
+eToggle2" 
+data-state="on" onclick
+="toggleGigView2State()
+"
+                       
+                     
+<button
+                    
+<button
+            <button
+            <button
+                <button
+                <button
+            <button 
+class="auto-save-btn 
+active" 
+id="btnAutoSave" 
+type="button">
+            <button
+                
+<button 
+class="text-gray-500 
+hover:text-white 
+transition-colors" id="
+iconPickerCloseBtn"><sp
+an
+        <button 
+id="btnRowSelector" 
+type="button"></button>
+        <button 
+id="btnColSelector" 
+type="button"></button>
+        <button 
+id="extrasSendToggle" 
+type="button"></button>
+        <button 
+id="spinSendPcBtn" 
+type="button"></button>
+        <button id="liv
+eLayerToggleButton" 
+type="button"></button>
+        <button 
+id="autoRampToggle" 
+type="button"></button>
+        <button 
+id="footer-main" 
+type="button"></button>
+                       
+             <button 
+type="button" 
+id="spinSendCcBtn" 
+class="spin-send-btn 
+active">ENVIA 
+CC</button>
+                       
+             <button 
+type="button" 
+id="spinSendPcBtn" clas
+s="spin-send-btn">ENVIA
+ PC</button>
+                       
+     <button 
+type="button" id="contr
+olInvertBtn_${controlIn
+dex}" class="control-mo
+de-btn" aria-pressed="$
+{controlData.modo_inver
+tido ? 'true' : 
+'false'}"></button>
+                       
+ <button type="button" 
+id="${favLiveToggleId}_
+btn"
+                       
+   <button 
+type="button" id="rampI
+nvertBtn_sw${swId}" cla
+ss="single-toggle-butto
+n ramp-center-btn" aria
+-pressed="${currInv ? 
+'true' : 
+'false'}">${currInv ? 
+'INVERTIDO' : 
+'NORMAL'}</button>
+                       
+   <button 
+type="button" id="rampA
+utoBtn_sw${swId}" class
+="single-toggle-button 
+ramp-center-btn" aria-p
+ressed="${currAuto ? 
+'true' : 
+'false'}">AUTO STOP 
+${currAuto ? 'ON' : 
+'OFF'}</button>
+                       
+     <button 
+type="button" id="switc
+hCCHoldStartBtn"
+
+

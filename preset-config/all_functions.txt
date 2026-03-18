@@ -1,0 +1,417 @@
+﻿
+                       
+ <!-- Function Mode -->
+        function getCC_
+AMPEROST2_Name(v) {
+        function getCC_
+AMPERO_MINI_Names(v) {
+        function 
+getCC_GP200LT_Names(v) 
+{
+        function getCC_
+POCKET_MASTER_Names(v) 
+{
+        function getCC_
+KEMPER_PLAYER_Names(v) 
+{
+        function getCC_
+VALETON_GP5_Names(v) {
+        function 
+getCC_TONEX_Name(v) {
+        function 
+getCC_MX5_Names(v) {
+        function getCC_
+NANO_CORTEX_Names(v) {
+        function getCC_
+QUAD_CORTEX_Names(v) {
+            function 
+ensurePath(path) {
+            async 
+function 
+apiFetch(path, 
+options) {
+            function 
+getPresetKey(layer = 
+currentLiveLayer, col 
+= currentPresetColumnIn
+dex, row = 
+currentPresetRowIndex) 
+{
+            function ge
+tPresetSignature(layer 
+= currentLiveLayer, 
+col = currentPresetColu
+mnIndex, row = 
+currentPresetRowIndex) 
+{
+            function ma
+rkPresetAsSaved(layer 
+= currentLiveLayer, 
+col = currentPresetColu
+mnIndex, row = 
+currentPresetRowIndex) 
+{
+            function ha
+sCurrentPresetUnsavedCh
+anges() {
+            function up
+dateAutoSaveButtonUI() 
+{
+            function se
+tAutoSaveSyncIndicator(
+state, text) {
+            function se
+tAutoSaveEnabled(enable
+d, persist = true) {
+            function 
+initAutoSaveControls() 
+{
+            function bi
+ndAutoSaveDomWatchers()
+ {
+            function 
+requestAutoSave(reason 
+= 'change') {
+            function 
+toggleFooterOptions() {
+            function 
+handleCopy() {
+            function 
+handlePaste() {
+            function 
+getDefaultExtrasData() 
+{
+            function no
+rmalizeModesClient(sw, 
+extras) {
+            function 
+getCc2ChannelValue(sw) 
+{
+            function ge
+tSingleDefaultPresetDat
+a(colIndex, rowIndex) {
+            function in
+itializeFullDefaultPres
+ets() {
+            function co
+pySharedPresetFields(so
+urcePreset, 
+targetPreset) {
+            function sy
+ncSharedPresetFieldsFor
+Index(globalIndex) {
+            function ge
+tPresetLayerLoadOrder()
+ {
+            async 
+function fetchPresetLay
+erFromServer(colIndex, 
+rowIndex, layer) {
+            function me
+rgePresetLayerData(colI
+ndex, rowIndex, layer, 
+presetDataFromServer) {
+            async 
+function fetchAndLoadSi
+nglePreset(colIndex, 
+rowIndex, activateEsp 
+= false) {
+            async 
+function reloadPresetEx
+trasFromServer(colIndex
+, rowIndex) {
+            function 
+updateLayerUiState() {
+            function to
+ggleLayerUi(targetLayer
+ = null) {
+            function to
+ggleLayer2Visibility() 
+{
+            function up
+dateLayerButtonAppearan
+ce() {
+            function 
+initializePage() {
+            function ge
+neratePresetButtons() {
+            function en
+sureDefaultSwitchSelect
+ion(force = false) {
+            async 
+function 
+selectFootButton(btn) {
+            function cl
+oseAllFootModeDropdowns
+(exceptButton) {
+            function sy
+ncFootModeDropdown(btn)
+ {
+            function to
+ggleFootModeDropdown(bt
+n, forceOpen = false) {
+            function ge
+nerateSwitchButtons(boa
+rdName) {
+            function up
+dateAllFootButtonsUI() 
+{
+            function po
+pulateModeOptions(switc
+hIndex = 
+currentSwitchIndex) {
+            function 
+isChannelSelectId(id) {
+            function po
+pulateNumericSelect(id,
+ min, max, def) {
+            function ge
+tSelectNumericValue(id)
+ {
+            function 
+isValueSelectId(id) {
+            function ge
+tValueSelectCcValue(sel
+ectId) {
+            function ge
+tKemperLabelForValueSel
+ect(selectEl) {
+            function re
+populateValueSelectsFor
+CC() {
+            function po
+pulatePresetChannelSele
+ct(id, def) {
+            function 
+populateBankLabels(id, 
+arr, def) {
+            function in
+itializeColorPickers() 
+{
+            function cr
+eateColorOptionsPanel(p
+anelId, colors, cb) {
+            function sy
+ncSpinSendPcUI(desiredV
+alue, isSpinMode = 
+true) {
+            function ge
+nerateSingleSpinUI(pare
+ntElement, 
+spinDataItem, 
+spinIndex, sendAsPc = 
+false, currentCC = 0) {
+            function ge
+nerateSingleControlUI(p
+arentElement, 
+controlDataItem, 
+controlIndex) {
+            function ge
+nerateSingleCustomUI(pa
+rentElement, 
+customDataItem, 
+customIndex, 
+showOnlyOnValue = 
+false, showCCChannel = 
+false, switchIndex = 
+0) {
+            function ge
+neratePcCcFields(gridCo
+ntainer, extrasData) {
+            function 
+newLabel(text) {
+            function 
+newNumericInput(id, 
+min, max, value, 
+inputType = 'number') {
+            function ne
+wTransposeValueInput(id
+, value) {
+            function 
+newToggleSwitch(id, 
+initialChecked, 
+parentElement) {
+            function 
+newSelect(id, min, 
+max, value) {
+            function ap
+plyIntegratedEditorLayo
+ut() {
+            function 
+hideSwitchConfigArea() 
+{
+            function 
+showSwitchConfigArea() 
+{
+            function lo
+adPresetDataToUI(colInd
+ex, rowIndex) {
+            function cr
+eateRampField(labelText
+, id, value = 0) {
+            function ge
+tSelectedValueLabel(sel
+ectEl) {
+            function up
+dateMacroProgress(value
+InputId) {
+            function ge
+nerateMacrosUI(containe
+r, switchData, 
+switchIndex) {
+            function up
+dateSwitchSpecificUI(mo
+deValue, switchIndex) {
+            function lo
+adSwitchDataToUI(colInd
+ex, rowIndex, 
+switchIdx) {
+            function up
+dateCustomSelect(select
+Id) {
+            function up
+datePresetNameColorData
+(colorValue) {
+            function up
+datePresetDisplayBackgr
+oundColorData(colorValu
+e) {
+            function up
+datePresetTagColorData(
+colorValue) {
+            function up
+dateSwitchLedColorData(
+colorIndex) {
+            function up
+dateSwitchLed2ColorData
+(colorIndex) {
+            function up
+dateSwitchHoldColorData
+(colorIndex) {
+            function up
+dateLiveLayerButtonColo
+rFromCurrentSwitch() {
+            function ap
+plyLiveModeColorToCurre
+ntPresetSwitches() {
+            function ap
+plySwitchCommonFieldsFr
+omMemory(modeValue, 
+globalIndex) {
+            (function 
+initIconColorAndFill() 
+{
+                
+function setupColorPick
+er(triggerId, 
+overlayId, panelId, 
+hiddenInputId, 
+previewBoxId, title) {
+            function 
+toggleGigView() {
+            function up
+dateLocalPresetDataFrom
+UI(options = {}) {
+            function sh
+owCopyPasteBanner(messa
+ge) {
+            function 
+showSavedBanner() {
+            async 
+function saveCurrentPre
+setData(options = {}) {
+            function 
+populateIconSelects() {
+            function 
+setupEventListeners() {
+            function up
+dateActiveButton(contai
+nerId, activeIndex) {
+            function up
+dateEspDisplayForPreset
+(col, row) {
+            function 
+initCustomSelects() {
+            function ge
+tNumericRangeFromSelect
+(selectEl) {
+            function 
+clampToRange(value, 
+min, max) {
+            function se
+lectClosestOptionValue(
+originalSelect, 
+targetValue) {
+            function up
+dateMiniFieldSliderTrac
+k(sliderEl, min, max, 
+value) {
+            function ha
+sVisualProgressForSelec
+t(selectId) {
+            function en
+sureMiniSliderForWrappe
+r(originalSelect, 
+wrapper) {
+            function se
+tupCustomSelect(wrapper
+) {
+            function po
+pulateCustomOptions(ori
+ginalSelect, 
+optionsDiv, 
+selectedValueSpan, 
+wrapper) {
+            function cl
+oseAllSelects(exceptThi
+sWrapper) {
+            function 
+polarToCartesian(cx, 
+cy, r, angleDeg) {
+            function 
+describeArc(cx, cy, r, 
+startAngle, endAngle) {
+            function up
+dateSpinSliderFillForSe
+lect(selectId) {
+            function ge
+tOptionLabelText(opt) {
+            function up
+dateSpinProgressBar(sel
+ectId) {
+            function up
+dateSpinKnobVisual(sele
+ctId) {
+            function ad
+dKnobDragControl(select
+Id, parentElement) {
+                
+function 
+ensureGlobalFader() {
+                
+function showGlobalFade
+r(forSelectId) {
+                
+function 
+hideGlobalFader() {
+            function 
+b64ToBytes(b64) {
+            function re
+nderIconToCanvas(iconId
+, canvas) {
+            function 
+updateGigViewPreview() 
+{
+            function up
+dateGigView2Preview() {
+            function 
+setIconValue(slot, 
+iconId, opts) {
+            function en
+sureIconPickerGridBuilt
+() {
+            (function i
+nitIconPickerOverlay() 
+{
+
+
