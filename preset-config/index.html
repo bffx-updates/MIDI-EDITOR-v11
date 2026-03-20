@@ -2816,6 +2816,59 @@
 
         /* (single-mode-layout removed — SINGLE now uses spin-primary + single-active) */
 
+        /* Extras Configuration Section */
+        .extras-toggle-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .extras-send-toggle {
+            width: 100%;
+            max-width: 340px;
+        }
+        .extras-items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .extras-group {
+            background: #1a1a1d;
+            border: 1px solid #333336;
+            border-radius: 10px;
+            padding: 14px;
+        }
+        .extras-group h4 {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #f59e0b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 0 0 10px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333336;
+        }
+        .extras-fields-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .extras-fields-row.three-cols {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        .extras-field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .extras-field label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
         body.integrated-preset-editor #dynamicModeConfigArea .extras-group,
         body.integrated-preset-editor #dynamicModeConfigArea .custom-value-container {
             background: #0f1117;
@@ -4758,9 +4811,9 @@
     </aside>
     <main class="flex-1 overflow-y-auto relative bg-[#121214] scroll-smooth">
         <div class="max-w-6xl mx-auto p-8 pb-32 space-y-6">
-            <div class="flex flex-col lg:flex-row gap-4 lg:items-stretch">
+            <div class="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-4">
                 <div
-                    class="w-full lg:flex-[1.05] lg:min-w-0 bg-[#232326] border border-[#333336] rounded-xl p-4 shadow-xl">
+                    class="bg-[#232326] border border-[#333336] rounded-xl p-4 shadow-xl">
                     <div class="mb-6">
                         <h2
                             class="text-2xl sm:text-3xl font-semibold text-gray-300 uppercase tracking-tight flex items-center gap-3">
@@ -4845,10 +4898,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="flex justify-center mt-2">
+                            <button type="button" class="w-full px-4 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-lg font-bold text-xs uppercase tracking-wide hover:bg-amber-500/20 hover:border-amber-500 transition-all" data-section="extrasPcCcSection">PCs &amp; CCs Extras</button>
+                        </div>
                     </div>
                 </div>
                 <div
-                    class="w-full lg:flex-1 lg:min-w-0 bg-[#232326] border border-[#333336] rounded-xl p-4 shadow-xl h-full lg:min-h-[244px]">
+                    class="bg-[#232326] border border-[#333336] rounded-xl p-4 shadow-xl">
                     <div class="h-full flex flex-col">
                         <div class="space-y-4">
                             <div>
@@ -4884,6 +4940,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="bg-[#232326] border border-[#333336] rounded-xl p-6 shadow-xl animate-fade-in"
+                id="extrasPcCcSection" style="display:none;">
+                <h3 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4 pb-2 border-b border-[#333]">
+                    Extras Configuration</h3>
+                <div class="extras-grid"></div>
             </div>
             <div class="bg-[#232326] border border-[#333336] rounded-xl p-6 shadow-xl" id="switchSelection">
                 <div class="live-mode-header">
@@ -5755,20 +5817,6 @@
                     </div>
                 </div>
             </div>
-            <div class="extras-header-card" style="display:none;">
-                <h2 class="text-sm font-bold text-gray-400 uppercase">Extras</h2>
-                <div class="flex gap-2 mt-2" id="extrasActionButtons">
-                    <button
-                        class="px-3 py-1 border border-amber-500 text-amber-500 rounded text-xs font-bold uppercase hover:bg-amber-500/10"
-                        data-section="extrasPcCcSection">PCs &amp; CCs</button>
-                </div>
-            </div>
-            <div class="bg-[#232326] border border-[#333336] rounded-xl p-6 shadow-xl animate-fade-in"
-                id="extrasPcCcSection" style="display:none;">
-                <h3 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-4 pb-2 border-b border-[#333]">
-                    Extras Configuration</h3>
-                <div class="extras-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
         </div>
     </main>
     <div
@@ -5880,7 +5928,6 @@
     <div id="compat-placeholders" style="display:none !important;">
         <button id="btnRowSelector" type="button"></button>
         <button id="btnColSelector" type="button"></button>
-        <button id="extrasSendToggle" type="button"></button>
         <button id="spinSendPcBtn" type="button"></button>
         <button id="liveLayerToggleButton" type="button"></button>
         <button id="autoRampToggle" type="button"></button>
@@ -10251,15 +10298,30 @@
 
                 const currentPresetExtras = extrasData || getDefaultExtrasData();
                 const enviarExtrasInitialState = currentPresetExtras?.enviar_extras || false;
-                const sendExtrasToggleGroup = document.createElement('div');
-                sendExtrasToggleGroup.className = 'extras-group';
-                const extrasSendToggleLabel = newLabel("Enviar EXTRAS:");
-                newToggleSwitch('extrasSendToggle', enviarExtrasInitialState, sendExtrasToggleGroup);
-                sendExtrasToggleGroup.appendChild(extrasSendToggleLabel);
-                gridContainer.appendChild(sendExtrasToggleGroup);
 
+                // Toggle button row
+                const toggleRow = document.createElement('div');
+                toggleRow.className = 'extras-toggle-row';
+                const toggleBtn = document.createElement('button');
+                toggleBtn.type = 'button';
+                toggleBtn.id = 'extrasSendToggle';
+                toggleBtn.className = 'single-toggle-button extras-send-toggle' + (enviarExtrasInitialState ? ' active' : '');
+                toggleBtn.textContent = enviarExtrasInitialState ? 'ENVIAR EXTRAS: ON' : 'ENVIAR EXTRAS: OFF';
+                toggleBtn.setAttribute('aria-pressed', String(enviarExtrasInitialState));
+                toggleBtn.addEventListener('click', () => {
+                    const isActive = toggleBtn.classList.toggle('active');
+                    toggleBtn.textContent = isActive ? 'ENVIAR EXTRAS: ON' : 'ENVIAR EXTRAS: OFF';
+                    toggleBtn.setAttribute('aria-pressed', String(isActive));
+                    updateLocalPresetDataFromUI();
+                });
+                toggleRow.appendChild(toggleBtn);
+                gridContainer.appendChild(toggleRow);
+
+                // PC Extras
                 const pcArray = currentPresetExtras?.pc || [];
                 if (pcArray && pcArray.length > 0) {
+                    const pcGrid = document.createElement('div');
+                    pcGrid.className = 'extras-items-grid';
                     pcArray.forEach((pcItem, i) => {
                         if (i < 4) {
                             const group = document.createElement('div');
@@ -10269,29 +10331,33 @@
                             header.textContent = `PC EXTRA ${i + 1}`;
                             group.appendChild(header);
 
-                            const entryRow = document.createElement('div');
-                            entryRow.className = 'pccc-entry-row';
+                            const fieldsRow = document.createElement('div');
+                            fieldsRow.className = 'extras-fields-row';
 
                             const valueWrapper = document.createElement('div');
-                            valueWrapper.className = 'pccc-value-wrapper';
-                            valueWrapper.appendChild(newLabel(`Valor PC:`));
+                            valueWrapper.className = 'extras-field';
+                            valueWrapper.appendChild(newLabel('Valor PC:'));
                             valueWrapper.appendChild(newNumericInput(`pcValue_${i}`, 0, 127, pcItem.valor));
-                            entryRow.appendChild(valueWrapper);
+                            fieldsRow.appendChild(valueWrapper);
 
                             const channelWrapper = document.createElement('div');
-                            channelWrapper.className = 'pccc-channel-wrapper';
-                            channelWrapper.appendChild(newLabel(`Canal PC:`));
+                            channelWrapper.className = 'extras-field';
+                            channelWrapper.appendChild(newLabel('Canal PC:'));
                             channelWrapper.appendChild(newSelect(`pcChannel_${i}`, 0, 16, pcItem.canal));
-                            entryRow.appendChild(channelWrapper);
+                            fieldsRow.appendChild(channelWrapper);
 
-                            group.appendChild(entryRow);
-                            gridContainer.appendChild(group);
+                            group.appendChild(fieldsRow);
+                            pcGrid.appendChild(group);
                         }
                     });
+                    gridContainer.appendChild(pcGrid);
                 }
 
+                // CC Extras
                 const ccArray = currentPresetExtras?.cc || getDefaultExtrasData().cc;
                 if (ccArray && ccArray.length > 0) {
+                    const ccGrid = document.createElement('div');
+                    ccGrid.className = 'extras-items-grid';
                     ccArray.forEach((ccItem, i) => {
                         if (i < 2) {
                             const group = document.createElement('div');
@@ -10301,31 +10367,32 @@
                             header.textContent = `CC EXTRA ${i + 1}`;
                             group.appendChild(header);
 
-                            const entryRow = document.createElement('div');
-                            entryRow.className = 'pccc-entry-row';
+                            const fieldsRow = document.createElement('div');
+                            fieldsRow.className = 'extras-fields-row three-cols';
 
                             const ccNumWrapper = document.createElement('div');
-                            ccNumWrapper.className = 'pccc-value-wrapper';
-                            ccNumWrapper.appendChild(newLabel(`CC:`));
+                            ccNumWrapper.className = 'extras-field';
+                            ccNumWrapper.appendChild(newLabel('CC:'));
                             ccNumWrapper.appendChild(newNumericInput(`ccNum_${i}`, 0, 127, (typeof ccItem.cc === 'number' ? ccItem.cc : 0), 'cc'));
-                            entryRow.appendChild(ccNumWrapper);
+                            fieldsRow.appendChild(ccNumWrapper);
 
                             const ccValWrapper = document.createElement('div');
-                            ccValWrapper.className = 'pccc-value-wrapper';
-                            ccValWrapper.appendChild(newLabel(`Valor:`));
+                            ccValWrapper.className = 'extras-field';
+                            ccValWrapper.appendChild(newLabel('Valor:'));
                             ccValWrapper.appendChild(newNumericInput(`ccVal_${i}`, 0, 127, (typeof ccItem.valor === 'number' ? ccItem.valor : 0)));
-                            entryRow.appendChild(ccValWrapper);
+                            fieldsRow.appendChild(ccValWrapper);
 
                             const ccChWrapper = document.createElement('div');
-                            ccChWrapper.className = 'pccc-channel-wrapper';
-                            ccChWrapper.appendChild(newLabel(`Canal:`));
+                            ccChWrapper.className = 'extras-field';
+                            ccChWrapper.appendChild(newLabel('Canal:'));
                             ccChWrapper.appendChild(newSelect(`ccChannel_${i}`, 0, 16, (typeof ccItem.canal === 'number' ? ccItem.canal : 1)));
-                            entryRow.appendChild(ccChWrapper);
+                            fieldsRow.appendChild(ccChWrapper);
 
-                            group.appendChild(entryRow);
-                            gridContainer.appendChild(group);
+                            group.appendChild(fieldsRow);
+                            ccGrid.appendChild(group);
                         }
                     });
+                    gridContainer.appendChild(ccGrid);
                 }
             }
 
@@ -10799,33 +10866,23 @@
             }
 
             function hideSwitchConfigArea() {
-                // Esconde a Ã¡rea de configuraÃ§Ã£o do switch e o card GIG VIEW
+                // Esconde a area de configuracao do switch e o card GIG VIEW
                 const switchConfigArea = document.getElementById('switchConfigArea');
                 const displayConfigCard = document.getElementById('displayConfigCard');
-                const extrasHeaderCard = document.querySelector('.extras-header-card');
                 const extrasPcCcSection = document.getElementById('extrasPcCcSection');
 
                 if (switchConfigArea) switchConfigArea.style.display = 'none';
                 if (displayConfigCard) displayConfigCard.style.display = 'none';
-                if (extrasHeaderCard) extrasHeaderCard.style.display = 'none';
                 if (extrasPcCcSection) extrasPcCcSection.style.display = 'none';
             }
 
             function showSwitchConfigArea() {
-                // Mostra a Ã¡rea de configuraÃ§Ã£o do switch e o card GIG VIEW
+                // Mostra a area de configuracao do switch e o card GIG VIEW
                 const switchConfigArea = document.getElementById('switchConfigArea');
                 const displayConfigCard = document.getElementById('displayConfigCard');
-                const extrasHeaderCard = document.querySelector('.extras-header-card');
-                const extrasPcCcSection = document.getElementById('extrasPcCcSection');
 
                 if (switchConfigArea) switchConfigArea.style.display = 'block';
                 if (displayConfigCard) displayConfigCard.style.display = 'block';
-                if (document.body.classList.contains('integrated-preset-editor')) {
-                    if (extrasHeaderCard) extrasHeaderCard.style.display = 'none';
-                    if (extrasPcCcSection) extrasPcCcSection.style.display = 'none';
-                } else {
-                    if (extrasHeaderCard) extrasHeaderCard.style.display = 'block';
-                }
             }
 
             function loadPresetDataToUI(colIndex, rowIndex) {
@@ -14063,7 +14120,8 @@
                 }
 
                 if (presetToUpdate.extras) {
-                    presetToUpdate.extras.enviar_extras = document.getElementById('extrasSendToggle')?.checked || false;
+                    const extrasToggleEl = document.getElementById('extrasSendToggle');
+                    presetToUpdate.extras.enviar_extras = extrasToggleEl ? extrasToggleEl.classList.contains('active') : false;
                     const currentModeValue = modeValue;
 
                     if (!presetToUpdate.extras.custom || !Array.isArray(presetToUpdate.extras.custom)) {
@@ -14732,7 +14790,7 @@
                     }
                 } catch (_) { }
 
-                document.querySelectorAll('#extrasActionButtons .btn').forEach(button => {
+                document.querySelectorAll('button[data-section="extrasPcCcSection"]').forEach(button => {
                     button.addEventListener('click', (e) => {
                         const sectionId = e.target.dataset.section;
                         const section = document.getElementById(sectionId);
