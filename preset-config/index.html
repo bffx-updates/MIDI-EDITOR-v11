@@ -110,6 +110,25 @@
             font-weight: bold;
         }
 
+        .custom-select-group-header {
+            padding: 12px 14px 10px;
+            margin: 8px 0 6px;
+            border-top: 1px solid rgba(255, 179, 0, 0.9);
+            border-bottom: 1px solid rgba(255, 179, 0, 0.9);
+            background: rgba(255, 179, 0, 0.06);
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-align: center;
+            cursor: default;
+            user-select: none;
+        }
+
+        .custom-select-group-header:first-child {
+            margin-top: 0;
+        }
+
         .grid-btn-selector,
         .grid-btn {
             position: relative;
@@ -1542,7 +1561,7 @@
             width: 100%;
         }
 
-        /* ── Single toggle button base styling ── */
+        /* -- Single toggle button base styling -- */
         .single-toggle-button {
             display: flex;
             align-items: center;
@@ -1789,7 +1808,7 @@
             text-transform: uppercase;
         }
 
-        /* ── 3-State Stomp Button ── */
+        /* -- 3-State Stomp Button -- */
         .stomp-state-btn {
             display: flex;
             align-items: center;
@@ -1838,7 +1857,7 @@
             box-shadow: 0 0 20px rgba(224, 64, 251, 0.5);
         }
 
-        /* ── Stomp Cards ── */
+        /* -- Stomp Cards -- */
         .stomp-card {
             background: #151923;
             border: 1px solid #2c3442;
@@ -1873,7 +1892,7 @@
             min-width: 0;
         }
 
-        /* ── Mini Stomp LED Icon ── */
+        /* -- Mini Stomp LED Icon -- */
         .stomp-card-led {
             display: flex;
             flex-direction: column;
@@ -2889,7 +2908,7 @@
             accent-color: #ffb300;
         }
 
-        /* ── Integrated slot panel: colors-top, preview+actions middle, name bottom ── */
+        /* -- Integrated slot panel: colors-top, preview+actions middle, name bottom -- */
         body.integrated-preset-editor .integrated-slot-panel {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3375,7 +3394,7 @@
             }
         }
 
-        /* ── Integrated slot-name layout ─────────────── */
+        /* -- Integrated slot-name layout --------------- */
         body.integrated-preset-editor .integrated-slot-name {
             grid-template-columns: 1fr !important;
             grid-template-rows: auto auto !important;
@@ -4564,9 +4583,9 @@
             }
         }
 
-        /* ── Stomp mode: restore right-card panel 2-column grid, overriding the
+        /* -- Stomp mode: restore right-card panel 2-column grid, overriding the
            @media (max-width:980px) breakpoints above (higher specificity + later
-           source-order beats the !important media-query rules in most browsers) ── */
+           source-order beats the !important media-query rules in most browsers) -- */
         body.integrated-preset-editor #editorIntegratedContainer.stomp-mode-container .integrated-slot-panel {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             grid-template-rows: auto auto auto auto !important;
@@ -4829,7 +4848,7 @@
                                     Name</label>
                                 <input
                                     class="w-full bg-[#1a1a1d] border border-[#333336] rounded-lg h-10 px-3 text-amber-500 font-mono focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition-all placeholder-gray-700"
-                                    id="presetNameInput" maxlength="10" type="text" />
+                                    id="presetNameInput" maxlength="18" type="text" />
                             </div>
                             <div class="lg:col-span-3">
                                 <label
@@ -8151,12 +8170,12 @@
                     sw.modo = sw.modo - 3;  // 41->38, 42->39, 43->40
                     sw.spin_send_pc = true;
                 }
-                // SPIN → SPIN HOLD (com HOLD desabilitado por default)
+                // SPIN -> SPIN HOLD (com HOLD desabilitado por default)
                 if (sw.modo >= 1 && sw.modo <= 3) {
-                    sw.modo = sw.modo + 34; // 1→35, 2→36, 3→37
+                    sw.modo = sw.modo + 34; // 1->35, 2->36, 3->37
                     if (sw.start_value_cc2 === undefined) sw.start_value_cc2 = true;
                 } else if (sw.modo >= 38 && sw.modo <= 40) {
-                    sw.modo = sw.modo + 6; // 38→44, 39→45, 40→46
+                    sw.modo = sw.modo + 6; // 38->44, 39->45, 40->46
                     if (sw.start_value_cc2 === undefined) sw.start_value_cc2 = true;
                 }
                 if (sw.modo >= 22 && sw.modo <= 27) {
@@ -9180,149 +9199,166 @@
 
             // Kemper Player special CC values (200+) - NRPN-based effects
             const kemperSpecialCCs = [
-                // ---- INPUT FX ----
-                { value: -1, label: "â”€â”€â”€â”€ INPUT FX â”€â”€â”€â”€", disabled: true },
-                { value: 200, label: "Transpose" },
-                { value: 208, label: "â†’ Pitch Transpose" },
-                { value: 201, label: "Noise Gate" },
-                { value: 209, label: "â†’ Threshold" },
-                { value: 210, label: "â†’ Decay" },
-                { value: 202, label: "Compressor" },
-                { value: 211, label: "â†’ Threshold" },
-                { value: 203, label: "Pure Booster" },
-                { value: 212, label: "â†’ Volume" },
-                { value: 204, label: "Wah Wah" },
-                { value: 213, label: "â†’ Pedal Mode" },
-                { value: 205, label: "Vintage Chorus" },
-                { value: 214, label: "â†’ Range" },
-                { value: 215, label: "â†’ Depth" },
-                { value: 216, label: "â†’ Mix" },
-                { value: 206, label: "Air Chorus" },
-                { value: 217, label: "â†’ Depth" },
-                { value: 218, label: "â†’ Mix" },
-                { value: 207, label: "Double Tracker" },
-                { value: 219, label: "â†’ Looseness" },
-                { value: 220, label: "â†’ Stereo" },
+                // ---- TRANSPOSE ----
+                { value: -1, label: "TRANSPOSE", disabled: true },
+                { value: 200, label: "-> FX ON/OFF" },
+                { value: 208, label: "-> Pitch Transpose" },
+                // ---- NOISE GATE ----
+                { value: -1, label: "NOISE GATE", disabled: true },
+                { value: 201, label: "-> FX ON/OFF" },
+                { value: 209, label: "-> Threshold" },
+                { value: 210, label: "-> Decay" },
+                // ---- COMPRESSOR ----
+                { value: -1, label: "COMPRESSOR", disabled: true },
+                { value: 202, label: "-> FX ON/OFF" },
+                { value: 211, label: "-> Threshold" },
+                // ---- PURE BOOSTER ----
+                { value: -1, label: "PURE BOOSTER", disabled: true },
+                { value: 203, label: "-> FX ON/OFF" },
+                { value: 212, label: "-> Volume" },
+                // ---- WAH-WAH ----
+                { value: -1, label: "WAH-WAH", disabled: true },
+                { value: 204, label: "-> FX ON/OFF" },
+                { value: 213, label: "-> Pedal Mode" },
+                // ---- VINTAGE CHORUS ----
+                { value: -1, label: "VINTAGE CHORUS", disabled: true },
+                { value: 205, label: "-> FX ON/OFF" },
+                { value: 214, label: "-> Range" },
+                { value: 215, label: "-> Depth" },
+                { value: 216, label: "-> Mix" },
+                // ---- AIR CHORUS ----
+                { value: -1, label: "AIR CHORUS", disabled: true },
+                { value: 206, label: "-> FX ON/OFF" },
+                { value: 217, label: "-> Depth" },
+                { value: 218, label: "-> Mix" },
+                // ---- DOBLE TRACKER ----
+                { value: -1, label: "DOBLE TRACKER", disabled: true },
+                { value: 207, label: "-> FX ON/OFF" },
+                { value: 219, label: "-> Looseness" },
+                { value: 220, label: "-> Stereo" },
                 // ---- DELAY ----
-                { value: -1, label: "---- DELAY ----", disabled: true },
-                { value: 296, label: "- Effect Type" },
-                { value: 305, label: "- On/Off" },
-                { value: 221, label: "DELAY Mix" },
-                { value: 222, label: "- Volume" },
-                { value: 306, label: "- Stereo" },
-                { value: 288, label: "- Position (Pre/Post)" },
-                { value: 224, label: "- Low Cut" },
-                { value: 225, label: "- High Cut" },
-                { value: 223, label: "- Feedback" },
-                { value: 290, label: "- Infinity" },
-                { value: 291, label: "- Freeze" },
-                { value: 307, label: "- Chorus" },
-                { value: 227, label: "- Modulation" },
-                { value: 292, label: "- Cut Character" },
-                { value: 308, label: "- Reverse Mix" },
-                { value: 228, label: "- Flutter Intensity" },
-                { value: 309, label: "- Flutter Rate" },
-                { value: 310, label: "- Grit" },
-                { value: 311, label: "- Input Swell" },
-                { value: 312, label: "- Smear" },
-                { value: 226, label: "- Ducking" },
-                { value: 293, label: "- Ducking Position" },
-                { value: 294, label: "- Note Value 1" },
-                { value: 295, label: "- Note Value 2" },
-                { value: 289, label: "- Tempo Sync" },
+                { value: -1, label: "DELAY", disabled: true },
+                { value: 306, label: "-> Stereo" },
+                { value: 224, label: "-> LowCut" },
+                { value: 225, label: "-> HighCut" },
+                { value: 291, label: "-> Freeze" },
+                { value: 307, label: "-> Chorus" },
+                { value: 227, label: "-> Mod" },
+                { value: 292, label: "-> Cut Char" },
+                { value: 308, label: "-> Reverse Mix" },
+                { value: 228, label: "-> Flutter Intensity" },
+                { value: 309, label: "-> Flutter Rate" },
+                { value: 310, label: "-> Grit" },
+                { value: 311, label: "-> Input Swell" },
+                { value: 312, label: "-> Smear" },
+                { value: 226, label: "-> Ducking" },
+                { value: 293, label: "-> Ducking Pos" },
+                { value: 294, label: "-> Note Val 1" },
+                { value: 295, label: "-> Note Val 2" },
+                { value: 289, label: "-> Tempo Sync" },
 
                 // ---- REVERB ----
-                { value: -1, label: "---- REVERB ----", disabled: true },
-                { value: 304, label: "- Reverb Type" },
-                { value: 313, label: "- On/Off" },
-                { value: 229, label: "REVERB Mix" },
-                { value: 314, label: "- Volume" },
-                { value: 315, label: "- Stereo" },
-                { value: 297, label: "- Position (Pre/Post)" },
-                { value: 232, label: "- Low Cut" },
-                { value: 233, label: "- High Cut" },
-                { value: 230, label: "- Time" },
-                { value: 231, label: "- Predelay" },
-                { value: 299, label: "- Freeze" },
-                { value: 300, label: "- Infinity" },
-                { value: 234, label: "- Modulation" },
-                { value: 301, label: "- Reverse" },
-                { value: 316, label: "- Size" },
-                { value: 317, label: "- Density" },
-                { value: 318, label: "- Diffusion" },
-                { value: 319, label: "- Mod Rate" },
-                { value: 320, label: "- Mod Depth" },
-                { value: 321, label: "- Smear" },
-                { value: 235, label: "- Ducking" },
-                { value: 302, label: "- Ducking Position" },
-                { value: 303, label: "- Predelay Note Value" },
-                { value: 298, label: "- Tempo Sync" },
+                { value: -1, label: "REVERB", disabled: true },
+                { value: 314, label: "-> Volume" },
+                { value: 315, label: "-> Stereo" },
+                { value: 297, label: "-> Position" },
+                { value: 232, label: "-> LowCut" },
+                { value: 233, label: "-> HighCut" },
+                { value: 231, label: "-> Predelay" },
+                { value: 299, label: "-> Freeze" },
+                { value: 300, label: "-> Infinity" },
+                { value: 234, label: "-> Mod" },
+                { value: 301, label: "-> Reverse" },
+                { value: 316, label: "-> Size" },
+                { value: 317, label: "-> Density" },
+                { value: 318, label: "-> Diffusion" },
+                { value: 319, label: "-> Mod Rate" },
+                { value: 320, label: "-> Mod Depth" },
+                { value: 321, label: "-> Smear" },
+                { value: 235, label: "-> Ducking" },
+                { value: 302, label: "-> Ducking Pos" },
+                { value: 303, label: "-> Predelay Note" },
+                { value: 298, label: "-> Tempo Sync" },
 
                 // ---- MOD ----
-                { value: -1, label: "â”€â”€â”€â”€ MOD â”€â”€â”€â”€", disabled: true },
-                { value: 236, label: "MOD Rate" },
-                { value: 237, label: "â†’ Depth" },
-                { value: 238, label: "â†’ Feedback" },
-                { value: 239, label: "â†’ Mix" },
+                { value: -1, label: "MOD", disabled: true },
+                { value: 236, label: "-> Rate" },
+                { value: 237, label: "-> Depth" },
+                { value: 238, label: "-> Feedback" },
+                { value: 239, label: "-> Mix" },
                 // ---- SLOTS ----
-                { value: -1, label: "â”€â”€â”€â”€ SLOTS â”€â”€â”€â”€", disabled: true },
-                { value: 240, label: "SLOT A Mix" },
-                { value: 241, label: "â†’ Drive" },
-                { value: 242, label: "â†’ Tone" },
-                { value: 243, label: "â†’ Ducking" },
-                { value: 244, label: "SLOT B Mix" },
-                { value: 245, label: "â†’ Drive" },
-                { value: 246, label: "â†’ Tone" },
-                { value: 247, label: "â†’ Ducking" },
-                { value: 248, label: "SLOT C Mix" },
-                { value: 249, label: "â†’ Drive" },
-                { value: 250, label: "â†’ Tone" },
-                { value: 251, label: "â†’ Ducking" },
-                { value: 252, label: "SLOT D Mix" },
-                { value: 253, label: "â†’ Drive" },
-                { value: 254, label: "â†’ Tone" },
-                { value: 255, label: "â†’ Ducking" },
-                { value: 256, label: "SLOT X Mix" },
-                { value: 257, label: "â†’ Drive" },
-                { value: 258, label: "â†’ Tone" },
-                { value: 259, label: "â†’ Ducking" },
+                { value: -1, label: "SLOT A", disabled: true },
+                { value: 240, label: "-> Mix" },
+                { value: 241, label: "-> Drive" },
+                { value: 242, label: "-> Tone" },
+                { value: 243, label: "-> Ducking" },
+                { value: -1, label: "SLOT B", disabled: true },
+                { value: 244, label: "-> Mix" },
+                { value: 245, label: "-> Drive" },
+                { value: 246, label: "-> Tone" },
+                { value: 247, label: "-> Ducking" },
+                { value: -1, label: "SLOT C", disabled: true },
+                { value: 248, label: "-> Mix" },
+                { value: 249, label: "-> Drive" },
+                { value: 250, label: "-> Tone" },
+                { value: 251, label: "-> Ducking" },
+                { value: -1, label: "SLOT D", disabled: true },
+                { value: 252, label: "-> Mix" },
+                { value: 253, label: "-> Drive" },
+                { value: 254, label: "-> Tone" },
+                { value: 255, label: "-> Ducking" },
+                { value: -1, label: "SLOT X", disabled: true },
+                { value: 256, label: "-> Mix" },
+                { value: 257, label: "-> Drive" },
+                { value: 258, label: "-> Tone" },
+                { value: 259, label: "-> Ducking" },
                 // ---- AMPLIFIER ----
-                { value: -1, label: "â”€â”€â”€â”€ AMPLIFIER â”€â”€â”€â”€", disabled: true },
-                { value: 260, label: "AMP On/Off" },
-                { value: 261, label: "â†’ Volume" },
-                { value: 262, label: "â†’ Gain" },
-                { value: 263, label: "â†’ Clean Comp" },
-                { value: 264, label: "â†’ Definition" },
-                { value: 265, label: "â†’ Clarity" },
-                { value: 266, label: "â†’ Power Sag" },
-                { value: 267, label: "â†’ Pick" },
-                { value: 268, label: "â†’ Compressor" },
-                { value: 269, label: "â†’ Tube Shape" },
-                { value: 270, label: "â†’ Tube Bias" },
-                { value: 271, label: "â†’ Gain Pot Ref" },
-                { value: 272, label: "â†’ Model Gain" },
-                { value: 273, label: "â†’ Direct Mix" },
-                { value: 274, label: "â†’ Bright Cap" },
+                { value: -1, label: "AMPLIFIER", disabled: true },
+                { value: 260, label: "-> On/Off" },
+                { value: 261, label: "-> Volume" },
+                { value: 263, label: "-> Clean Comp" },
+                { value: 264, label: "-> Definition" },
+                { value: 265, label: "-> Clarity" },
+                { value: 266, label: "-> Power Sag" },
+                { value: 267, label: "-> Pick" },
+                { value: 268, label: "-> Compressor" },
+                { value: 269, label: "-> Tube Shape" },
+                { value: 270, label: "-> Tube Bias" },
+                { value: 271, label: "-> Gain Pot Ref" },
+                { value: 272, label: "-> Model Gain" },
+                { value: 273, label: "-> Direct Mix" },
+                { value: 274, label: "-> Bright Cap" },
                 // ---- AMPLIFIER EQ ----
-                { value: -1, label: "â”€â”€â”€â”€ AMP EQ â”€â”€â”€â”€", disabled: true },
-                { value: 275, label: "EQ Bass" },
-                { value: 276, label: "â†’ Middle" },
-                { value: 277, label: "â†’ Treble" },
-                { value: 278, label: "â†’ Presence" },
-                { value: 279, label: "â†’ Position" },
+                { value: -1, label: "AMP EQ", disabled: true },
+                { value: 275, label: "-> Bass" },
+                { value: 276, label: "-> Middle" },
+                { value: 277, label: "-> Treble" },
+                { value: 278, label: "-> Presence" },
+                { value: 279, label: "-> Position" },
                 // ---- CABINET ----
-                { value: -1, label: "â”€â”€â”€â”€ CABINET â”€â”€â”€â”€", disabled: true },
-                { value: 280, label: "CAB On/Off" },
-                { value: 281, label: "â†’ High Shift" },
-                { value: 282, label: "â†’ Low Shift" },
-                { value: 283, label: "â†’ Character" },
-                { value: 284, label: "â†’ Pure Cabinet" },
-                { value: 285, label: "â†’ Kone Imprint" },
-                { value: 286, label: "â†’ Low Cut" },
-                { value: 287, label: "â†’ High Cut" },
+                { value: -1, label: "CABINET", disabled: true },
+                { value: 280, label: "-> On/Off" },
+                { value: 281, label: "-> High Shift" },
+                { value: 282, label: "-> Low Shift" },
+                { value: 283, label: "-> Character" },
+                { value: 284, label: "-> Pure Cab" },
+                { value: 285, label: "-> Kone Imprint" },
+                { value: 286, label: "-> Low Cut" },
+                { value: 287, label: "-> High Cut" },
                 // ---- CC NORMAL ----
-                { value: -1, label: "â”€â”€â”€â”€ CC NORMAL â”€â”€â”€â”€", disabled: true }
+                { value: -1, label: "CC NORMAL", disabled: true }
             ];
+
+            function appendKemperSpecialCCGroups(selectEl, normalizedValue) {
+                kemperSpecialCCs.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.value;
+                    option.textContent = item.label;
+                    if (item.disabled) option.disabled = true;
+                    if (item.value === normalizedValue) option.selected = true;
+                    selectEl.appendChild(option);
+                });
+            }
 
             // Kemper TRANSPOSE values (28-100) with musical labels
             const kemperTransposeLabels = {
@@ -9402,15 +9438,12 @@
             };
 
             const kemperCustomLabels = {
-                // Post/Pre Position (Delay Position, Ducking Position)
-                288: { min: 0, max: 1, labels: { 0: "Pre", 1: "Post" } },
+                // Post/Pre Position (Ducking Position)
                 293: { min: 0, max: 1, labels: { 0: "Pre", 1: "Post" } },
 
-                // On/Off (Tempo Sync, Infinity, Freeze)
+                // On/Off (Tempo Sync, Freeze)
                 289: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
-                290: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
                 291: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
-                305: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
 
                 // Cut Character
                 292: { min: 0, max: 2, labels: { 0: "Normal", 1: "Analog", 2: "Tape" } },
@@ -9435,15 +9468,6 @@
                     }
                 },
 
-                // Effect Type (Delay Module)
-                296: {
-                    min: 0, max: 127, labels: {
-                        0: "Off", 1: "Legacy Delay", 2: "Dual Delay", 3: "Serial Delay",
-                        4: "Crystal Delay", 5: "Reverse Delay", 6: "Rhythm Delay",
-                        7: "Swell Delay", 8: "Tape Delay", 9: "Analog Delay"
-                    }
-                },
-
                 // ---- REVERB PARAMETERS ----
 
                 // Position / Ducking Position (Pre/Post)
@@ -9455,7 +9479,6 @@
                 299: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
                 300: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
                 301: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
-                313: { min: 0, max: 1, labels: { 0: "Off", 1: "On" } },
 
                 // Predelay Note Value
                 303: {
@@ -9466,14 +9489,6 @@
                     }
                 },
 
-                // Reverb Type
-                304: {
-                    min: 0, max: 127, labels: {
-                        0: "Off", 1: "Legacy Reverb", 2: "Hall", 3: "Room",
-                        4: "Plate", 5: "Spring", 6: "Shimmer", 7: "Formant",
-                        8: "Crystal", 9: "Nonlinear", 10: "Cirrus", 11: "Ionosphere"
-                    }
-                }
             };
 
             function isChannelSelectId(id) {
@@ -9490,14 +9505,7 @@
 
                 // Add Kemper special options before CC 0 for CC selects
                 if (!isChannelSelect && id.toLowerCase().includes('cc') && resolvedMode === "KEMPER PLAYER") {
-                    kemperSpecialCCs.forEach(item => {
-                        const opt = document.createElement('option');
-                        opt.value = item.value;
-                        opt.textContent = item.label;
-                        if (item.disabled) opt.disabled = true;
-                        if (item.value === normalizedDef) opt.selected = true;
-                        sel.appendChild(opt);
-                    });
+                    appendKemperSpecialCCGroups(sel, normalizedDef);
                 }
 
                 for (let i = min; i <= max; i++) {
@@ -10411,13 +10419,7 @@
                 const resolvedMode = getEffectiveMidiMode();
                 // Add Kemper special options before CC 0 for CC inputs
                 if (inputType === 'cc' && resolvedMode === "KEMPER PLAYER") {
-                    kemperSpecialCCs.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.value;
-                        option.textContent = item.label;
-                        if (item.value === normalizedValue) option.selected = true;
-                        originalSelect.appendChild(option);
-                    });
+                    appendKemperSpecialCCGroups(originalSelect, normalizedValue);
                 }
 
                 for (let i = min; i <= max; i++) {
@@ -13770,7 +13772,7 @@
                 const oldNomePresetTextColor = sharedPresetToUpdate.nomePresetTextColor;
                 const oldBackgroundColorConfig = sharedPresetToUpdate.backgroundColorConfig;
                 const oldBackTagColor = sharedPresetToUpdate.backTagColor;
-                sharedPresetToUpdate.nomePreset = document.getElementById('presetNameInput').value.substring(0, 10);
+                sharedPresetToUpdate.nomePreset = document.getElementById('presetNameInput').value.substring(0, 18);
                 {
                     const presetNameColorRaw = parseInt(document.getElementById('presetNameColorValue')?.value, 10);
                     sharedPresetToUpdate.nomePresetTextColor = !Number.isNaN(presetNameColorRaw)
@@ -14084,8 +14086,8 @@
                     }
                     if ((currentSwitchData.modo >= 35 && currentSwitchData.modo <= 37) || (currentSwitchData.modo >= 44 && currentSwitchData.modo <= 46)) {
                         const ccHoldVal = parseInt(document.getElementById('switchCCHold')?.value, 10);
-                        // Aceita CC normal (0-127) ou CC especial Kemper (200-207)
-                        if (!isNaN(ccHoldVal) && ((ccHoldVal >= 0 && ccHoldVal <= 127) || (ccHoldVal >= 200 && ccHoldVal <= 207))) {
+                        // Aceita CC normal (0-127) ou CC especial Kemper (200-321)
+                        if (!isNaN(ccHoldVal) && ((ccHoldVal >= 0 && ccHoldVal <= 127) || (ccHoldVal >= 200 && ccHoldVal <= 321))) {
                             currentSwitchData.cc_hold = ccHoldVal;
                         } else {
                             currentSwitchData.cc_hold = 0;
@@ -15034,39 +15036,13 @@
             }
 
             function populateCustomOptions(originalSelect, optionsDiv, selectedValueSpan, wrapper) {
-                // Fast path: if option count and values match, just sync selection highlight
-                const existingChildren = optionsDiv.children;
-                const selectOptions = originalSelect.options;
-                if (existingChildren.length === selectOptions.length && existingChildren.length > 0) {
-                    let optionsMatch = true;
-                    for (let i = 0; i < existingChildren.length; i++) {
-                        if (existingChildren[i].dataset.value !== selectOptions[i].value) {
-                            optionsMatch = false;
-                            break;
-                        }
-                    }
-                    if (optionsMatch) {
-                        const currentValue = originalSelect.value;
-                        let found = false;
-                        for (const opt of existingChildren) {
-                            const isSelected = opt.dataset.value === currentValue;
-                            opt.classList.toggle('selected', isSelected);
-                            if (isSelected) {
-                                selectedValueSpan.textContent = opt.textContent;
-                                found = true;
-                            }
-                        }
-                        if (found) return;
-                    }
-                }
-
                 optionsDiv.innerHTML = '';
                 let hasSelected = false;
-                Array.from(originalSelect.options).forEach(option => {
+                const appendCustomOption = (option) => {
+                    if (option.disabled) return;
                     const customOption = document.createElement('div');
                     customOption.className = 'custom-select-option';
-
-                    let textContent = option.textContent;
+                    const textContent = option.textContent;
                     customOption.textContent = textContent;
                     customOption.dataset.value = option.value;
 
@@ -15098,6 +15074,17 @@
                         ensureMiniSliderForWrapper(originalSelect, wrapper);
                     });
                     optionsDiv.appendChild(customOption);
+                };
+
+                Array.from(originalSelect.options).forEach(option => {
+                    if (option.disabled) {
+                        const header = document.createElement('div');
+                        header.className = 'custom-select-group-header';
+                        header.textContent = option.textContent;
+                        optionsDiv.appendChild(header);
+                        return;
+                    }
+                    appendCustomOption(option);
                 });
                 if (!hasSelected && originalSelect.options.length > 0) {
                     originalSelect.selectedIndex = 0;
@@ -15679,7 +15666,7 @@
                     renderIconToCanvas(iconFxId, tmpC);
                 }
 
-                // ── Preview único: switch físico completo ──────────────────────────────
+                // -- Preview único: switch físico completo ------------------------------
                 const previewIsOn = (typeof gigViewPreviewState === 'undefined') || gigViewPreviewState === 'on';
                 const backIdx = previewIsOn ? backColorOnIdx : backColorOffIdx;
                 const iconIdx = previewIsOn ? iconColorOnIdx : iconColorOffIdx;
