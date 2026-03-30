@@ -7503,14 +7503,6 @@
             const PRESET_GRADIENT_GOLD_V = 0x01000012;
             const PRESET_GRADIENT_AQUA_D1 = 0x01000013;
             const PRESET_GRADIENT_GRAPE_H = 0x01000014;
-            const PRESET_GRADIENT_LAVA_V = 0x01000015;
-            const PRESET_GRADIENT_FLORESTA_H = 0x01000016;
-            const PRESET_GRADIENT_AMETISTA_D1 = 0x01000017;
-            const PRESET_GRADIENT_POR_DO_SOL_V = 0x01000018;
-            const PRESET_GRADIENT_OCEANO_PROFUNDO_D1 = 0x01000019;
-            const PRESET_GRADIENT_FLAMINGO_H = 0x0100001A;
-            const PRESET_GRADIENT_NOITE_V = 0x0100001B;
-            const PRESET_GRADIENT_COBRE_H = 0x0100001C;
             const PRESET_CUSTOM_GRADIENT_BASE = 0x01000100;
 
             function makeSection(title) {
@@ -7543,178 +7535,85 @@
             }
 
             const SOLID_COLORS_WEB = [
-                // Row 1 - Neutros
-                { name: "Preto",          value: 0x000000 }, // 0
-                { name: "Cinza Escuro",   value: 0x555555 }, // 1
-                { name: "Cinza Claro",    value: 0xAAAAAA }, // 2
-                { name: "Branco",         value: 0xFFFFFF }, // 3
-                // Row 2 - Amarelos/Oliva
-                { name: "Oliva Escuro",   value: 0x666600 }, // 4
-                { name: "Oliva",          value: 0xAAAA00 }, // 5
-                { name: "Amarelo",        value: 0xFFFF00 }, // 6
-                { name: "Amarelo Claro",  value: 0xFFFF88 }, // 7
-                // Row 3 - Laranjas/Marrons
-                { name: "Marrom",         value: 0x8B4513 }, // 8
-                { name: "Ocre",           value: 0xD2691E }, // 9
-                { name: "Laranja",        value: 0xFF8C00 }, // 10
-                { name: "Pêssego",        value: 0xFFDAB9 }, // 11
-                // Row 4 - Vermelhos
-                { name: "Bordô",          value: 0x800000 }, // 12
-                { name: "Vermelho Escuro",value: 0xCC0000 }, // 13
-                { name: "Vermelho",       value: 0xFF0000 }, // 14
-                { name: "Salmão",         value: 0xFA8072 }, // 15
-                // Row 5 - Rosas/Magenta
-                { name: "Púrpura",        value: 0x800080 }, // 16
-                { name: "Magenta Escura", value: 0xCC00CC }, // 17
-                { name: "Magenta",        value: 0xFF00FF }, // 18
-                { name: "Rosa Claro",     value: 0xFFB6C1 }, // 19
-                // Row 6 - Roxos
-                { name: "Índigo",         value: 0x4B0082 }, // 20
-                { name: "Roxo",           value: 0x8A2BE2 }, // 21
-                { name: "Violeta",        value: 0x9932CC }, // 22
-                { name: "Lilás",          value: 0xDDA0DD }, // 23
-                // Row 7 - Azuis
-                { name: "Azul Marinho",   value: 0x000080 }, // 24
-                { name: "Azul Escuro",    value: 0x0000CC }, // 25
-                { name: "Azul",           value: 0x0000FF }, // 26
-                { name: "Azul Claro",     value: 0x87CEFA }, // 27
-                // Row 8 - Verdes
-                { name: "Verde Escuro",   value: 0x006400 }, // 28
-                { name: "Verde Médio",    value: 0x00A000 }, // 29
-                { name: "Verde",          value: 0x00FF00 }, // 30
-                { name: "Verde Claro",    value: 0x98FB98 }  // 31
+                { name: "Vermelho", value: 0xFF0000 },
+                { name: "Verde", value: 0x00FF00 },
+                { name: "Azul", value: 0x0000FF },
+                { name: "Amarelo", value: 0xFFFF00 },
+                { name: "Roxo", value: 0x800080 },
+                { name: "Ciano", value: 0x00FFFF },
+                { name: "Branco", value: 0xFFFFFF },
+                { name: "Laranja", value: 0xFF5000 },
+                { name: "Magenta", value: 0xFF0080 },
+                { name: "Coral", value: 0xFF1414 },
+                { name: "Azul Celeste", value: 0x0096FF },
+                { name: "Violeta", value: 0xB400FF },
+                { name: "Rosa", value: 0xFF64C8 },
+                { name: "Menta", value: 0x32FF64 },
+                { name: "Preto", value: 0x000000 },
+                { name: "Lilas", value: 0xD6AAFF },
+                { name: "Rose", value: 0xFFAAD2 },
+                { name: "Prata", value: 0xD6E0EC },
+                { name: "Royal", value: 0x285CDC },
+                { name: "Ambar", value: 0xFFAA28 },
+                { name: "Lima", value: 0x8ADE4A },
+                { name: "Turquesa", value: 0x34C6FF },
+                { name: "Petroleo", value: 0x0098A8 }
             ];
-
-            // Mapeamento: posição i → índice firmware 86+i (WEB_PRETO..WEB_VERDE_CLA)
-            const SOLID_TO_PERFIS_MAP = Array.from({ length: 32 }, (_, i) => i + 86);
-            // Gradientes preto-cor: índices 100+i → firmware usa PERFIS_CORES[86+i]
-            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 100);
-
-            const GRADIENT1_BASE = 0x02000000;
-            const GRADIENT2_BASE = 0x03000000;
-            const GRADIENT3_BASE = 0x04000000;
-
-            const GRADIENT1_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
-                const hex = '#' + col.value.toString(16).padStart(6, '0');
-                const gradCss = `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(0,0,0,0.4) 100%), ${hex}`;
-                return makeGradientSwatch('G1 ' + col.name, col.value, 150 + i, GRADIENT1_BASE | col.value, gradCss, gradCss);
-            });
-
-            const GRADIENT2_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
-                const hex = '#' + col.value.toString(16).padStart(6, '0');
-                const gradCss = `radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.6) 0%, transparent 60%), linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.5) 100%), ${hex}`;
-                return makeGradientSwatch('G2 ' + col.name, col.value, 200 + i, GRADIENT2_BASE | col.value, gradCss, gradCss);
-            });
-
-            const CUSTOM_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
-                const hex = '#' + col.value.toString(16).padStart(6, '0');
-                const gradCss = `linear-gradient(180deg, #000000 0%, ${hex} 48%, #000000 100%)`;
-                return makeGradientSwatch('Custom ' + col.name, col.value, 100 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
-            });
 
             const MIX_FORMAT_GRADIENTS_WEB = [
-                // Row 1 - Fogo/Vermelho
                 makeGradientSwatch("Sunset Horizontal", 0xFF7846, 27, PRESET_GRADIENT_SUNSET_H, "linear-gradient(90deg, #ff2d55 0%, #ffb347 52%, #ff6a00 100%)"),
-                makeGradientSwatch("Fire Diagonal", 0xFF5A00, 30, PRESET_GRADIENT_FIRE_D1, "linear-gradient(135deg, #3b0000 0%, #ff4d00 52%, #ffd000 100%)"),
-                makeGradientSwatch("Ember Horizontal", 0xFF5A2A, 55, PRESET_GRADIENT_EMBER_H, "linear-gradient(90deg, #4a0900 0%, #ff5a2a 52%, #ffd26a 100%)"),
-                makeGradientSwatch("Lava Vertical", 0xFF3C00, 78, PRESET_GRADIENT_LAVA_V, "linear-gradient(180deg, #3b0000 0%, #ff3c00 48%, #ffd000 100%)"),
-                // Row 2 - Rosa/Quente
-                makeGradientSwatch("Berry Diagonal", 0xFF4B8D, 57, PRESET_GRADIENT_BERRY_D1, "linear-gradient(135deg, #32002b 0%, #ff4b8d 52%, #ffd0ef 100%)"),
-                makeGradientSwatch("Flamingo Horizontal", 0xFF6E96, 83, PRESET_GRADIENT_FLAMINGO_H, "linear-gradient(90deg, #5a0020 0%, #ff6e96 52%, #ffd0e0 100%)"),
-                makeGradientSwatch("Candy Diagonal", 0xFF50B4, 32, PRESET_GRADIENT_CANDY_D2, "linear-gradient(45deg, #7a00ff 0%, #ff4fb3 52%, #ffd1f0 100%)"),
-                makeGradientSwatch("Pôr do Sol Vertical", 0xFF7832, 81, PRESET_GRADIENT_POR_DO_SOL_V, "linear-gradient(180deg, #4a0500 0%, #ff7832 48%, #ffe0a0 100%)"),
-                // Row 3 - Ouro/Terra
-                makeGradientSwatch("Gold Vertical", 0xFFC247, 59, PRESET_GRADIENT_GOLD_V, "linear-gradient(180deg, #5a3900 0%, #ffc247 48%, #fff2b0 100%)"),
-                makeGradientSwatch("Cobre Horizontal", 0xC87832, 85, PRESET_GRADIENT_COBRE_H, "linear-gradient(90deg, #3a1800 0%, #c87832 52%, #ffd0a0 100%)"),
-                makeGradientSwatch("Steel Vertical", 0xA5B0C4, 34, PRESET_GRADIENT_STEEL_V, "linear-gradient(180deg, #454b57 0%, #a5b0c4 48%, #edf3ff 100%)"),
-                makeGradientSwatch("Noite Vertical", 0x191970, 84, PRESET_GRADIENT_NOITE_V, "linear-gradient(180deg, #000010 0%, #191970 48%, #6080c0 100%)"),
-                // Row 4 - Verde
-                makeGradientSwatch("Lima Horizontal", 0xA0FF00, 29, PRESET_GRADIENT_LIME_H, "linear-gradient(90deg, #355c00 0%, #a0ff00 52%, #efff7a 100%)"),
-                makeGradientSwatch("Toxic Horizontal", 0x76FF03, 58, PRESET_GRADIENT_TOXIC_H, "linear-gradient(90deg, #142400 0%, #76ff03 52%, #00e5a8 100%)"),
-                makeGradientSwatch("Aurora Vertical", 0x44FFB0, 54, PRESET_GRADIENT_AURORA_V, "linear-gradient(180deg, #004225 0%, #44ffb0 52%, #d7fff4 100%)"),
-                makeGradientSwatch("Floresta Horizontal", 0x00B43C, 79, PRESET_GRADIENT_FLORESTA_H, "linear-gradient(90deg, #002200 0%, #00b43c 52%, #a0ff00 100%)"),
-                // Row 5 - Ciano/Agua
-                makeGradientSwatch("Neon Diagonal", 0x00FFB4, 33, PRESET_GRADIENT_NEON_D1, "linear-gradient(135deg, #001b2e 0%, #00ffb4 52%, #c8ff00 100%)"),
-                makeGradientSwatch("Aqua Diagonal", 0x00D8FF, 60, PRESET_GRADIENT_AQUA_D1, "linear-gradient(135deg, #003a46 0%, #00d8ff 52%, #ddfeff 100%)"),
-                makeGradientSwatch("Ice Diagonal", 0x78F0FF, 31, PRESET_GRADIENT_ICE_D1, "linear-gradient(135deg, #102a5c 0%, #63d8ff 52%, #dfffff 100%)"),
                 makeGradientSwatch("Ocean Horizontal", 0x00B4FF, 28, PRESET_GRADIENT_OCEAN_H, "linear-gradient(90deg, #003b8e 0%, #00c6ff 52%, #7cf7ff 100%)"),
-                // Row 6 - Azul/Roxo
+                makeGradientSwatch("Lima Horizontal", 0xA0FF00, 29, PRESET_GRADIENT_LIME_H, "linear-gradient(90deg, #355c00 0%, #a0ff00 52%, #efff7a 100%)"),
+                makeGradientSwatch("Fire Diagonal", 0xFF5A00, 30, PRESET_GRADIENT_FIRE_D1, "linear-gradient(135deg, #3b0000 0%, #ff4d00 52%, #ffd000 100%)"),
+                makeGradientSwatch("Ice Diagonal", 0x78F0FF, 31, PRESET_GRADIENT_ICE_D1, "linear-gradient(135deg, #102a5c 0%, #63d8ff 52%, #dfffff 100%)"),
+                makeGradientSwatch("Candy Diagonal", 0xFF50B4, 32, PRESET_GRADIENT_CANDY_D2, "linear-gradient(45deg, #7a00ff 0%, #ff4fb3 52%, #ffd1f0 100%)"),
+                makeGradientSwatch("Neon Diagonal", 0x00FFB4, 33, PRESET_GRADIENT_NEON_D1, "linear-gradient(135deg, #001b2e 0%, #00ffb4 52%, #c8ff00 100%)"),
+                makeGradientSwatch("Steel Vertical", 0xA5B0C4, 34, PRESET_GRADIENT_STEEL_V, "linear-gradient(180deg, #454b57 0%, #a5b0c4 48%, #edf3ff 100%)"),
+                makeGradientSwatch("Aurora Vertical", 0x44FFB0, 54, PRESET_GRADIENT_AURORA_V, "linear-gradient(180deg, #004225 0%, #44ffb0 52%, #d7fff4 100%)"),
+                makeGradientSwatch("Ember Horizontal", 0xFF5A2A, 55, PRESET_GRADIENT_EMBER_H, "linear-gradient(90deg, #4a0900 0%, #ff5a2a 52%, #ffd26a 100%)"),
                 makeGradientSwatch("Sky Diagonal", 0x62BEFF, 56, PRESET_GRADIENT_SKY_D2, "linear-gradient(45deg, #11224f 0%, #62beff 52%, #eef9ff 100%)"),
-                makeGradientSwatch("Oceano Profundo Diagonal", 0x0050A0, 82, PRESET_GRADIENT_OCEANO_PROFUNDO_D1, "linear-gradient(135deg, #000a28 0%, #0050a0 52%, #60c0ff 100%)"),
-                makeGradientSwatch("Grape Horizontal", 0x9B4DFF, 61, PRESET_GRADIENT_GRAPE_H, "linear-gradient(90deg, #22003a 0%, #9b4dff 52%, #f3b7ff 100%)"),
-                makeGradientSwatch("Ametista Diagonal", 0x823CFF, 80, PRESET_GRADIENT_AMETISTA_D1, "linear-gradient(135deg, #1a0040 0%, #823cff 52%, #d4b0ff 100%)")
+                makeGradientSwatch("Berry Diagonal", 0xFF4B8D, 57, PRESET_GRADIENT_BERRY_D1, "linear-gradient(135deg, #32002b 0%, #ff4b8d 52%, #ffd0ef 100%)"),
+                makeGradientSwatch("Toxic Horizontal", 0x76FF03, 58, PRESET_GRADIENT_TOXIC_H, "linear-gradient(90deg, #142400 0%, #76ff03 52%, #00e5a8 100%)"),
+                makeGradientSwatch("Gold Vertical", 0xFFC247, 59, PRESET_GRADIENT_GOLD_V, "linear-gradient(180deg, #5a3900 0%, #ffc247 48%, #fff2b0 100%)"),
+                makeGradientSwatch("Aqua Diagonal", 0x00D8FF, 60, PRESET_GRADIENT_AQUA_D1, "linear-gradient(135deg, #003a46 0%, #00d8ff 52%, #ddfeff 100%)"),
+                makeGradientSwatch("Grape Horizontal", 0x9B4DFF, 61, PRESET_GRADIENT_GRAPE_H, "linear-gradient(90deg, #22003a 0%, #9b4dff 52%, #f3b7ff 100%)")
             ];
 
-            // Cores sólidas originais do firmware (usadas pelo preview de LED e compatibilidade)
-            const FIRMWARE_SOLID_BASE_WEB = [
-                { name: "Vermelho",    value: 0xFF0000 }, // 0
-                { name: "Verde",       value: 0x00FF00 }, // 1
-                { name: "Azul",        value: 0x0000FF }, // 2
-                { name: "Amarelo",     value: 0xFFFF00 }, // 3
-                { name: "Roxo",        value: 0x800080 }, // 4
-                { name: "Ciano",       value: 0x00FFFF }, // 5
-                { name: "Branco",      value: 0xFFFFFF }, // 6
-                { name: "Laranja",     value: 0xFF5000 }, // 7
-                { name: "Magenta",     value: 0xFF0080 }, // 8
-                { name: "Coral",       value: 0xFF1414 }, // 9
-                { name: "Azul Celeste",value: 0x0096FF }, // 10
-                { name: "Violeta",     value: 0xB400FF }, // 11
-                { name: "Rosa",        value: 0xFF64C8 }, // 12
-                { name: "Menta",       value: 0x32FF64 }, // 13
-                { name: "Preto",       value: 0x000000 }, // 14
-                { name: "Lilás",       value: 0xD6AAFF }, // 15
-                { name: "Rosê",        value: 0xFFAAD2 }, // 16
-                { name: "Prata",       value: 0xD6E0EC }, // 17
-                { name: "Royal",       value: 0x285CDC }, // 18
-                { name: "Âmbar",       value: 0xFFAA28 }, // 19
-                { name: "Lima",        value: 0x8ADE4A }, // 20
-                { name: "Turquesa",    value: 0x34C6FF }, // 21
-                { name: "Petróleo",    value: 0x0098A8 }  // 22
-            ];
-            const FIRMWARE_SOLID_EXT_WEB = [
-                { index: 62, name: "Ouro",       value: 0xFFD700 },
-                { index: 63, name: "Salmão",     value: 0xFF6B6B },
-                { index: 64, name: "Lavanda",    value: 0xB48EFF },
-                { index: 65, name: "Índigo",     value: 0x4B0082 },
-                { index: 66, name: "Pêssego",    value: 0xFFBB98 },
-                { index: 67, name: "Marfim",     value: 0xFFF0D0 },
-                { index: 68, name: "Oliva",      value: 0x6B8E23 },
-                { index: 69, name: "Chocolate",  value: 0xD2691E }
+            const CUSTOM_BLACK_GRADIENT_INDEXES = [
+                23, 26, 25, 35, 24, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
+                47, 48, 49, 50, 51, 52, 53
             ];
 
-            const PERFIS_CORES_WEB = Array(256).fill(null);
-            // 1. Baseline: cores sólidas originais do firmware (para preview de LED e legado)
-            FIRMWARE_SOLID_BASE_WEB.forEach((col, i) => {
-                PERFIS_CORES_WEB[i] = { ...col, actualIndex: i, storedValue: col.value };
+            const PERFIS_CORES_WEB = Array(62).fill(null);
+            SOLID_COLORS_WEB.forEach((color, index) => {
+                PERFIS_CORES_WEB[index] = { ...color, actualIndex: index, storedValue: color.value };
             });
-            FIRMWARE_SOLID_EXT_WEB.forEach(({ index, name, value }) => {
-                PERFIS_CORES_WEB[index] = { name, value, actualIndex: index, storedValue: value };
-            });
-            // 2. Gradientes primeiro (índices espalhados, incluindo 27-31)
+            PERFIS_CORES_WEB[23] = makeBlackCoreGradientSwatch("Custom Vermelho", SOLID_COLORS_WEB[0].value, 23, SOLID_COLORS_WEB[0].value);
+            PERFIS_CORES_WEB[24] = makeBlackCoreGradientSwatch("Custom Roxo", SOLID_COLORS_WEB[4].value, 24, SOLID_COLORS_WEB[4].value);
+            PERFIS_CORES_WEB[25] = makeBlackCoreGradientSwatch("Custom Azul", SOLID_COLORS_WEB[2].value, 25, SOLID_COLORS_WEB[2].value);
+            PERFIS_CORES_WEB[26] = makeBlackCoreGradientSwatch("Custom Verde", SOLID_COLORS_WEB[1].value, 26, SOLID_COLORS_WEB[1].value);
             MIX_FORMAT_GRADIENTS_WEB.forEach((color) => {
                 PERFIS_CORES_WEB[color.actualIndex] = color;
             });
-            GRADIENT1_COLORS_WEB.forEach((color) => {
-                PERFIS_CORES_WEB[color.actualIndex] = color;
-            });
-            GRADIENT2_COLORS_WEB.forEach((color) => {
-                PERFIS_CORES_WEB[color.actualIndex] = color;
-            });
-            CUSTOM_COLORS_WEB.forEach((color) => {
-                PERFIS_CORES_WEB[color.actualIndex] = color;
-            });
-            // Sólidos por último — sobrescrevem índices 86-117
-            SOLID_COLORS_WEB.forEach((col, i) => {
-                const idx = SOLID_TO_PERFIS_MAP[i];
-                PERFIS_CORES_WEB[idx] = { ...col, actualIndex: idx, storedValue: col.value };
-            });
-            // Custom preto-cor por último — sobrescrevem índices 100-131
-            SOLID_COLORS_WEB.forEach((color, i) => {
-                const custIdx = CUSTOM_BLACK_GRADIENT_INDEXES[i];
-                PERFIS_CORES_WEB[custIdx] = makeBlackCoreGradientSwatch(
-                    `Custom ${color.name}`, color.value, custIdx, color.value
-                );
-            });
+            PERFIS_CORES_WEB[35] = makeBlackCoreGradientSwatch("Custom Amarelo", SOLID_COLORS_WEB[3].value, 35, SOLID_COLORS_WEB[3].value);
+            PERFIS_CORES_WEB[36] = makeBlackCoreGradientSwatch("Custom Ciano", SOLID_COLORS_WEB[5].value, 36, SOLID_COLORS_WEB[5].value);
+            PERFIS_CORES_WEB[37] = makeBlackCoreGradientSwatch("Custom Branco", SOLID_COLORS_WEB[6].value, 37, SOLID_COLORS_WEB[6].value);
+            PERFIS_CORES_WEB[38] = makeBlackCoreGradientSwatch("Custom Laranja", SOLID_COLORS_WEB[7].value, 38, SOLID_COLORS_WEB[7].value);
+            PERFIS_CORES_WEB[39] = makeBlackCoreGradientSwatch("Custom Magenta", SOLID_COLORS_WEB[8].value, 39, SOLID_COLORS_WEB[8].value);
+            PERFIS_CORES_WEB[40] = makeBlackCoreGradientSwatch("Custom Coral", SOLID_COLORS_WEB[9].value, 40, SOLID_COLORS_WEB[9].value);
+            PERFIS_CORES_WEB[41] = makeBlackCoreGradientSwatch("Custom Azul Celeste", SOLID_COLORS_WEB[10].value, 41, SOLID_COLORS_WEB[10].value);
+            PERFIS_CORES_WEB[42] = makeBlackCoreGradientSwatch("Custom Violeta", SOLID_COLORS_WEB[11].value, 42, SOLID_COLORS_WEB[11].value);
+            PERFIS_CORES_WEB[43] = makeBlackCoreGradientSwatch("Custom Rosa", SOLID_COLORS_WEB[12].value, 43, SOLID_COLORS_WEB[12].value);
+            PERFIS_CORES_WEB[44] = makeBlackCoreGradientSwatch("Custom Menta", SOLID_COLORS_WEB[13].value, 44, SOLID_COLORS_WEB[13].value);
+            PERFIS_CORES_WEB[45] = makeBlackCoreGradientSwatch("Custom Preto", SOLID_COLORS_WEB[14].value, 45, SOLID_COLORS_WEB[14].value);
+            PERFIS_CORES_WEB[46] = makeBlackCoreGradientSwatch("Custom Lilas", SOLID_COLORS_WEB[15].value, 46, SOLID_COLORS_WEB[15].value);
+            PERFIS_CORES_WEB[47] = makeBlackCoreGradientSwatch("Custom Rose", SOLID_COLORS_WEB[16].value, 47, SOLID_COLORS_WEB[16].value);
+            PERFIS_CORES_WEB[48] = makeBlackCoreGradientSwatch("Custom Prata", SOLID_COLORS_WEB[17].value, 48, SOLID_COLORS_WEB[17].value);
+            PERFIS_CORES_WEB[49] = makeBlackCoreGradientSwatch("Custom Royal", SOLID_COLORS_WEB[18].value, 49, SOLID_COLORS_WEB[18].value);
+            PERFIS_CORES_WEB[50] = makeBlackCoreGradientSwatch("Custom Ambar", SOLID_COLORS_WEB[19].value, 50, SOLID_COLORS_WEB[19].value);
+            PERFIS_CORES_WEB[51] = makeBlackCoreGradientSwatch("Custom Lima", SOLID_COLORS_WEB[20].value, 51, SOLID_COLORS_WEB[20].value);
+            PERFIS_CORES_WEB[52] = makeBlackCoreGradientSwatch("Custom Turquesa", SOLID_COLORS_WEB[21].value, 52, SOLID_COLORS_WEB[21].value);
+            PERFIS_CORES_WEB[53] = makeBlackCoreGradientSwatch("Custom Petroleo", SOLID_COLORS_WEB[22].value, 53, SOLID_COLORS_WEB[22].value);
 
             function paletteColor(index) {
                 const color = PERFIS_CORES_WEB[index];
@@ -7723,7 +7622,7 @@
 
             const SOLID_CHOOSER_COLORS_WEB = [
                 makeSection("SOLID COLORS"),
-                ...SOLID_TO_PERFIS_MAP.map(index => paletteColor(index))
+                ...Array.from({ length: SOLID_COLORS_WEB.length }, (_, index) => paletteColor(index))
             ];
 
             const CUSTOM_CHOOSER_COLORS_WEB = [
@@ -7748,13 +7647,16 @@
                 makeSection("TRANSPARENCIA"),
                 { ...TRANSPARENT_COLOR_WEB, storedValue: DIRECT_COLOR_TRANSPARENT },
                 makeSection("SOLID COLORS"),
-                ...SOLID_COLORS_WEB.map((col, i) => ({ ...col, actualIndex: SOLID_TO_PERFIS_MAP[i], storedValue: col.value })),
-                makeSection("GRADIENT 1"),
-                ...GRADIENT1_COLORS_WEB,
-                makeSection("GRADIENT 2"),
-                ...GRADIENT2_COLORS_WEB,
+                ...SOLID_COLORS_WEB.map((color, index) => ({ ...color, actualIndex: index, storedValue: color.value })),
                 makeSection("CUSTOM"),
-                ...CUSTOM_COLORS_WEB,
+                ...SOLID_COLORS_WEB.map((color, solidIndex) =>
+                    makeBlackCoreGradientSwatch(
+                        `Custom ${color.name}`,
+                        color.value,
+                        CUSTOM_BLACK_GRADIENT_INDEXES[solidIndex],
+                        buildCustomPresetGradientValue(solidIndex)
+                    )
+                ),
                 makeSection("MIX & FORMAT"),
                 ...MIX_FORMAT_GRADIENTS_WEB
             ];
@@ -7762,13 +7664,13 @@
             function getLegacyDirectGradientPreview(colorValue) {
                 switch (colorValue) {
                     case PRESET_GRADIENT_RED:
-                        return makeBlackCoreGradientSwatch("Custom Vermelho", 0xFF0000, 23, colorValue);
+                        return makeBlackCoreGradientSwatch("Custom Vermelho", SOLID_COLORS_WEB[0].value, 23, colorValue);
                     case PRESET_GRADIENT_PURPLE:
-                        return makeBlackCoreGradientSwatch("Custom Roxo", 0x800080, 24, colorValue);
+                        return makeBlackCoreGradientSwatch("Custom Roxo", SOLID_COLORS_WEB[4].value, 24, colorValue);
                     case PRESET_GRADIENT_BLUE:
-                        return makeBlackCoreGradientSwatch("Custom Azul", 0x0000FF, 25, colorValue);
+                        return makeBlackCoreGradientSwatch("Custom Azul", SOLID_COLORS_WEB[2].value, 25, colorValue);
                     case PRESET_GRADIENT_GREEN:
-                        return makeBlackCoreGradientSwatch("Custom Verde", 0x00FF00, 26, colorValue);
+                        return makeBlackCoreGradientSwatch("Custom Verde", SOLID_COLORS_WEB[1].value, 26, colorValue);
                     default:
                         return null;
                 }
@@ -8244,7 +8146,7 @@
 
             function getDefaultExtrasData() {
                 return {
-                    spin: Array(6).fill(null).map(() => ({ v1: 0, v2: 64, v3: 127, spin_count: 1, cc2: 0, v1cc2: 0, v2cc2: 64, v3cc2: 127, cc3: 0, v1cc3: 0, v2cc3: 64, v3cc3: 127 })),
+                    spin: Array(6).fill(null).map(() => ({ v1: 0, v2: 64, v3: 127 })),
                     control: Array(6).fill(null).map(() => ({ cc: 48, modo_invertido: false })),
                     custom: Array(6).fill(null).map((_, i) => ({ cc: 48 + i, valor_off: 0, valor_on: 127, canal: 1 })),
                     pc: Array(4).fill(null).map(() => ({ valor: 0, canal: 1 })),
@@ -10089,11 +9991,8 @@
             }
 
             function generateSingleSpinUI(parentElement, spinDataItem, spinIndex, sendAsPc = false, currentCC = 0) {
-                const switchCCEl = document.getElementById('switchCC');
-                const ccVal = switchCCEl ? parseInt(switchCCEl.value, 10) : (currentCC || 0);
-                const isPitchTranspose = (getEffectiveMidiMode() === "KEMPER PLAYER" && ccVal === 208);
+                const isPitchTranspose = (getEffectiveMidiMode() === "KEMPER PLAYER" && currentCC === 208);
                 const titleText = isPitchTranspose ? 'TRANSPOSE' : `SPIN ${spinIndex + 1}`;
-                const sd = spinDataItem || {};
 
                 const container = document.createElement('div');
                 container.className = 'spin-config-container p-0 shadow-lg mb-0 relative overflow-hidden mt-4';
@@ -10112,64 +10011,70 @@
                                 <div class="spin-send-stack">
                                     <button type="button" id="spinSendCcBtn" class="spin-send-btn active">ENVIA CC</button>
                                     <button type="button" id="spinSendPcBtn" class="spin-send-btn">ENVIA PC</button>
-                                    <button type="button" id="spinCountBtn_${spinIndex}" class="spin-send-btn" style="min-width:72px;">SINGLE</button>
                                     <input type="checkbox" id="spinSendPcToggle" class="hidden" ${sendAsPc ? 'checked' : ''}>
                                 </div>
                             </div>
+
                             <div class="spin-values-grid" id="spinValuesContainer"></div>
-                        </div>
-                        <div id="spinCC2Block_${spinIndex}" style="display:none;margin-top:10px;padding:8px;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid #444;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                                <label class="spin-value-label">CC 2:</label>
-                                <div id="spinCC2Slot_${spinIndex}"></div>
-                            </div>
-                            <div class="spin-values-grid" id="spinCC2ValuesContainer_${spinIndex}"></div>
-                        </div>
-                        <div id="spinCC3Block_${spinIndex}" style="display:none;margin-top:10px;padding:8px;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid #555;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                                <label class="spin-value-label">CC 3:</label>
-                                <div id="spinCC3Slot_${spinIndex}"></div>
-                            </div>
-                            <div class="spin-values-grid" id="spinCC3ValuesContainer_${spinIndex}"></div>
                         </div>
                         <div id="spinHoldContainerSlot"></div>
                     </div>
                 `;
 
-                // Helper: build a column with radial dial + slider for a value field
-                const buildValueCol = (selectId, label, initVal) => {
+                const valuesContainer = container.querySelector('#spinValuesContainer');
+                const slotDefinitions = [
+                    { label: 'VALOR 1', key: 'v1' },
+                    { label: 'VALOR 2', key: 'v2' },
+                    { label: 'VALOR 3', key: 'v3' }
+                ];
+
+                const slotState = [];
+
+                slotDefinitions.forEach((slotDef, idx) => {
+                    let parsedValue = parseInt((spinDataItem && Object.prototype.hasOwnProperty.call(spinDataItem, slotDef.key)) ? spinDataItem[slotDef.key] : 0, 10);
+                    if (Number.isNaN(parsedValue)) parsedValue = isPitchTranspose ? 64 : 0;
+                    parsedValue = isPitchTranspose ? Math.max(28, Math.min(100, parsedValue)) : Math.max(0, Math.min(127, parsedValue));
+
+                    const selectId = `spinV${idx + 1}_${spinIndex}`;
                     const col = document.createElement('div');
                     col.className = 'spin-value-column';
-                    const parsedValue = Math.max(0, Math.min(127, isNaN(parseInt(initVal, 10)) ? 0 : parseInt(initVal, 10)));
+
                     const wrapper = isPitchTranspose ? newTransposeValueInput(selectId, parsedValue) : newNumericInput(selectId, 0, 127, parsedValue);
                     wrapper.classList.add('spin-value-select');
+                    if (isPitchTranspose) wrapper.classList.add('transpose-value-select');
                     const trigger = wrapper.querySelector('.custom-select-trigger');
                     if (trigger) {
                         const arrow = trigger.querySelector('.custom-select-arrow-down');
                         if (arrow) arrow.remove();
-                        const sv = trigger.querySelector('.custom-select-selected-value');
-                        if (sv && !sv.textContent) sv.textContent = String(parsedValue);
+                        const selectedValue = trigger.querySelector('.custom-select-selected-value');
+                        if (selectedValue && !selectedValue.textContent) selectedValue.textContent = String(parsedValue);
                     }
+
                     col.innerHTML = `
                         <div class="spin-value-head">
                             <div class="spin-radial-dial bg-[#111]" id="${selectId}_radial" style="--p: 0%;">
                                 <span id="${selectId}_percent" class="spin-radial-dial-text text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,1)]">0%</span>
                             </div>
                             <div class="spin-value-box">
-                                <label class="spin-value-label">${label}</label>
+                                <label class="spin-value-label">${slotDef.label}</label>
                                 <div id="${selectId}_valueSlot"></div>
                             </div>
                         </div>
                         <div class="spin-slider-row">
                             <span class="spin-slider-sign">-</span>
-                            <input type="range" class="spin-slider flex-1" min="0" max="127" value="${parsedValue}" id="${selectId}_range">
+                            <input type="range" class="spin-slider flex-1" min="${isPitchTranspose ? 28 : 0}" max="${isPitchTranspose ? 100 : 127}" value="${parsedValue}" id="${selectId}_range">
                             <span class="spin-slider-sign">+</span>
-                        </div>`;
+                        </div>
+                    `;
+
                     const valueSlot = col.querySelector(`#${selectId}_valueSlot`);
                     if (valueSlot) valueSlot.appendChild(wrapper);
+                    valuesContainer.appendChild(col);
+
                     const rangeSlider = col.querySelector(`#${selectId}_range`);
                     const originalSelect = wrapper.querySelector('.original-select');
-                    if (originalSelect && rangeSlider) {
+
+                    if (originalSelect) {
                         rangeSlider.addEventListener('input', (e) => {
                             originalSelect.value = e.target.value;
                             if (typeof updateCustomSelect === 'function') updateCustomSelect(selectId);
@@ -10182,90 +10087,14 @@
                             updateSpinProgressBar(selectId);
                         });
                     }
-                    return { col, selectEl: originalSelect, selectId };
-                };
 
-                // CC1 main values (always visible)
-                const valuesContainer = container.querySelector('#spinValuesContainer');
-                const slotState = [];
-                [{ label: 'VALOR 1', key: 'v1', def: 0 }, { label: 'VALOR 2', key: 'v2', def: 64 }, { label: 'VALOR 3', key: 'v3', def: 127 }].forEach((slotDef, idx) => {
-                    let parsedValue = parseInt((sd && Object.prototype.hasOwnProperty.call(sd, slotDef.key)) ? sd[slotDef.key] : slotDef.def, 10);
-                    if (isNaN(parsedValue)) parsedValue = isPitchTranspose ? 64 : slotDef.def;
-                    parsedValue = isPitchTranspose ? Math.max(28, Math.min(100, parsedValue)) : Math.max(0, Math.min(127, parsedValue));
-                    const selectId = `spinV${idx + 1}_${spinIndex}`;
-                    const { col, selectEl } = buildValueCol(selectId, slotDef.label, parsedValue);
-                    valuesContainer.appendChild(col);
-                    slotState.push({ selectId, selectEl });
+                    slotState.push({ selectId, selectEl: originalSelect });
                 });
 
                 parentElement.appendChild(container);
 
-                // CC2 values
-                const cc2Slot = container.querySelector(`#spinCC2Slot_${spinIndex}`);
-                if (cc2Slot) {
-                    const cc2Init = sd.cc2 != null ? parseInt(sd.cc2, 10) : 0;
-                    const cc2W = newNumericInput(`spinCC2_${spinIndex}`, 0, 127, isNaN(cc2Init) ? 0 : cc2Init);
-                    cc2W.classList.add('spin-value-select');
-                    cc2Slot.appendChild(cc2W);
-                    const cc2Orig = cc2W.querySelector('.original-select');
-                    if (cc2Orig) cc2Orig.addEventListener('change', () => { try { updateLocalPresetDataFromUI(); } catch (_) { } });
-                }
-                const cc2ValCont = container.querySelector(`#spinCC2ValuesContainer_${spinIndex}`);
-                if (cc2ValCont) {
-                    [{ id: `spinV1cc2_${spinIndex}`, label: 'VALOR 1', init: sd.v1cc2 ?? 0 },
-                     { id: `spinV2cc2_${spinIndex}`, label: 'VALOR 2', init: sd.v2cc2 ?? 64 },
-                     { id: `spinV3cc2_${spinIndex}`, label: 'VALOR 3', init: sd.v3cc2 ?? 127 }].forEach(def => {
-                        const { col } = buildValueCol(def.id, def.label, def.init);
-                        cc2ValCont.appendChild(col);
-                    });
-                }
-
-                // CC3 values
-                const cc3Slot = container.querySelector(`#spinCC3Slot_${spinIndex}`);
-                if (cc3Slot) {
-                    const cc3Init = sd.cc3 != null ? parseInt(sd.cc3, 10) : 0;
-                    const cc3W = newNumericInput(`spinCC3_${spinIndex}`, 0, 127, isNaN(cc3Init) ? 0 : cc3Init);
-                    cc3W.classList.add('spin-value-select');
-                    cc3Slot.appendChild(cc3W);
-                    const cc3Orig = cc3W.querySelector('.original-select');
-                    if (cc3Orig) cc3Orig.addEventListener('change', () => { try { updateLocalPresetDataFromUI(); } catch (_) { } });
-                }
-                const cc3ValCont = container.querySelector(`#spinCC3ValuesContainer_${spinIndex}`);
-                if (cc3ValCont) {
-                    [{ id: `spinV1cc3_${spinIndex}`, label: 'VALOR 1', init: sd.v1cc3 ?? 0 },
-                     { id: `spinV2cc3_${spinIndex}`, label: 'VALOR 2', init: sd.v2cc3 ?? 64 },
-                     { id: `spinV3cc3_${spinIndex}`, label: 'VALOR 3', init: sd.v3cc3 ?? 127 }].forEach(def => {
-                        const { col } = buildValueCol(def.id, def.label, def.init);
-                        cc3ValCont.appendChild(col);
-                    });
-                }
-
-                // SINGLE/DUPLO/TRIPLO button
-                const spinCountStates = ['SINGLE', 'DUPLO', 'TRIPLO'];
-                let currentSpinCount = Math.max(1, Math.min(3, parseInt(sd.spin_count != null ? sd.spin_count : 1, 10))) - 1;
-                const spinCountBtn = container.querySelector(`#spinCountBtn_${spinIndex}`);
-                const applySpinCount = () => {
-                    if (!spinCountBtn) return;
-                    spinCountBtn.textContent = spinCountStates[currentSpinCount];
-                    spinCountBtn.classList.toggle('active', currentSpinCount > 0);
-                    const cc2Block = container.querySelector(`#spinCC2Block_${spinIndex}`);
-                    const cc3Block = container.querySelector(`#spinCC3Block_${spinIndex}`);
-                    if (cc2Block) cc2Block.style.display = currentSpinCount >= 1 ? 'block' : 'none';
-                    if (cc3Block) cc3Block.style.display = currentSpinCount >= 2 ? 'block' : 'none';
-                };
-                if (spinCountBtn) {
-                    spinCountBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        currentSpinCount = (currentSpinCount + 1) % 3;
-                        applySpinCount();
-                        try { updateLocalPresetDataFromUI(); } catch (_) { }
-                    });
-                }
-                applySpinCount();
-
                 setTimeout(() => {
                     slotState.forEach(slot => { if (slot) updateSpinProgressBar(slot.selectId); });
-                    initCustomSelects();
                 }, 10);
 
                 const sendCheckbox = container.querySelector('#spinSendPcToggle');
@@ -13162,12 +12991,11 @@
                     const spinItem = (presetData && presetData.extras && presetData.extras.spin && presetData.extras.spin[spinIndex])
                         ? presetData.extras.spin[spinIndex]
                         : (defaultSpin && defaultSpin[spinIndex])
-                        || { v1: 0, v2: 64, v3: 127, spin_count: 1, cc2: 0, v1cc2: 0, v2cc2: 64, v3cc2: 127, cc3: 0, v1cc3: 0, v2cc3: 64, v3cc3: 127 };
+                        || { v1: 0, v2: 64, v3: 127 };
                     generateSingleSpinUI(dynamicArea, spinItem, spinIndex, !!currentSwitchData.spin_send_pc, currentSwitchData.cc);
 
                     initCustomSelects();
-                    const sv = spinItem || {};
-                    // Populate CC1 values
+                    const sv = spinItem || { v1: 0, v2: 64, v3: 127 };
                     ['v1', 'v2', 'v3'].forEach((vk, idx) => {
                         const id = `spinV${idx + 1}_${spinIndex}`;
                         const el = document.getElementById(id);
@@ -13177,20 +13005,6 @@
                             updateCustomSelect(id);
                             updateSpinProgressBar(id);
                         }
-                    });
-                    // Populate CC2 values
-                    { const cc2El = document.getElementById(`spinCC2_${spinIndex}`); if (cc2El) { cc2El.value = (sv.cc2 ?? 0).toString(); updateCustomSelect(`spinCC2_${spinIndex}`); } }
-                    ['v1cc2', 'v2cc2', 'v3cc2'].forEach((vk, idx) => {
-                        const id = `spinV${idx + 1}cc2_${spinIndex}`;
-                        const el = document.getElementById(id);
-                        if (el) { el.value = (sv[vk] ?? (idx === 0 ? 0 : idx === 1 ? 64 : 127)).toString(); updateCustomSelect(id); updateSpinProgressBar(id); }
-                    });
-                    // Populate CC3 values
-                    { const cc3El = document.getElementById(`spinCC3_${spinIndex}`); if (cc3El) { cc3El.value = (sv.cc3 ?? 0).toString(); updateCustomSelect(`spinCC3_${spinIndex}`); } }
-                    ['v1cc3', 'v2cc3', 'v3cc3'].forEach((vk, idx) => {
-                        const id = `spinV${idx + 1}cc3_${spinIndex}`;
-                        const el = document.getElementById(id);
-                        if (el) { el.value = (sv[vk] ?? (idx === 0 ? 0 : idx === 1 ? 64 : 127)).toString(); updateCustomSelect(id); updateSpinProgressBar(id); }
                     });
 
                     if (isSpinHold) {
@@ -13835,7 +13649,7 @@
                         const defaults = getDefaultExtrasData().spin;
                         const sv = (presetData && presetData.extras && Array.isArray(presetData.extras.spin) && presetData.extras.spin[spinIndex])
                             ? presetData.extras.spin[spinIndex]
-                            : (defaults && defaults[spinIndex]) || { v1: 0, v2: 64, v3: 127, spin_count: 1, cc2: 0, v1cc2: 0, v2cc2: 64, v3cc2: 127, cc3: 0, v1cc3: 0, v2cc3: 64, v3cc3: 127 };
+                            : (defaults && defaults[spinIndex]) || { v1: 0, v2: 64, v3: 127 };
 
                         ['v1', 'v2', 'v3'].forEach((vk, idx) => {
                             const id = `spinV${idx + 1}_${spinIndex}`;
@@ -13846,19 +13660,6 @@
                                 updateCustomSelect(id);
                                 updateSpinKnobVisual(id);
                             }
-                        });
-                        // Populate CC2/CC3 multi-spin values
-                        { const cc2El = document.getElementById(`spinCC2_${spinIndex}`); if (cc2El) { cc2El.value = (sv.cc2 ?? 0).toString(); updateCustomSelect(`spinCC2_${spinIndex}`); } }
-                        ['v1cc2', 'v2cc2', 'v3cc2'].forEach((vk, idx) => {
-                            const id = `spinV${idx + 1}cc2_${spinIndex}`;
-                            const el = document.getElementById(id);
-                            if (el) { el.value = (sv[vk] ?? (idx === 0 ? 0 : idx === 1 ? 64 : 127)).toString(); updateCustomSelect(id); updateSpinKnobVisual(id); }
-                        });
-                        { const cc3El = document.getElementById(`spinCC3_${spinIndex}`); if (cc3El) { cc3El.value = (sv.cc3 ?? 0).toString(); updateCustomSelect(`spinCC3_${spinIndex}`); } }
-                        ['v1cc3', 'v2cc3', 'v3cc3'].forEach((vk, idx) => {
-                            const id = `spinV${idx + 1}cc3_${spinIndex}`;
-                            const el = document.getElementById(id);
-                            if (el) { el.value = (sv[vk] ?? (idx === 0 ? 0 : idx === 1 ? 64 : 127)).toString(); updateCustomSelect(id); updateSpinKnobVisual(id); }
                         });
                     }
                 } catch (_) { }
@@ -14366,17 +14167,6 @@
                             presetToUpdate.extras.spin[spinIndex].v2 = parseInt(document.getElementById(`spinV2_${spinIndex}`)?.value, 10) || 0;
                             presetToUpdate.extras.spin[spinIndex].v3 = parseInt(document.getElementById(`spinV3_${spinIndex}`)?.value, 10) || 0;
                             updateSpinKnobVisual(`spinV1_${spinIndex}`); updateSpinKnobVisual(`spinV2_${spinIndex}`); updateSpinKnobVisual(`spinV3_${spinIndex}`);
-                            const scBtn = document.getElementById(`spinCountBtn_${spinIndex}`);
-                            const scText = scBtn ? scBtn.textContent.trim() : 'SINGLE';
-                            presetToUpdate.extras.spin[spinIndex].spin_count = scText === 'TRIPLO' ? 3 : scText === 'DUPLO' ? 2 : 1;
-                            presetToUpdate.extras.spin[spinIndex].cc2 = parseInt(document.getElementById(`spinCC2_${spinIndex}`)?.value, 10) || 0;
-                            presetToUpdate.extras.spin[spinIndex].v1cc2 = parseInt(document.getElementById(`spinV1cc2_${spinIndex}`)?.value, 10) || 0;
-                            presetToUpdate.extras.spin[spinIndex].v2cc2 = parseInt(document.getElementById(`spinV2cc2_${spinIndex}`)?.value, 10) || 64;
-                            presetToUpdate.extras.spin[spinIndex].v3cc2 = parseInt(document.getElementById(`spinV3cc2_${spinIndex}`)?.value, 10) || 127;
-                            presetToUpdate.extras.spin[spinIndex].cc3 = parseInt(document.getElementById(`spinCC3_${spinIndex}`)?.value, 10) || 0;
-                            presetToUpdate.extras.spin[spinIndex].v1cc3 = parseInt(document.getElementById(`spinV1cc3_${spinIndex}`)?.value, 10) || 0;
-                            presetToUpdate.extras.spin[spinIndex].v2cc3 = parseInt(document.getElementById(`spinV2cc3_${spinIndex}`)?.value, 10) || 64;
-                            presetToUpdate.extras.spin[spinIndex].v3cc3 = parseInt(document.getElementById(`spinV3cc3_${spinIndex}`)?.value, 10) || 127;
                         }
                     } else if ((currentModeValue >= 7 && currentModeValue <= 9) || (currentModeValue >= 47 && currentModeValue <= 49)) {
                         const controlIndex = (currentModeValue >= 47) ? (currentModeValue - 47 + 3) : (currentModeValue - 7);
