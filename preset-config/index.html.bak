@@ -7503,6 +7503,17 @@
             const PRESET_GRADIENT_GOLD_V = 0x01000012;
             const PRESET_GRADIENT_AQUA_D1 = 0x01000013;
             const PRESET_GRADIENT_GRAPE_H = 0x01000014;
+            const PRESET_GRADIENT_LAVA_V = 0x01000015;
+            const PRESET_GRADIENT_FLORESTA_H = 0x01000016;
+            const PRESET_GRADIENT_AMETISTA_D1 = 0x01000017;
+            const PRESET_GRADIENT_POR_DO_SOL_V = 0x01000018;
+            const PRESET_GRADIENT_OCEANO_PROFUNDO_D1 = 0x01000019;
+            const PRESET_GRADIENT_FLAMINGO_H = 0x0100001A;
+            const PRESET_GRADIENT_NOITE_V = 0x0100001B;
+            const PRESET_GRADIENT_COBRE_H = 0x0100001C;
+            const GRADIENT1_BASE = 0x02000000;
+            const GRADIENT2_BASE = 0x03000000;
+            const GRADIENT3_BASE = 0x04000000;
             const PRESET_CUSTOM_GRADIENT_BASE = 0x01000100;
 
             function makeSection(title) {
@@ -7535,85 +7546,174 @@
             }
 
             const SOLID_COLORS_WEB = [
-                { name: "Vermelho", value: 0xFF0000 },
-                { name: "Verde", value: 0x00FF00 },
-                { name: "Azul", value: 0x0000FF },
-                { name: "Amarelo", value: 0xFFFF00 },
-                { name: "Roxo", value: 0x800080 },
-                { name: "Ciano", value: 0x00FFFF },
-                { name: "Branco", value: 0xFFFFFF },
-                { name: "Laranja", value: 0xFF5000 },
-                { name: "Magenta", value: 0xFF0080 },
-                { name: "Coral", value: 0xFF1414 },
-                { name: "Azul Celeste", value: 0x0096FF },
-                { name: "Violeta", value: 0xB400FF },
-                { name: "Rosa", value: 0xFF64C8 },
-                { name: "Menta", value: 0x32FF64 },
-                { name: "Preto", value: 0x000000 },
-                { name: "Lilas", value: 0xD6AAFF },
-                { name: "Rose", value: 0xFFAAD2 },
-                { name: "Prata", value: 0xD6E0EC },
-                { name: "Royal", value: 0x285CDC },
-                { name: "Ambar", value: 0xFFAA28 },
-                { name: "Lima", value: 0x8ADE4A },
-                { name: "Turquesa", value: 0x34C6FF },
-                { name: "Petroleo", value: 0x0098A8 }
+                // Row 1 - Neutros
+                { name: "Preto",          value: 0x000000 }, // 0
+                { name: "Cinza Escuro",   value: 0x555555 }, // 1
+                { name: "Cinza Claro",    value: 0xAAAAAA }, // 2
+                { name: "Branco",         value: 0xFFFFFF }, // 3
+                // Row 2 - Amarelos/Oliva
+                { name: "Oliva Escuro",   value: 0x666600 }, // 4
+                { name: "Oliva",          value: 0xAAAA00 }, // 5
+                { name: "Amarelo",        value: 0xFFFF00 }, // 6
+                { name: "Amarelo Claro",  value: 0xFFFF88 }, // 7
+                // Row 3 - Laranjas/Marrons
+                { name: "Marrom",         value: 0x8B4513 }, // 8
+                { name: "Ocre",           value: 0xD2691E }, // 9
+                { name: "Laranja",        value: 0xFF8C00 }, // 10
+                { name: "Pêssego",        value: 0xFFDAB9 }, // 11
+                // Row 4 - Vermelhos
+                { name: "Bordô",          value: 0x800000 }, // 12
+                { name: "Vermelho Escuro",value: 0xCC0000 }, // 13
+                { name: "Vermelho",       value: 0xFF0000 }, // 14
+                { name: "Salmão",         value: 0xFA8072 }, // 15
+                // Row 5 - Rosas/Magenta
+                { name: "Púrpura",        value: 0x800080 }, // 16
+                { name: "Magenta Escura", value: 0xCC00CC }, // 17
+                { name: "Magenta",        value: 0xFF00FF }, // 18
+                { name: "Rosa Claro",     value: 0xFFB6C1 }, // 19
+                // Row 6 - Roxos
+                { name: "Índigo",         value: 0x4B0082 }, // 20
+                { name: "Roxo",           value: 0x8A2BE2 }, // 21
+                { name: "Violeta",        value: 0x9932CC }, // 22
+                { name: "Lilás",          value: 0xDDA0DD }, // 23
+                // Row 7 - Azuis
+                { name: "Azul Marinho",   value: 0x000080 }, // 24
+                { name: "Azul Escuro",    value: 0x0000CC }, // 25
+                { name: "Azul",           value: 0x0000FF }, // 26
+                { name: "Azul Claro",     value: 0x87CEFA }, // 27
+                // Row 8 - Verdes
+                { name: "Verde Escuro",   value: 0x006400 }, // 28
+                { name: "Verde Médio",    value: 0x00A000 }, // 29
+                { name: "Verde",          value: 0x00FF00 }, // 30
+                { name: "Verde Claro",    value: 0x98FB98 }  // 31
             ];
+
+            // Mapeamento: posição i → índice firmware 86+i
+            const SOLID_TO_PERFIS_MAP = Array.from({ length: 32 }, (_, i) => i + 86);
+            // Gradientes preto-cor: índices 100+i
+            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 100);
+
+            const GRADIENT1_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
+                const hex = '#' + col.value.toString(16).padStart(6, '0');
+                const gradCss = `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(0,0,0,0.4) 100%), ${hex}`;
+                return makeGradientSwatch('G1 ' + col.name, col.value, 150 + i, GRADIENT1_BASE | col.value, gradCss, gradCss);
+            });
+
+            const GRADIENT2_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
+                const hex = '#' + col.value.toString(16).padStart(6, '0');
+                const gradCss = `radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.6) 0%, transparent 60%), linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.5) 100%), ${hex}`;
+                return makeGradientSwatch('G2 ' + col.name, col.value, 200 + i, GRADIENT2_BASE | col.value, gradCss, gradCss);
+            });
+
+            const CUSTOM_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
+                const hex = '#' + col.value.toString(16).padStart(6, '0');
+                const gradCss = `linear-gradient(180deg, #000000 0%, ${hex} 48%, #000000 100%)`;
+                return makeGradientSwatch('Custom ' + col.name, col.value, 100 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
+            });
 
             const MIX_FORMAT_GRADIENTS_WEB = [
+                // Row 1 - Fogo/Vermelho
                 makeGradientSwatch("Sunset Horizontal", 0xFF7846, 27, PRESET_GRADIENT_SUNSET_H, "linear-gradient(90deg, #ff2d55 0%, #ffb347 52%, #ff6a00 100%)"),
-                makeGradientSwatch("Ocean Horizontal", 0x00B4FF, 28, PRESET_GRADIENT_OCEAN_H, "linear-gradient(90deg, #003b8e 0%, #00c6ff 52%, #7cf7ff 100%)"),
-                makeGradientSwatch("Lima Horizontal", 0xA0FF00, 29, PRESET_GRADIENT_LIME_H, "linear-gradient(90deg, #355c00 0%, #a0ff00 52%, #efff7a 100%)"),
                 makeGradientSwatch("Fire Diagonal", 0xFF5A00, 30, PRESET_GRADIENT_FIRE_D1, "linear-gradient(135deg, #3b0000 0%, #ff4d00 52%, #ffd000 100%)"),
-                makeGradientSwatch("Ice Diagonal", 0x78F0FF, 31, PRESET_GRADIENT_ICE_D1, "linear-gradient(135deg, #102a5c 0%, #63d8ff 52%, #dfffff 100%)"),
-                makeGradientSwatch("Candy Diagonal", 0xFF50B4, 32, PRESET_GRADIENT_CANDY_D2, "linear-gradient(45deg, #7a00ff 0%, #ff4fb3 52%, #ffd1f0 100%)"),
-                makeGradientSwatch("Neon Diagonal", 0x00FFB4, 33, PRESET_GRADIENT_NEON_D1, "linear-gradient(135deg, #001b2e 0%, #00ffb4 52%, #c8ff00 100%)"),
-                makeGradientSwatch("Steel Vertical", 0xA5B0C4, 34, PRESET_GRADIENT_STEEL_V, "linear-gradient(180deg, #454b57 0%, #a5b0c4 48%, #edf3ff 100%)"),
-                makeGradientSwatch("Aurora Vertical", 0x44FFB0, 54, PRESET_GRADIENT_AURORA_V, "linear-gradient(180deg, #004225 0%, #44ffb0 52%, #d7fff4 100%)"),
                 makeGradientSwatch("Ember Horizontal", 0xFF5A2A, 55, PRESET_GRADIENT_EMBER_H, "linear-gradient(90deg, #4a0900 0%, #ff5a2a 52%, #ffd26a 100%)"),
-                makeGradientSwatch("Sky Diagonal", 0x62BEFF, 56, PRESET_GRADIENT_SKY_D2, "linear-gradient(45deg, #11224f 0%, #62beff 52%, #eef9ff 100%)"),
+                makeGradientSwatch("Lava Vertical", 0xFF3C00, 78, PRESET_GRADIENT_LAVA_V, "linear-gradient(180deg, #3b0000 0%, #ff3c00 48%, #ffd000 100%)"),
+                // Row 2 - Rosa/Quente
                 makeGradientSwatch("Berry Diagonal", 0xFF4B8D, 57, PRESET_GRADIENT_BERRY_D1, "linear-gradient(135deg, #32002b 0%, #ff4b8d 52%, #ffd0ef 100%)"),
-                makeGradientSwatch("Toxic Horizontal", 0x76FF03, 58, PRESET_GRADIENT_TOXIC_H, "linear-gradient(90deg, #142400 0%, #76ff03 52%, #00e5a8 100%)"),
+                makeGradientSwatch("Flamingo Horizontal", 0xFF6E96, 83, PRESET_GRADIENT_FLAMINGO_H, "linear-gradient(90deg, #5a0020 0%, #ff6e96 52%, #ffd0e0 100%)"),
+                makeGradientSwatch("Candy Diagonal", 0xFF50B4, 32, PRESET_GRADIENT_CANDY_D2, "linear-gradient(45deg, #7a00ff 0%, #ff4fb3 52%, #ffd1f0 100%)"),
+                makeGradientSwatch("Pôr do Sol Vertical", 0xFF7832, 81, PRESET_GRADIENT_POR_DO_SOL_V, "linear-gradient(180deg, #4a0500 0%, #ff7832 48%, #ffe0a0 100%)"),
+                // Row 3 - Ouro/Terra
                 makeGradientSwatch("Gold Vertical", 0xFFC247, 59, PRESET_GRADIENT_GOLD_V, "linear-gradient(180deg, #5a3900 0%, #ffc247 48%, #fff2b0 100%)"),
+                makeGradientSwatch("Cobre Horizontal", 0xC87832, 85, PRESET_GRADIENT_COBRE_H, "linear-gradient(90deg, #3a1800 0%, #c87832 52%, #ffd0a0 100%)"),
+                makeGradientSwatch("Steel Vertical", 0xA5B0C4, 34, PRESET_GRADIENT_STEEL_V, "linear-gradient(180deg, #454b57 0%, #a5b0c4 48%, #edf3ff 100%)"),
+                makeGradientSwatch("Noite Vertical", 0x191970, 84, PRESET_GRADIENT_NOITE_V, "linear-gradient(180deg, #000010 0%, #191970 48%, #6080c0 100%)"),
+                // Row 4 - Verde
+                makeGradientSwatch("Lima Horizontal", 0xA0FF00, 29, PRESET_GRADIENT_LIME_H, "linear-gradient(90deg, #355c00 0%, #a0ff00 52%, #efff7a 100%)"),
+                makeGradientSwatch("Toxic Horizontal", 0x76FF03, 58, PRESET_GRADIENT_TOXIC_H, "linear-gradient(90deg, #142400 0%, #76ff03 52%, #00e5a8 100%)"),
+                makeGradientSwatch("Aurora Vertical", 0x44FFB0, 54, PRESET_GRADIENT_AURORA_V, "linear-gradient(180deg, #004225 0%, #44ffb0 52%, #d7fff4 100%)"),
+                makeGradientSwatch("Floresta Horizontal", 0x00B43C, 79, PRESET_GRADIENT_FLORESTA_H, "linear-gradient(90deg, #002200 0%, #00b43c 52%, #a0ff00 100%)"),
+                // Row 5 - Ciano/Agua
+                makeGradientSwatch("Neon Diagonal", 0x00FFB4, 33, PRESET_GRADIENT_NEON_D1, "linear-gradient(135deg, #001b2e 0%, #00ffb4 52%, #c8ff00 100%)"),
                 makeGradientSwatch("Aqua Diagonal", 0x00D8FF, 60, PRESET_GRADIENT_AQUA_D1, "linear-gradient(135deg, #003a46 0%, #00d8ff 52%, #ddfeff 100%)"),
-                makeGradientSwatch("Grape Horizontal", 0x9B4DFF, 61, PRESET_GRADIENT_GRAPE_H, "linear-gradient(90deg, #22003a 0%, #9b4dff 52%, #f3b7ff 100%)")
+                makeGradientSwatch("Ice Diagonal", 0x78F0FF, 31, PRESET_GRADIENT_ICE_D1, "linear-gradient(135deg, #102a5c 0%, #63d8ff 52%, #dfffff 100%)"),
+                makeGradientSwatch("Ocean Horizontal", 0x00B4FF, 28, PRESET_GRADIENT_OCEAN_H, "linear-gradient(90deg, #003b8e 0%, #00c6ff 52%, #7cf7ff 100%)"),
+                // Row 6 - Azul/Roxo
+                makeGradientSwatch("Sky Diagonal", 0x62BEFF, 56, PRESET_GRADIENT_SKY_D2, "linear-gradient(45deg, #11224f 0%, #62beff 52%, #eef9ff 100%)"),
+                makeGradientSwatch("Oceano Profundo Diagonal", 0x0050A0, 82, PRESET_GRADIENT_OCEANO_PROFUNDO_D1, "linear-gradient(135deg, #000a28 0%, #0050a0 52%, #60c0ff 100%)"),
+                makeGradientSwatch("Grape Horizontal", 0x9B4DFF, 61, PRESET_GRADIENT_GRAPE_H, "linear-gradient(90deg, #22003a 0%, #9b4dff 52%, #f3b7ff 100%)"),
+                makeGradientSwatch("Ametista Diagonal", 0x823CFF, 80, PRESET_GRADIENT_AMETISTA_D1, "linear-gradient(135deg, #1a0040 0%, #823cff 52%, #d4b0ff 100%)")
             ];
 
-            const CUSTOM_BLACK_GRADIENT_INDEXES = [
-                23, 26, 25, 35, 24, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
-                47, 48, 49, 50, 51, 52, 53
+            // Cores sólidas originais do firmware (legado, indices 0-22)
+            const FIRMWARE_SOLID_BASE_WEB = [
+                { name: "Vermelho",    value: 0xFF0000 }, // 0
+                { name: "Verde",       value: 0x00FF00 }, // 1
+                { name: "Azul",        value: 0x0000FF }, // 2
+                { name: "Amarelo",     value: 0xFFFF00 }, // 3
+                { name: "Roxo",        value: 0x800080 }, // 4
+                { name: "Ciano",       value: 0x00FFFF }, // 5
+                { name: "Branco",      value: 0xFFFFFF }, // 6
+                { name: "Laranja",     value: 0xFF5000 }, // 7
+                { name: "Magenta",     value: 0xFF0080 }, // 8
+                { name: "Coral",       value: 0xFF1414 }, // 9
+                { name: "Azul Celeste",value: 0x0096FF }, // 10
+                { name: "Violeta",     value: 0xB400FF }, // 11
+                { name: "Rosa",        value: 0xFF64C8 }, // 12
+                { name: "Menta",       value: 0x32FF64 }, // 13
+                { name: "Preto",       value: 0x000000 }, // 14
+                { name: "Lilás",       value: 0xD6AAFF }, // 15
+                { name: "Rosê",        value: 0xFFAAD2 }, // 16
+                { name: "Prata",       value: 0xD6E0EC }, // 17
+                { name: "Royal",       value: 0x285CDC }, // 18
+                { name: "Âmbar",       value: 0xFFAA28 }, // 19
+                { name: "Lima",        value: 0x8ADE4A }, // 20
+                { name: "Turquesa",    value: 0x34C6FF }, // 21
+                { name: "Petróleo",    value: 0x0098A8 }  // 22
+            ];
+            const FIRMWARE_SOLID_EXT_WEB = [
+                { index: 62, name: "Ouro",       value: 0xFFD700 },
+                { index: 63, name: "Salmão",     value: 0xFF6B6B },
+                { index: 64, name: "Lavanda",    value: 0xB48EFF },
+                { index: 65, name: "Índigo",     value: 0x4B0082 },
+                { index: 66, name: "Pêssego",    value: 0xFFBB98 },
+                { index: 67, name: "Marfim",     value: 0xFFF0D0 },
+                { index: 68, name: "Oliva",      value: 0x6B8E23 },
+                { index: 69, name: "Chocolate",  value: 0xD2691E }
             ];
 
-            const PERFIS_CORES_WEB = Array(62).fill(null);
-            SOLID_COLORS_WEB.forEach((color, index) => {
-                PERFIS_CORES_WEB[index] = { ...color, actualIndex: index, storedValue: color.value };
+            const PERFIS_CORES_WEB = Array(256).fill(null);
+            // 1. Baseline: cores sólidas originais do firmware (legado + preview de LED)
+            FIRMWARE_SOLID_BASE_WEB.forEach((col, i) => {
+                PERFIS_CORES_WEB[i] = { ...col, actualIndex: i, storedValue: col.value };
             });
-            PERFIS_CORES_WEB[23] = makeBlackCoreGradientSwatch("Custom Vermelho", SOLID_COLORS_WEB[0].value, 23, SOLID_COLORS_WEB[0].value);
-            PERFIS_CORES_WEB[24] = makeBlackCoreGradientSwatch("Custom Roxo", SOLID_COLORS_WEB[4].value, 24, SOLID_COLORS_WEB[4].value);
-            PERFIS_CORES_WEB[25] = makeBlackCoreGradientSwatch("Custom Azul", SOLID_COLORS_WEB[2].value, 25, SOLID_COLORS_WEB[2].value);
-            PERFIS_CORES_WEB[26] = makeBlackCoreGradientSwatch("Custom Verde", SOLID_COLORS_WEB[1].value, 26, SOLID_COLORS_WEB[1].value);
+            FIRMWARE_SOLID_EXT_WEB.forEach(({ index, name, value }) => {
+                PERFIS_CORES_WEB[index] = { name, value, actualIndex: index, storedValue: value };
+            });
+            // 2. Gradientes (indices espalhados)
             MIX_FORMAT_GRADIENTS_WEB.forEach((color) => {
                 PERFIS_CORES_WEB[color.actualIndex] = color;
             });
-            PERFIS_CORES_WEB[35] = makeBlackCoreGradientSwatch("Custom Amarelo", SOLID_COLORS_WEB[3].value, 35, SOLID_COLORS_WEB[3].value);
-            PERFIS_CORES_WEB[36] = makeBlackCoreGradientSwatch("Custom Ciano", SOLID_COLORS_WEB[5].value, 36, SOLID_COLORS_WEB[5].value);
-            PERFIS_CORES_WEB[37] = makeBlackCoreGradientSwatch("Custom Branco", SOLID_COLORS_WEB[6].value, 37, SOLID_COLORS_WEB[6].value);
-            PERFIS_CORES_WEB[38] = makeBlackCoreGradientSwatch("Custom Laranja", SOLID_COLORS_WEB[7].value, 38, SOLID_COLORS_WEB[7].value);
-            PERFIS_CORES_WEB[39] = makeBlackCoreGradientSwatch("Custom Magenta", SOLID_COLORS_WEB[8].value, 39, SOLID_COLORS_WEB[8].value);
-            PERFIS_CORES_WEB[40] = makeBlackCoreGradientSwatch("Custom Coral", SOLID_COLORS_WEB[9].value, 40, SOLID_COLORS_WEB[9].value);
-            PERFIS_CORES_WEB[41] = makeBlackCoreGradientSwatch("Custom Azul Celeste", SOLID_COLORS_WEB[10].value, 41, SOLID_COLORS_WEB[10].value);
-            PERFIS_CORES_WEB[42] = makeBlackCoreGradientSwatch("Custom Violeta", SOLID_COLORS_WEB[11].value, 42, SOLID_COLORS_WEB[11].value);
-            PERFIS_CORES_WEB[43] = makeBlackCoreGradientSwatch("Custom Rosa", SOLID_COLORS_WEB[12].value, 43, SOLID_COLORS_WEB[12].value);
-            PERFIS_CORES_WEB[44] = makeBlackCoreGradientSwatch("Custom Menta", SOLID_COLORS_WEB[13].value, 44, SOLID_COLORS_WEB[13].value);
-            PERFIS_CORES_WEB[45] = makeBlackCoreGradientSwatch("Custom Preto", SOLID_COLORS_WEB[14].value, 45, SOLID_COLORS_WEB[14].value);
-            PERFIS_CORES_WEB[46] = makeBlackCoreGradientSwatch("Custom Lilas", SOLID_COLORS_WEB[15].value, 46, SOLID_COLORS_WEB[15].value);
-            PERFIS_CORES_WEB[47] = makeBlackCoreGradientSwatch("Custom Rose", SOLID_COLORS_WEB[16].value, 47, SOLID_COLORS_WEB[16].value);
-            PERFIS_CORES_WEB[48] = makeBlackCoreGradientSwatch("Custom Prata", SOLID_COLORS_WEB[17].value, 48, SOLID_COLORS_WEB[17].value);
-            PERFIS_CORES_WEB[49] = makeBlackCoreGradientSwatch("Custom Royal", SOLID_COLORS_WEB[18].value, 49, SOLID_COLORS_WEB[18].value);
-            PERFIS_CORES_WEB[50] = makeBlackCoreGradientSwatch("Custom Ambar", SOLID_COLORS_WEB[19].value, 50, SOLID_COLORS_WEB[19].value);
-            PERFIS_CORES_WEB[51] = makeBlackCoreGradientSwatch("Custom Lima", SOLID_COLORS_WEB[20].value, 51, SOLID_COLORS_WEB[20].value);
-            PERFIS_CORES_WEB[52] = makeBlackCoreGradientSwatch("Custom Turquesa", SOLID_COLORS_WEB[21].value, 52, SOLID_COLORS_WEB[21].value);
-            PERFIS_CORES_WEB[53] = makeBlackCoreGradientSwatch("Custom Petroleo", SOLID_COLORS_WEB[22].value, 53, SOLID_COLORS_WEB[22].value);
+            GRADIENT1_COLORS_WEB.forEach((color) => {
+                PERFIS_CORES_WEB[color.actualIndex] = color;
+            });
+            GRADIENT2_COLORS_WEB.forEach((color) => {
+                PERFIS_CORES_WEB[color.actualIndex] = color;
+            });
+            CUSTOM_COLORS_WEB.forEach((color) => {
+                PERFIS_CORES_WEB[color.actualIndex] = color;
+            });
+            // 3. Sólidos por último — indices 86-117
+            SOLID_COLORS_WEB.forEach((col, i) => {
+                const idx = SOLID_TO_PERFIS_MAP[i];
+                PERFIS_CORES_WEB[idx] = { ...col, actualIndex: idx, storedValue: col.value };
+            });
+            // 4. Custom preto-cor — indices 100-131
+            SOLID_COLORS_WEB.forEach((color, i) => {
+                const custIdx = CUSTOM_BLACK_GRADIENT_INDEXES[i];
+                PERFIS_CORES_WEB[custIdx] = makeBlackCoreGradientSwatch(
+                    `Custom ${color.name}`, color.value, custIdx, color.value
+                );
+            });
 
             function paletteColor(index) {
                 const color = PERFIS_CORES_WEB[index];
@@ -7622,7 +7722,7 @@
 
             const SOLID_CHOOSER_COLORS_WEB = [
                 makeSection("SOLID COLORS"),
-                ...Array.from({ length: SOLID_COLORS_WEB.length }, (_, index) => paletteColor(index))
+                ...SOLID_TO_PERFIS_MAP.map(index => paletteColor(index))
             ];
 
             const CUSTOM_CHOOSER_COLORS_WEB = [
@@ -7644,20 +7744,17 @@
             ].filter(Boolean);
 
             const PRESET_DIRECT_COLORS_WEB = [
-                makeSection("TRANSPARENCIA"),
+                makeSection("TRANSPARÊNCIA"),
                 { ...TRANSPARENT_COLOR_WEB, storedValue: DIRECT_COLOR_TRANSPARENT },
                 makeSection("SOLID COLORS"),
-                ...SOLID_COLORS_WEB.map((color, index) => ({ ...color, actualIndex: index, storedValue: color.value })),
+                ...SOLID_COLORS_WEB.map((col, i) => ({ ...col, actualIndex: SOLID_TO_PERFIS_MAP[i], storedValue: col.value })),
+                makeSection("GRADIENT 1"),
+                ...GRADIENT1_COLORS_WEB,
+                makeSection("GRADIENT 2"),
+                ...GRADIENT2_COLORS_WEB,
                 makeSection("CUSTOM"),
-                ...SOLID_COLORS_WEB.map((color, solidIndex) =>
-                    makeBlackCoreGradientSwatch(
-                        `Custom ${color.name}`,
-                        color.value,
-                        CUSTOM_BLACK_GRADIENT_INDEXES[solidIndex],
-                        buildCustomPresetGradientValue(solidIndex)
-                    )
-                ),
-                makeSection("MIX & FORMAT"),
+                ...CUSTOM_COLORS_WEB,
+                makeSection("MISCELÂNEAS"),
                 ...MIX_FORMAT_GRADIENTS_WEB
             ];
 
@@ -13671,7 +13768,6 @@
                 function setupColorPicker(triggerId, overlayId, panelId, hiddenInputId, previewBoxId, title) {
                     const colorPreview = document.getElementById(triggerId);
                     const colorOverlay = document.getElementById(overlayId);
-                    const colorPanel = document.getElementById(panelId);
 
                     if (colorPreview && colorOverlay) {
                         colorPreview.addEventListener('click', () => colorOverlay.classList.add('active'));
@@ -13680,36 +13776,19 @@
                         });
                     }
 
-                    if (colorPanel && typeof EXPANDED_CHOOSER_COLORS_WEB !== 'undefined') {
-                        colorPanel.classList.add('gradient-palette');
-                        colorPanel.innerHTML = `<div class="color-options-panel-title">${title}</div>`;
-                        EXPANDED_CHOOSER_COLORS_WEB.forEach((color, index) => {
-                            if (color && color.type === 'section') {
-                                const sectionTitle = document.createElement('div');
-                                sectionTitle.className = 'color-options-section-title';
-                                sectionTitle.textContent = color.title;
-                                colorPanel.appendChild(sectionTitle);
-                                return;
+                    if (document.getElementById(panelId) && typeof PRESET_DIRECT_COLORS_WEB !== 'undefined') {
+                        createColorOptionsPanel(panelId, PRESET_DIRECT_COLORS_WEB, (storedValue, idx, color) => {
+                            const box = document.getElementById(previewBoxId);
+                            if (box) {
+                                const isDot = !!(box.parentElement && box.parentElement.classList && box.parentElement.classList.contains('gig-dot-preview'));
+                                applyColorPreview(box, color || storedValue, isDot ? 'dot' : 'bar');
                             }
-                            const swatch = document.createElement('div');
-                            swatch.className = 'color-swatch';
-                            swatch.style.background = color.swatchCss || getColorHex(color);
-                            swatch.title = color.name;
-                            swatch.addEventListener('click', () => {
-                                const box = document.getElementById(previewBoxId);
-                                if (box) {
-                                    const isDot = !!(box.parentElement && box.parentElement.classList && box.parentElement.classList.contains('gig-dot-preview'));
-                                    applyColorPreview(box, color, isDot ? 'dot' : 'bar');
-                                }
-                                const hidden = document.getElementById(hiddenInputId);
-                                if (hidden) hidden.value = (typeof color.actualIndex === 'number') ? color.actualIndex : index;
-                                updateLocalPresetDataFromUI();
-                                try { if (typeof updateGigViewPreview === 'function') updateGigViewPreview(); } catch (_) { }
-                                try { if (typeof updateGigView2Preview === 'function') updateGigView2Preview(); } catch (_) { }
-                                colorOverlay.classList.remove('active');
-                            });
-                            colorPanel.appendChild(swatch);
-                        });
+                            const hidden = document.getElementById(hiddenInputId);
+                            if (hidden) hidden.value = (typeof color.actualIndex === 'number') ? color.actualIndex : idx;
+                            updateLocalPresetDataFromUI();
+                            try { if (typeof updateGigViewPreview === 'function') updateGigViewPreview(); } catch (_) { }
+                            try { if (typeof updateGigView2Preview === 'function') updateGigView2Preview(); } catch (_) { }
+                        }, { gradientPalette: true, panelTitle: title });
                     }
                 }
 
@@ -15597,6 +15676,43 @@
 
             function _getGigViewFillStyle(ctx, idx, x, y, w, h) {
                 if (typeof PERFIS_CORES_WEB === 'undefined') return 'rgb(80,80,80)';
+                // Indices 86-99: truly solid WEB colors on device (firmware reads PERFIS_CORES directly).
+                // Indices 100-131 are intercepted by firmware as custom black gradients, so let
+                // PERFIS_CORES_WEB[100-131] (custom gradient objects) handle those below.
+                if (idx >= 86 && idx <= 99 && typeof SOLID_COLORS_WEB !== 'undefined') {
+                    const solidColor = SOLID_COLORS_WEB[idx - 86];
+                    if (solidColor) {
+                        const v = solidColor.value;
+                        return `rgb(${(v >> 16) & 0xFF},${(v >> 8) & 0xFF},${v & 0xFF})`;
+                    }
+                }
+                // Indices 150-181 (GRADIENT1, vertical) and 200-231 (GRADIENT2, diagonal LR).
+                // Mimic firmware lerpRgb888: top=lerp(col,white,hi), mid=col, bot=lerp(col,black,lo).
+                if ((idx >= 150 && idx <= 181) || (idx >= 200 && idx <= 231)) {
+                    if (typeof SOLID_COLORS_WEB !== 'undefined') {
+                        const ci = idx >= 200 ? idx - 200 : idx - 150;
+                        const base = SOLID_COLORS_WEB[ci];
+                        if (base && ctx) {
+                            const v = base.value;
+                            const r = (v >> 16) & 0xFF, g = (v >> 8) & 0xFF, b = v & 0xFF;
+                            const hi = idx >= 200 ? 140 : 80;
+                            const lo = idx >= 200 ? 160 : 100;
+                            const tR = Math.min(255, r + (((255 - r) * hi / 255) | 0));
+                            const tG = Math.min(255, g + (((255 - g) * hi / 255) | 0));
+                            const tB = Math.min(255, b + (((255 - b) * hi / 255) | 0));
+                            const bR = (r * (255 - lo) / 255) | 0;
+                            const bG = (g * (255 - lo) / 255) | 0;
+                            const bB = (b * (255 - lo) / 255) | 0;
+                            const grad = idx >= 200
+                                ? ctx.createLinearGradient(x, y, x + w, y + h)
+                                : ctx.createLinearGradient(x, y, x, y + h);
+                            grad.addColorStop(0, `rgb(${tR},${tG},${tB})`);
+                            grad.addColorStop(0.5, `rgb(${r},${g},${b})`);
+                            grad.addColorStop(1, `rgb(${bR},${bG},${bB})`);
+                            return grad;
+                        }
+                    }
+                }
                 const c = PERFIS_CORES_WEB[idx] || PERFIS_CORES_WEB[6];
                 if (c && c.previewCss && c.previewCss.startsWith('linear-gradient(')) {
                     const grad = _makeCanvasGradient(ctx, c.previewCss, x, y, w, h);

@@ -711,6 +711,12 @@ window.addEventListener('touchstart', markSystemUserInteracted, { capture: true,
           } catch (e) {
             console.warn('Board config may not have been saved:', e);
           }
+          // Update UI to reflect restored values
+          const boardSel = document.getElementById('board-select');
+          if (boardSel) boardSel.value = boardName;
+          const invEl = document.getElementById('invertTela');
+          if (invEl) invEl.value = invertTela;
+          updateTelaOrientacaoButton();
           updateProgress('Board config restored');
           await new Promise(r => setTimeout(r, 50));
         }

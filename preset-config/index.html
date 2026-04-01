@@ -5854,6 +5854,12 @@
                     class="px-4 py-2 bg-blue-900/30 border border-blue-500/50 text-blue-400 rounded-lg hover:bg-blue-900/50 transition-all uppercase text-xs font-bold"
                     id="btnCopiar" onclick="handleCopy()">Copy Foot</button>
                 <button
+                    class="px-4 py-2 bg-purple-900/30 border border-purple-500/50 text-purple-400 rounded-lg hover:bg-purple-900/50 transition-all uppercase text-xs font-bold"
+                    id="btnCopiarLayer1" onclick="handleCopyLayer1()">Copiar Layer 1</button>
+                <button
+                    class="px-4 py-2 bg-indigo-900/30 border border-indigo-500/50 text-indigo-400 rounded-lg hover:bg-indigo-900/50 transition-all uppercase text-xs font-bold"
+                    id="btnCopiarCompleto" onclick="handleCopyPresetCompleto()">Copiar Preset Completo</button>
+                <button
                     class="px-4 py-2 bg-green-900/30 border border-green-500/50 text-green-400 rounded-lg hover:bg-green-900/50 transition-all uppercase text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled="" id="btnColar" onclick="handlePaste()">Colar</button>
             </div>
@@ -7587,8 +7593,8 @@
 
             // Mapeamento: posição i → índice firmware 86+i (WEB_PRETO..WEB_VERDE_CLA)
             const SOLID_TO_PERFIS_MAP = Array.from({ length: 32 }, (_, i) => i + 86);
-            // Gradientes preto-cor: índices 100+i → firmware usa PERFIS_CORES[86+i]
-            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 100);
+            // Gradientes preto-cor: índices 118+i → firmware usa PERFIS_CORES[86+i]
+            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 118);
 
             const GRADIENT1_BASE = 0x02000000;
             const GRADIENT2_BASE = 0x03000000;
@@ -7609,7 +7615,7 @@
             const CUSTOM_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
                 const hex = '#' + col.value.toString(16).padStart(6, '0');
                 const gradCss = `linear-gradient(180deg, #000000 0%, ${hex} 48%, #000000 100%)`;
-                return makeGradientSwatch('Custom ' + col.name, col.value, 100 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
+                return makeGradientSwatch('Custom ' + col.name, col.value, 118 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
             });
 
             const MIX_FORMAT_GRADIENTS_WEB = [
@@ -7708,7 +7714,7 @@
                 const idx = SOLID_TO_PERFIS_MAP[i];
                 PERFIS_CORES_WEB[idx] = { ...col, actualIndex: idx, storedValue: col.value };
             });
-            // Custom preto-cor por último — sobrescrevem índices 100-131
+            // Custom preto-cor por último — preenchem índices 118-149
             SOLID_COLORS_WEB.forEach((color, i) => {
                 const custIdx = CUSTOM_BLACK_GRADIENT_INDEXES[i];
                 PERFIS_CORES_WEB[custIdx] = makeBlackCoreGradientSwatch(
@@ -7804,7 +7810,8 @@
                 if (isTransparentColorRef(colorRef)) {
                     return TRANSPARENT_SWATCH_CSS;
                 }
-                if (colorRef && typeof colorRef === 'object' && colorRef.previewCss) {
+                // Para dot (bolinhas 23px), usar só backgroundColor — gradiente ficaria invisível nas bordas pretas
+                if (variant !== 'dot' && colorRef && typeof colorRef === 'object' && colorRef.previewCss) {
                     return colorRef.previewCss;
                 }
                 const hex = getColorHex(colorRef);
@@ -7818,6 +7825,61 @@
                 const hex = getColorHex(colorRef);
                 box.style.backgroundColor = isTransparentColorRef(colorRef) ? 'transparent' : hex;
                 box.style.backgroundImage = getColorPreviewCss(colorRef, variant);
+            }
+
+            function serializePreviewColorRef(colorRef) {
+                if (!colorRef || typeof colorRef !== 'object') return '';
+                return JSON.stringify({
+                    name: colorRef.name,
+                    value: colorRef.value,
+                    actualIndex: colorRef.actualIndex,
+                    storedValue: colorRef.storedValue,
+                    previewCss: colorRef.previewCss,
+                    swatchCss: colorRef.swatchCss
+                });
+            }
+
+            function parsePreviewColorRef(rawValue) {
+                if (!rawValue) return null;
+                try {
+                    const parsed = JSON.parse(rawValue);
+                    return (parsed && typeof parsed === 'object') ? parsed : null;
+                } catch (_) {
+                    return null;
+                }
+            }
+
+            function setInputPreviewColorRef(inputOrId, colorRef) {
+                const input = typeof inputOrId === 'string'
+                    ? document.getElementById(inputOrId)
+                    : inputOrId;
+                if (!input || !input.dataset) return;
+                const serialized = serializePreviewColorRef(colorRef);
+                if (serialized) input.dataset.previewColorRef = serialized;
+                else delete input.dataset.previewColorRef;
+            }
+
+            function findPresetDirectColorByIndex(idx) {
+                if (!Array.isArray(PRESET_DIRECT_COLORS_WEB)) return null;
+                return PRESET_DIRECT_COLORS_WEB.find(color =>
+                    color && typeof color === 'object' && color.type !== 'section' && color.actualIndex === idx
+                ) || null;
+            }
+
+            function getIndexedPreviewColorRef(idx) {
+                if (idx === TRANSPARENT_COLOR_INDEX) return TRANSPARENT_COLOR_WEB;
+                return findPresetDirectColorByIndex(idx) || PERFIS_CORES_WEB[idx] || PERFIS_CORES_WEB[9] || null;
+            }
+
+            function getInputPreviewColorRef(inputId, fallbackIdx) {
+                const input = document.getElementById(inputId);
+                const fromDataset = parsePreviewColorRef(input?.dataset?.previewColorRef);
+                if (fromDataset) return fromDataset;
+                const parsedValue = parseInt(input?.value || `${fallbackIdx}`, 10);
+                const safeIdx = Number.isNaN(parsedValue) ? fallbackIdx : parsedValue;
+                const fallbackRef = getIndexedPreviewColorRef(safeIdx);
+                if (input && fallbackRef) setInputPreviewColorRef(input, fallbackRef);
+                return fallbackRef;
             }
 
             // Base de API robusta: tenta origem atual, mDNS e IP do AP
@@ -8108,9 +8170,47 @@
                 toggleFooterOptions();
             }
 
+            function handleCopyLayer1() {
+                const globalIndex = currentPresetColumnIndex * NUM_PRESET_ROWS + currentPresetRowIndex;
+                const defaultPreset = getSingleDefaultPresetData(currentPresetColumnIndex, currentPresetRowIndex);
+                const layer1Data = allPresetsData[0][globalIndex] || defaultPreset;
+                presetClipboard = {
+                    layer1: JSON.parse(JSON.stringify(layer1Data)),
+                    hasLayer2: false
+                };
+                document.getElementById('statusMessage').textContent = `Preset ${String.fromCharCode(65 + currentPresetRowIndex)}${currentPresetColumnIndex + 1} Layer 1 copiado!`;
+                try {
+                    localStorage.setItem('bfmidiPresetClipboard', JSON.stringify(presetClipboard));
+                    document.getElementById('btnColar').disabled = false;
+                } catch (_) { }
+                try { showCopyPasteBanner('COPIADO'); } catch (_) { }
+                toggleFooterOptions();
+            }
+
+            function handleCopyPresetCompleto() {
+                const globalIndex = currentPresetColumnIndex * NUM_PRESET_ROWS + currentPresetRowIndex;
+                const defaultPreset = getSingleDefaultPresetData(currentPresetColumnIndex, currentPresetRowIndex);
+                const layer1Data = allPresetsData[0][globalIndex] || defaultPreset;
+                const layer2Data = allPresetsData[1][globalIndex] || defaultPreset;
+                presetClipboard = {
+                    layer1: JSON.parse(JSON.stringify(layer1Data)),
+                    layer2: JSON.parse(JSON.stringify(layer2Data)),
+                    hasLayer2: true
+                };
+                document.getElementById('statusMessage').textContent = `Preset ${String.fromCharCode(65 + currentPresetRowIndex)}${currentPresetColumnIndex + 1} completo copiado (Layer 1 + Layer 2)!`;
+                try {
+                    localStorage.setItem('bfmidiPresetClipboard', JSON.stringify(presetClipboard));
+                    document.getElementById('btnColar').disabled = false;
+                } catch (_) { }
+                try { showCopyPasteBanner('COPIADO'); } catch (_) { }
+                toggleFooterOptions();
+            }
+
             // Expose footer handlers globally for inline onclick attributes
             window.toggleFooterOptions = toggleFooterOptions;
             window.handleCopy = handleCopy;
+            window.handleCopyLayer1 = handleCopyLayer1;
+            window.handleCopyPresetCompleto = handleCopyPresetCompleto;
             window.handlePaste = handlePaste;
 
             const MODE_OPTIONS_WEB = [
@@ -8547,24 +8647,6 @@
                     // Depois atualiza os foots do layer visivel
                     updateAllFootButtonsUI();
 
-                    // Auto-seleciona FOOT 1 se nenhum switch selecionado (lightweight, sem btn.click)
-                    if (currentSwitchIndex < 0) {
-                        const preferredBtn = document.querySelector(`#layer${currentUiLayer}Switches .grid-btn[data-switch-index-in-layer="0"]`);
-                        const fallbackBtn = document.querySelector('#switchSelection .grid-btn');
-                        const targetBtn = preferredBtn || fallbackBtn;
-                        if (targetBtn) {
-                            const selectedLayer = parseInt(targetBtn.dataset.layer, 10);
-                            if (!isNaN(selectedLayer)) currentLiveLayer = selectedLayer;
-                            currentSwitchIndex = 0;
-                            document.querySelectorAll('#switchSelection .grid-btn').forEach(b => {
-                                b.classList.remove('active');
-                                b.setAttribute('aria-pressed', 'false');
-                            });
-                            targetBtn.classList.add('active');
-                            targetBtn.setAttribute('aria-pressed', 'true');
-                        }
-                    }
-
                     if (currentSwitchIndex >= 0) {
                         populateModeOptions(currentSwitchIndex);
                         showSwitchConfigArea();
@@ -8928,7 +9010,6 @@
 
                         fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex).then(() => {
                             setupEventListeners();
-                            ensureDefaultSwitchSelection(true);
                         }).catch(error => {
                             console.error("Erro inicializacao:", error);
                             document.getElementById('statusMessage').textContent = "Erro critico na inicializacao.";
@@ -8951,7 +9032,6 @@
                         initCustomSelects();
                         fetchAndLoadSinglePreset(currentPresetColumnIndex, currentPresetRowIndex).then(() => {
                             setupEventListeners();
-                            ensureDefaultSwitchSelection(true);
                         });
                     });
             }
@@ -11791,37 +11871,36 @@
                         }
 
                         // Helper to update preview box
-                        const updatePreview = (val, boxId) => {
+                        const updatePreview = (val, boxId, inputId) => {
                             const box = document.getElementById(boxId);
                             if (box && typeof PERFIS_CORES_WEB !== 'undefined') {
-                                const c = (val === TRANSPARENT_COLOR_INDEX)
-                                    ? TRANSPARENT_COLOR_WEB
-                                    : (PERFIS_CORES_WEB[val] || PERFIS_CORES_WEB[9]);
+                                const c = getIndexedPreviewColorRef(val);
                                 if (c) {
+                                    if (inputId) setInputPreviewColorRef(inputId, c);
                                     const isDot = !!(box.parentElement && box.parentElement.classList && box.parentElement.classList.contains('gig-dot-preview'));
                                     applyColorPreview(box, c, isDot ? 'dot' : 'bar');
                                 }
                             }
                         };
                         if (slot === 1) {
-                            updatePreview(iOn, 'selectedIconColorPreviewBox');
-                            updatePreview(iOff, 'selectedIconColorOffPreviewBox');
-                            updatePreview(backOn, 'selectedBackColorOnPreviewBox');
-                            updatePreview(backOff, 'selectedBackColorOffPreviewBox');
-                            updatePreview(bOff, 'selectedBorderColorOffPreviewBox');
+                            updatePreview(iOn, 'selectedIconColorPreviewBox', 'switchIconColorValue');
+                            updatePreview(iOff, 'selectedIconColorOffPreviewBox', 'switchIconColorOffValue');
+                            updatePreview(backOn, 'selectedBackColorOnPreviewBox', 'switchBackColorOnValue');
+                            updatePreview(backOff, 'selectedBackColorOffPreviewBox', 'switchBackColorOffValue');
+                            updatePreview(bOff, 'selectedBorderColorOffPreviewBox', 'switchBorderColorOffValue');
                             // Update borderColorOn preview
                             const bOnVal = (swData?.border_color_on !== undefined) ? swData.border_color_on : 9;
-                            updatePreview(bOnVal, 'selectedBorderColorOnPreviewBox');
+                            updatePreview(bOnVal, 'selectedBorderColorOnPreviewBox', 'switchBorderColorOnValue');
                             // Update GigView live preview with the new colors
                             try { updateGigViewPreview(); } catch (_) { }
                         } else {
-                            updatePreview(iOn, 'selectedIconColor2PreviewBox');
-                            updatePreview(iOff, 'selectedIconColor2OffPreviewBox');
-                            updatePreview(backOn, 'selectedBackColorOn2PreviewBox');
-                            updatePreview(backOff, 'selectedBackColorOff2PreviewBox');
-                            updatePreview(bOff, 'selectedBorderColorOff2PreviewBox');
+                            updatePreview(iOn, 'selectedIconColor2PreviewBox', 'switchIconColor2Value');
+                            updatePreview(iOff, 'selectedIconColor2OffPreviewBox', 'switchIconColor2OffValue');
+                            updatePreview(backOn, 'selectedBackColorOn2PreviewBox', 'switchBackColorOn2Value');
+                            updatePreview(backOff, 'selectedBackColorOff2PreviewBox', 'switchBackColorOff2Value');
+                            updatePreview(bOff, 'selectedBorderColorOff2PreviewBox', 'switchBorderColorOff2Value');
                             const bOnVal2 = (swData?.border_color_on_2 !== undefined) ? swData.border_color_on_2 : 9;
-                            updatePreview(bOnVal2, 'selectedBorderColorOn2PreviewBox');
+                            updatePreview(bOnVal2, 'selectedBorderColorOn2PreviewBox', 'switchBorderColorOn2Value');
                             try { updateGigView2Preview(); } catch (_) { }
                         }
                     }
@@ -13870,45 +13949,28 @@
                 function setupColorPicker(triggerId, overlayId, panelId, hiddenInputId, previewBoxId, title) {
                     const colorPreview = document.getElementById(triggerId);
                     const colorOverlay = document.getElementById(overlayId);
-                    const colorPanel = document.getElementById(panelId);
-
                     if (colorPreview && colorOverlay) {
                         colorPreview.addEventListener('click', () => colorOverlay.classList.add('active'));
                         colorOverlay.addEventListener('click', (e) => {
                             if (e.target === colorOverlay) colorOverlay.classList.remove('active');
                         });
                     }
-
-                    if (colorPanel && typeof EXPANDED_CHOOSER_COLORS_WEB !== 'undefined') {
-                        colorPanel.classList.add('gradient-palette');
-                        colorPanel.innerHTML = `<div class="color-options-panel-title">${title}</div>`;
-                        EXPANDED_CHOOSER_COLORS_WEB.forEach((color, index) => {
-                            if (color && color.type === 'section') {
-                                const sectionTitle = document.createElement('div');
-                                sectionTitle.className = 'color-options-section-title';
-                                sectionTitle.textContent = color.title;
-                                colorPanel.appendChild(sectionTitle);
-                                return;
+                    if (document.getElementById(panelId) && typeof PRESET_DIRECT_COLORS_WEB !== 'undefined') {
+                        createColorOptionsPanel(panelId, PRESET_DIRECT_COLORS_WEB, (storedValue, idx, color) => {
+                            const box = document.getElementById(previewBoxId);
+                            if (box) {
+                                const isDot = !!(box.parentElement && box.parentElement.classList && box.parentElement.classList.contains('gig-dot-preview'));
+                                applyColorPreview(box, color || storedValue, isDot ? 'dot' : 'bar');
                             }
-                            const swatch = document.createElement('div');
-                            swatch.className = 'color-swatch';
-                            swatch.style.background = color.swatchCss || getColorHex(color);
-                            swatch.title = color.name;
-                            swatch.addEventListener('click', () => {
-                                const box = document.getElementById(previewBoxId);
-                                if (box) {
-                                    const isDot = !!(box.parentElement && box.parentElement.classList && box.parentElement.classList.contains('gig-dot-preview'));
-                                    applyColorPreview(box, color, isDot ? 'dot' : 'bar');
-                                }
-                                const hidden = document.getElementById(hiddenInputId);
-                                if (hidden) hidden.value = (typeof color.actualIndex === 'number') ? color.actualIndex : index;
-                                updateLocalPresetDataFromUI();
-                                try { if (typeof updateGigViewPreview === 'function') updateGigViewPreview(); } catch (_) { }
-                                try { if (typeof updateGigView2Preview === 'function') updateGigView2Preview(); } catch (_) { }
-                                colorOverlay.classList.remove('active');
-                            });
-                            colorPanel.appendChild(swatch);
-                        });
+                            const hidden = document.getElementById(hiddenInputId);
+                            if (hidden) {
+                                hidden.value = (typeof color.actualIndex === 'number') ? color.actualIndex : idx;
+                                setInputPreviewColorRef(hidden, color || null);
+                            }
+                            updateLocalPresetDataFromUI();
+                            try { if (typeof updateGigViewPreview === 'function') updateGigViewPreview(); } catch (_) { }
+                            try { if (typeof updateGigView2Preview === 'function') updateGigView2Preview(); } catch (_) { }
+                        }, { gradientPalette: true, panelTitle: title });
                     }
                 }
 
@@ -15805,9 +15867,44 @@
                 return grad;
             }
 
-            function _getGigViewFillStyle(ctx, idx, x, y, w, h) {
+            function _getGigViewFillStyle(ctx, colorRefOrIdx, fallbackIdx, x, y, w, h) {
+                const hasColorRef = colorRefOrIdx && typeof colorRefOrIdx === 'object';
+                const idx = hasColorRef
+                    ? ((typeof colorRefOrIdx.actualIndex === 'number') ? colorRefOrIdx.actualIndex : fallbackIdx)
+                    : colorRefOrIdx;
                 if (typeof PERFIS_CORES_WEB === 'undefined') return 'rgb(80,80,80)';
-                const c = PERFIS_CORES_WEB[idx] || PERFIS_CORES_WEB[6];
+                if (hasColorRef && typeof colorRefOrIdx.value === 'number' && !colorRefOrIdx.previewCss) {
+                    const v = colorRefOrIdx.value;
+                    return `rgb(${(v >> 16) & 0xFF},${(v >> 8) & 0xFF},${v & 0xFF})`;
+                }
+                // Indices 150-181 (GRADIENT1, vertical) and 200-231 (GRADIENT2, diagonal LR).
+                // Mimic firmware lerpRgb888: top=lerp(col,white,hi), mid=col, bot=lerp(col,black,lo).
+                if ((idx >= 150 && idx <= 181) || (idx >= 200 && idx <= 231)) {
+                    if (typeof SOLID_COLORS_WEB !== 'undefined') {
+                        const ci = idx >= 200 ? idx - 200 : idx - 150;
+                        const base = SOLID_COLORS_WEB[ci];
+                        if (base && ctx) {
+                            const v = base.value;
+                            const r = (v >> 16) & 0xFF, g = (v >> 8) & 0xFF, b = v & 0xFF;
+                            const hi = idx >= 200 ? 140 : 80;
+                            const lo = idx >= 200 ? 160 : 100;
+                            const tR = Math.min(255, r + (((255 - r) * hi / 255) | 0));
+                            const tG = Math.min(255, g + (((255 - g) * hi / 255) | 0));
+                            const tB = Math.min(255, b + (((255 - b) * hi / 255) | 0));
+                            const bR = (r * (255 - lo) / 255) | 0;
+                            const bG = (g * (255 - lo) / 255) | 0;
+                            const bB = (b * (255 - lo) / 255) | 0;
+                            const grad = idx >= 200
+                                ? ctx.createLinearGradient(x, y, x + w, y + h)
+                                : ctx.createLinearGradient(x, y, x, y + h);
+                            grad.addColorStop(0, `rgb(${tR},${tG},${tB})`);
+                            grad.addColorStop(0.5, `rgb(${r},${g},${b})`);
+                            grad.addColorStop(1, `rgb(${bR},${bG},${bB})`);
+                            return grad;
+                        }
+                    }
+                }
+                const c = hasColorRef ? colorRefOrIdx : (getIndexedPreviewColorRef(idx) || PERFIS_CORES_WEB[6]);
                 if (c && c.previewCss && c.previewCss.startsWith('linear-gradient(')) {
                     const grad = _makeCanvasGradient(ctx, c.previewCss, x, y, w, h);
                     if (grad) return grad;
@@ -15858,6 +15955,12 @@
                 const backColorOffIdx = parseInt(document.getElementById('switchBackColorOffValue')?.value || '14', 10);
                 const borderColorOnIdx = parseInt(document.getElementById('switchBorderColorOnValue')?.value || '9', 10);
                 const borderColorOffIdx = parseInt(document.getElementById('switchBorderColorOffValue')?.value || '9', 10);
+                const iconColorOnRef = getInputPreviewColorRef('switchIconColorValue', 6);
+                const iconColorOffRef = getInputPreviewColorRef('switchIconColorOffValue', 6);
+                const backColorOnRef = getInputPreviewColorRef('switchBackColorOnValue', 14);
+                const backColorOffRef = getInputPreviewColorRef('switchBackColorOffValue', 14);
+                const borderColorOnRef = getInputPreviewColorRef('switchBorderColorOnValue', 9);
+                const borderColorOffRef = getInputPreviewColorRef('switchBorderColorOffValue', 9);
                 const iconFxId = normalizeFxIconId(document.getElementById('switchIconFxValue')?.value || '0');
                 const siglaFx = (document.getElementById('switchSiglaFx')?.value || 'FX').toUpperCase();
                 const iconName = (document.getElementById('switchIconName')?.value || '').toUpperCase();
@@ -15881,6 +15984,9 @@
                 const backIdx = previewIsOn ? backColorOnIdx : backColorOffIdx;
                 const iconIdx = previewIsOn ? iconColorOnIdx : iconColorOffIdx;
                 const borderIdx = previewIsOn ? borderColorOnIdx : borderColorOffIdx;
+                const backRef = previewIsOn ? backColorOnRef : backColorOffRef;
+                const iconRef = previewIsOn ? iconColorOnRef : iconColorOffRef;
+                const borderRef = previewIsOn ? borderColorOnRef : borderColorOffRef;
 
                 const backColor = getColor(backIdx);
                 const icColor = getColor(iconIdx);
@@ -15904,14 +16010,14 @@
                 ctx.shadowOffsetY = 4;
                 ctx.beginPath();
                 ctx.roundRect(bx, by, bw, bh, radius);
-                ctx.fillStyle = _getGigViewFillStyle(ctx, backIdx, bx, by, bw, bh);
+                ctx.fillStyle = _getGigViewFillStyle(ctx, backRef, backIdx, bx, by, bw, bh);
                 ctx.fill();
                 ctx.restore();
 
                 // Borda
                 const borderWidth = Math.max(2, Math.min(bw, bh) * 0.045);
                 ctx.lineWidth = borderWidth;
-                ctx.strokeStyle = _getGigViewFillStyle(ctx, borderIdx, bx, by, bw, bh);
+                ctx.strokeStyle = _getGigViewFillStyle(ctx, borderRef, borderIdx, bx, by, bw, bh);
                 ctx.beginPath();
                 ctx.roundRect(bx + borderWidth / 2, by + borderWidth / 2,
                     bw - borderWidth, bh - borderWidth, radius);
@@ -15938,7 +16044,7 @@
                         tempC.width = iw;
                         tempC.height = ih;
                         const tctx = tempC.getContext('2d');
-                        tctx.fillStyle = _getGigViewFillStyle(tctx, iconIdx, 0, 0, iw, ih);
+                        tctx.fillStyle = _getGigViewFillStyle(tctx, iconRef, iconIdx, 0, 0, iw, ih);
                         tctx.fillRect(0, 0, iw, ih);
                         tctx.globalCompositeOperation = 'destination-in';
                         tctx.drawImage(nativeCanvas, 0, 0);
@@ -15950,7 +16056,7 @@
                 } else {
                     const displayText = siglaFx || 'FX';
                     const fontSize = Math.max(14, Math.min(bh * 0.28, bw * 0.26));
-                    ctx.fillStyle = _getGigViewFillStyle(ctx, iconIdx, bx, by, bw, bh);
+                    ctx.fillStyle = _getGigViewFillStyle(ctx, iconRef, iconIdx, bx, by, bw, bh);
                     ctx.font = `800 ${fontSize}px 'Inter', sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
@@ -15959,7 +16065,7 @@
 
                 // Nome na parte inferior do botão (apenas no modo ICONE)
                 if (hasName && isIconMode) {
-                    ctx.fillStyle = _getGigViewFillStyle(ctx, iconIdx, bx, by, bw, bh);
+                    ctx.fillStyle = _getGigViewFillStyle(ctx, iconRef, iconIdx, bx, by, bw, bh);
                     ctx.globalAlpha = 0.75;
                     const nameFSize = Math.max(11, bh * 0.165);
                     ctx.font = `700 ${nameFSize}px 'Inter', sans-serif`;
@@ -16011,6 +16117,12 @@
                 const backColorOffIdx = parseInt(document.getElementById('switchBackColorOff2Value')?.value || '14', 10);
                 const borderColorOnIdx = parseInt(document.getElementById('switchBorderColorOn2Value')?.value || '9', 10);
                 const borderColorOffIdx = parseInt(document.getElementById('switchBorderColorOff2Value')?.value || '9', 10);
+                const iconColorOnRef = getInputPreviewColorRef('switchIconColor2Value', 6);
+                const iconColorOffRef = getInputPreviewColorRef('switchIconColor2OffValue', 6);
+                const backColorOnRef = getInputPreviewColorRef('switchBackColorOn2Value', 14);
+                const backColorOffRef = getInputPreviewColorRef('switchBackColorOff2Value', 14);
+                const borderColorOnRef = getInputPreviewColorRef('switchBorderColorOn2Value', 9);
+                const borderColorOffRef = getInputPreviewColorRef('switchBorderColorOff2Value', 9);
                 const iconFxId = normalizeFxIconId(document.getElementById('switchIconFx2Value')?.value || '0');
                 const siglaFx = (document.getElementById('switchSiglaFx2')?.value || 'FX2').toUpperCase();
 
@@ -16029,6 +16141,9 @@
                 const backIdx = previewIsOn ? backColorOnIdx : backColorOffIdx;
                 const iconIdx = previewIsOn ? iconColorOnIdx : iconColorOffIdx;
                 const borderIdx = previewIsOn ? borderColorOnIdx : borderColorOffIdx;
+                const backRef = previewIsOn ? backColorOnRef : backColorOffRef;
+                const iconRef = previewIsOn ? iconColorOnRef : iconColorOffRef;
+                const borderRef = previewIsOn ? borderColorOnRef : borderColorOffRef;
 
                 const backColor = getColor(backIdx);
                 const icColor = getColor(iconIdx);
@@ -16049,13 +16164,13 @@
                 ctx.shadowOffsetY = 4;
                 ctx.beginPath();
                 ctx.roundRect(bx, by, bw, bh, radius);
-                ctx.fillStyle = _getGigViewFillStyle(ctx, backIdx, bx, by, bw, bh);
+                ctx.fillStyle = _getGigViewFillStyle(ctx, backRef, backIdx, bx, by, bw, bh);
                 ctx.fill();
                 ctx.restore();
 
                 const borderWidth = Math.max(2, Math.min(bw, bh) * 0.045);
                 ctx.lineWidth = borderWidth;
-                ctx.strokeStyle = _getGigViewFillStyle(ctx, borderIdx, bx, by, bw, bh);
+                ctx.strokeStyle = _getGigViewFillStyle(ctx, borderRef, borderIdx, bx, by, bw, bh);
                 ctx.beginPath();
                 ctx.roundRect(bx + borderWidth / 2, by + borderWidth / 2,
                     bw - borderWidth, bh - borderWidth, radius);
@@ -16079,7 +16194,7 @@
                         tempC.width = iw;
                         tempC.height = ih;
                         const tctx = tempC.getContext('2d');
-                        tctx.fillStyle = _getGigViewFillStyle(tctx, iconIdx, 0, 0, iw, ih);
+                        tctx.fillStyle = _getGigViewFillStyle(tctx, iconRef, iconIdx, 0, 0, iw, ih);
                         tctx.fillRect(0, 0, iw, ih);
                         tctx.globalCompositeOperation = 'destination-in';
                         tctx.drawImage(nativeCanvas, 0, 0);
@@ -16091,7 +16206,7 @@
                 } else {
                     const displayText = siglaFx || 'FX2';
                     const fontSize = Math.max(14, Math.min(bh * 0.28, bw * 0.26));
-                    ctx.fillStyle = _getGigViewFillStyle(ctx, iconIdx, bx, by, bw, bh);
+                    ctx.fillStyle = _getGigViewFillStyle(ctx, iconRef, iconIdx, bx, by, bw, bh);
                     ctx.font = `800 ${fontSize}px 'Inter', sans-serif`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
