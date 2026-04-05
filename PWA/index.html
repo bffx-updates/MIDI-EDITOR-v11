@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#121214" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BFMIDI" />
+  <title>BFMIDI Mobile</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="../assets/icons/icon-192.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Tokens ─────────────────────────────────────── */
+    :root {
+      --bg: #121214;
+      --bg-card: #1c1c1f;
+      --bg-card2: #232326;
+      --accent: #FFB300;
+      --accent-dim: rgba(255, 179, 0, 0.15);
+      --accent-glow: rgba(255, 179, 0, 0.35);
+      --text: #f2f2f2;
+      --text-2: #a1a1aa;
+      --border: #333336;
+      --ok: #22c55e;
+      --err: #ef4444;
+      --header-h: 56px;
+      --nav-h: 64px;
+      --safe-b: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* ── Reset ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
+    }
+
+    /* ── Shell ───────────────────────────────────────── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      height: 100dvh;
+    }
+
+    /* ── Header ──────────────────────────────────────── */
+    #app-header {
+      height: var(--header-h);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      z-index: 30;
+    }
+
+    .brand-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      display: flex; align-items: center; justify-content: center;
+      color: #000; font-weight: 800; font-size: 0.72rem;
+      box-shadow: 0 0 12px rgba(245,158,11,0.35);
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text {
+      flex: 1;
+      line-height: 1;
+    }
+    .brand-text h1 {
+      font-size: 0.95rem; font-weight: 800;
+      letter-spacing: 0.05em; color: #fff;
+    }
+    .brand-text h1 span { color: var(--accent); }
+    .brand-sub {
+      font-size: 9px; color: #71717a;
+      text-transform: uppercase; letter-spacing: 0.18em; font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* connection status pill */
+    #status-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    #status-pill.disconnected {
+      border-color: rgba(239,68,68,0.35);
+      background: rgba(239,68,68,0.08);
+      color: #f87171;
+    }
+    #status-pill.connecting {
+      border-color: rgba(255,179,0,0.35);
+      background: rgba(255,179,0,0.08);
+      color: var(--accent);
+    }
+    #status-pill.connected {
+      border-color: rgba(34,197,94,0.35);
+      background: rgba(34,197,94,0.08);
+      color: #4ade80;
+    }
+    #status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .disconnected #status-dot { background: #f87171; }
+    .connecting #status-dot { background: var(--accent); animation: pulse-dot 1s infinite; }
+    .connected #status-dot { background: #4ade80; }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── Content area ────────────────────────────────── */
+    #frame-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #content-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: var(--bg);
+      display: block;
+    }
+
+    /* ── Bottom navigation ───────────────────────────── */
+    #bottom-nav {
+      height: calc(var(--nav-h) + var(--safe-b));
+      flex-shrink: 0;
+      display: flex;
+      align-items: stretch;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding-bottom: var(--safe-b);
+      z-index: 30;
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-2);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.18s, background 0.18s;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-btn .nav-icon {
+      font-size: 22px;
+      transition: transform 0.18s;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+    }
+
+    .nav-btn.active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 2px;
+      border-radius: 0 0 2px 2px;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .nav-btn:active .nav-icon {
+      transform: scale(0.88);
+    }
+
+    /* ── Connection overlay ──────────────────────────── */
+    #connect-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      padding-bottom: calc(24px + var(--safe-b));
+    }
+
+    #connect-screen.hidden {
+      display: none;
+    }
+
+    .connect-logo {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      display: flex; align-items: center; justify-content: center;
+      color: #000; font-weight: 800; font-size: 1.4rem;
+      box-shadow:
+        0 0 0 1px rgba(245,158,11,0.2),
+        0 0 40px rgba(245,158,11,0.25),
+        0 8px 24px rgba(0,0,0,0.4);
+      margin-bottom: 24px;
+    }
+
+    .connect-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .connect-sub {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      text-align: center;
+      margin-bottom: 32px;
+      line-height: 1.55;
+      max-width: 300px;
+    }
+
+    .connect-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ip-input {
+      flex: 1;
+      height: 46px;
+      background: #1a1a1d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0 14px;
+      color: var(--text);
+      font-family: 'Inter', monospace;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .ip-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .btn-connect {
+      height: 46px;
+      padding: 0 20px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.1s;
+      box-shadow: 0 0 16px var(--accent-glow);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-connect:active { transform: scale(0.96); }
+    .btn-connect:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .connect-info {
+      font-size: 11px;
+      color: #52525b;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .connect-info b { color: #71717a; }
+
+    #connect-error {
+      display: none;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #fca5a5;
+      line-height: 1.5;
+    }
+    #connect-error.visible { display: block; }
+
+    /* HTTPS warning */
+    #https-warn {
+      display: none;
+      width: 100%;
+      max-width: 360px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 11px;
+      color: #fcd34d;
+      line-height: 1.65;
+      text-align: left;
+      margin-top: -6px;
+    }
+    #https-warn.visible { display: block; }
+    #https-warn b { color: #fde68a; }
+
+    .btn-open-direct {
+      display: none;
+      width: 100%;
+      height: 42px;
+      background: transparent;
+      border: 1px solid rgba(255,179,0,0.35);
+      border-radius: 10px;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .btn-open-direct.visible { display: block; }
+    .btn-open-direct:active { background: rgba(255,179,0,0.1); }
+
+    /* ── Page loader ─────────────────────────────────── */
+    #page-loader {
+      position: absolute;
+      inset: 0;
+      background: rgba(18,18,20,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      gap: 16px;
+      backdrop-filter: blur(2px);
+    }
+    #page-loader.hidden { display: none; }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,179,0,0.15);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Toast ────────────────────────────────────────── */
+    #toast-container {
+      position: fixed;
+      bottom: calc(var(--nav-h) + var(--safe-b) + 12px);
+      left: 12px; right: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      animation: toast-in 0.25s ease;
+      pointer-events: auto;
+      max-width: 100%;
+    }
+    .toast-info { background: #232326; border: 1px solid #444; color: #e2e2e5; }
+    .toast-ok { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+    .toast-err { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Disconnected banner (inside frame area) ─────── */
+    #disconnected-banner {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 15;
+      padding: 24px;
+    }
+    #disconnected-banner.visible {
+      display: flex;
+    }
+    .disconn-icon {
+      font-size: 56px;
+      color: #3f3f46;
+    }
+    .disconn-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #a1a1aa;
+      text-align: center;
+    }
+    .disconn-sub {
+      font-size: 0.8rem;
+      color: #52525b;
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.55;
+    }
+    .btn-reconnect {
+      height: 44px;
+      padding: 0 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 14px var(--accent-glow);
+      margin-top: 4px;
+    }
+
+    /* ── Mobile overrides injected into iframe ────────── */
+    /* (kept here as a reference — injected via JS) */
+  </style>
+</head>
+
+<body>
+
+<!-- ── Connection screen ──────────────────────────────── -->
+<div id="connect-screen">
+  <div class="connect-logo">BF</div>
+  <h1 class="connect-title">BFMIDI <span style="color:var(--accent)">MOBILE</span></h1>
+  <p class="connect-sub">
+    Conecte seu celular à rede WiFi do BFMIDI e informe o endereço IP do dispositivo.
+  </p>
+
+  <div id="https-warn">
+    ⚠ <b>Página servida via HTTPS (GitHub Pages).</b><br>
+    O Chrome pode bloquear chamadas HTTP para o dispositivo local.<br><br>
+    <b>Solução:</b> O firmware V11 já inclui os headers CORS + Private Network Access necessários.
+    No Chrome Android, ao conectar, <b>autorize o acesso à rede local</b> quando solicitado.
+    Safari iOS pode bloquear — use Chrome ou Kiwi Browser.
+  </div>
+
+  <div class="connect-card">
+    <div>
+      <div class="field-label">Endereço IP do dispositivo</div>
+      <div class="field-row">
+        <input class="ip-input" id="ip-input" type="text"
+               placeholder="192.168.4.1" inputmode="url" autocomplete="off"
+               autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <button class="btn-connect" id="btn-connect">Conectar</button>
+      </div>
+    </div>
+    <div id="connect-error"></div>
+    <p class="connect-info">
+      Modo AP padrão: <b>192.168.4.1</b><br>
+      Se o BFMIDI estiver em modo STA (rede doméstica), verifique o IP no roteador.
+    </p>
+    <button class="btn-open-direct" id="btn-open-direct">
+      ↗ Abrir direto no dispositivo (http)
+    </button>
+  </div>
+</div>
+
+<!-- ── App shell ──────────────────────────────────────── -->
+<div id="app" style="display:none;">
+
+  <header id="app-header">
+    <div class="brand-icon">BF</div>
+    <div class="brand-text">
+      <h1>BFMIDI<span>EDITOR</span></h1>
+      <div class="brand-sub">Mobile · WiFi</div>
+    </div>
+    <div id="status-pill" class="disconnected" title="Clique para reconectar">
+      <span id="status-dot"></span>
+      <span id="status-label">Offline</span>
+    </div>
+  </header>
+
+  <div id="frame-wrap">
+    <!-- Loader overlay shown while iframe loads -->
+    <div id="page-loader">
+      <div class="spinner"></div>
+      <span class="loader-label">Carregando...</span>
+    </div>
+
+    <!-- Disconnected state overlay -->
+    <div id="disconnected-banner">
+      <span class="material-symbols-outlined disconn-icon">wifi_off</span>
+      <div class="disconn-title">Dispositivo Desconectado</div>
+      <div class="disconn-sub">
+        Verifique se o celular está na rede WiFi do BFMIDI e tente reconectar.
+      </div>
+      <button class="btn-reconnect" id="btn-reconnect">Reconectar</button>
+    </div>
+
+    <iframe id="content-frame"
+            src="about:blank"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            title="BFMIDI Editor Content">
+    </iframe>
+  </div>
+
+  <nav id="bottom-nav" role="navigation" aria-label="Navegação principal">
+    <button class="nav-btn active" data-page="preset-config" aria-label="Preset Config">
+      <span class="material-symbols-outlined nav-icon">tune</span>
+      <span>Presets</span>
+    </button>
+    <button class="nav-btn" data-page="global-config" aria-label="Global Config">
+      <span class="material-symbols-outlined nav-icon">settings_input_component</span>
+      <span>Global</span>
+    </button>
+    <button class="nav-btn" data-page="system" aria-label="System">
+      <span class="material-symbols-outlined nav-icon">settings</span>
+      <span>Sistema</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ── Toast container ───────────────────────────────── -->
+<div id="toast-container" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+// ── Constants ──────────────────────────────────────────
+const LS_IP   = 'bfmidi_wifi_ip';
+const LS_CONN = 'bfmidi_wifi_connected';
+const PAGE_PATHS = {
+  'preset-config': '../preset-config/index.html',
+  'global-config': '../global-config/index.html',
+  'system':        '../system/index.html',
+};
+
+// ── State ──────────────────────────────────────────────
+let deviceIp       = localStorage.getItem(LS_IP) || '192.168.4.1';
+let currentPage    = 'preset-config';
+let connected      = false;
+let frameLoadCount = 0;
+
+// ── Toast ──────────────────────────────────────────────
+function toast(msg, type = 'info', duration = 3000) {
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+// ── WiFi Bridge (exposed to iframe via window) ─────────
+window.BFMIDIExternalBridge = {
+  async request(urlString, init) {
+    const url      = new URL(urlString);
+    const base     = `http://${deviceIp}`;
+    const target   = `${base}${url.pathname}${url.search}`;
+    const method   = (init?.method || 'GET').toUpperCase();
+
+    try {
+      const fetchOpts = { method, mode: 'cors', credentials: 'omit' };
+      if (init?.headers)  fetchOpts.headers = init.headers;
+      if (init?.body && method !== 'GET' && method !== 'HEAD') fetchOpts.body = init.body;
+      if (AbortSignal?.timeout) fetchOpts.signal = AbortSignal.timeout(10000);
+
+      const response = await fetch(target, fetchOpts);
+      const body     = await response.text();
+      const headers  = {};
+      response.headers.forEach((v, k) => { headers[k] = v; });
+
+      return { status: response.status, headers, body };
+
+    } catch (err) {
+      setConnectionState(false);
+      return {
+        status: 503,
+        headers: { 'content-type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ ok: false, error: err.message }),
+      };
+    }
+  },
+};
+
+// ── Connection state ───────────────────────────────────
+function setConnectionState(ok) {
+  connected = ok;
+  const pill  = document.getElementById('status-pill');
+  const label = document.getElementById('status-label');
+  const banner = document.getElementById('disconnected-banner');
+
+  if (ok) {
+    pill.className   = 'connected';
+    label.textContent = deviceIp;
+    banner.classList.remove('visible');
+    localStorage.setItem(LS_CONN, '1');
+  } else {
+    pill.className   = 'disconnected';
+    label.textContent = 'Offline';
+    banner.classList.add('visible');
+    localStorage.removeItem(LS_CONN);
+  }
+}
+
+function setConnecting() {
+  const pill  = document.getElementById('status-pill');
+  const label = document.getElementById('status-label');
+  pill.className = 'connecting';
+  label.textContent = 'Conectando…';
+}
+
+// ── Test connection (ping) ─────────────────────────────
+async function testConnection(ip) {
+  try {
+    const target = `http://${ip}/api/host-status`;
+    const fetchOpts = { method: 'GET', mode: 'cors', credentials: 'omit' };
+    if (AbortSignal?.timeout) fetchOpts.signal = AbortSignal.timeout(6000);
+    const resp = await fetch(target, fetchOpts);
+    return resp.status < 500;
+  } catch {
+    // Try alternate endpoint
+    try {
+      const alt = `http://${ip}/api/system/info`;
+      const fetchOpts2 = { method: 'GET', mode: 'cors', credentials: 'omit' };
+      if (AbortSignal?.timeout) fetchOpts2.signal = AbortSignal.timeout(6000);
+      const resp2 = await fetch(alt, fetchOpts2);
+      return resp2.status < 500;
+    } catch {
+      return false;
+    }
+  }
+}
+
+// ── CSS injected into parity iframe ───────────────────
+const MOBILE_CSS = `
+/* === BFMIDI Mobile Overlay === */
+html, body {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  overflow-y: auto !important;
+}
+
+/* Hide desktop sidebar */
+body > aside,
+body > div > aside,
+aside.w-72,
+aside[class*="w-72"],
+aside[class*="bg-\\[#1c1c1f\\]"] {
+  display: none !important;
+}
+
+/* Scrollable main */
+body > main,
+main.flex-1 {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Outer flex container: column so content fills viewport */
+body.flex.h-screen {
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Main content padding reduced for mobile */
+.max-w-6xl { max-width: 100% !important; }
+.p-8 { padding: 14px !important; }
+.px-8 { padding-left: 14px !important; padding-right: 14px !important; }
+.pb-32 { padding-bottom: 24px !important; }
+
+/* Two-col top cards → stack vertically on narrow viewport */
+.grid.grid-cols-1.lg\\:grid-cols-\\[1\\.05fr_1fr\\] {
+  grid-template-columns: 1fr !important;
+}
+
+/* Foot buttons: 2 per row on very small, 3 per row otherwise */
+@media (max-width: 420px) {
+  #layer1Switches,
+  #layer2Switches {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Layer tabs wrap on mobile */
+.live-layer-tabs {
+  min-width: 0 !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+.live-layer-tab {
+  min-width: 110px !important;
+  min-height: 44px !important;
+  font-size: 0.95rem !important;
+}
+
+/* Gig view grid: stack on narrow */
+@media (max-width: 540px) {
+  .grid.grid-cols-12 { grid-template-columns: 1fr !important; }
+  .col-span-4, .col-span-8 { grid-column: span 1 !important; }
+  .md\\:col-span-4 { grid-column: span 1 !important; }
+  .md\\:col-span-8 { grid-column: span 1 !important; }
+}
+
+/* Tactile switch buttons: ensure touch target */
+.tactile-switch-btn { min-height: 72px !important; }
+.foot-button { min-height: 110px !important; }
+
+/* Misc spacing on mobile */
+@media (max-width: 480px) {
+  .space-y-4 > * + * { margin-top: 12px !important; }
+  .space-y-6 > * + * { margin-top: 16px !important; }
+  .gap-6 { gap: 12px !important; }
+}
+`;
+
+// ── Load page into iframe ──────────────────────────────
+function loadPage(page) {
+  if (!connected) return;
+
+  currentPage = page;
+  const frame  = document.getElementById('content-frame');
+  const loader = document.getElementById('page-loader');
+
+  // Update nav active state
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.page === page);
+  });
+
+  loader.classList.remove('hidden');
+
+  const token = ++frameLoadCount;
+
+  frame.onload = () => {
+    if (token !== frameLoadCount) return; // stale
+
+    // Inject mobile CSS into parity page
+    try {
+      const doc = frame.contentDocument || frame.contentWindow?.document;
+      if (doc && doc.head) {
+        const existing = doc.getElementById('bfmidi-mobile-css');
+        if (existing) existing.remove();
+        const style = doc.createElement('style');
+        style.id = 'bfmidi-mobile-css';
+        style.textContent = MOBILE_CSS;
+        doc.head.appendChild(style);
+      }
+    } catch (e) {
+      // Cross-origin guard (should not happen when same-origin)
+    }
+
+    loader.classList.add('hidden');
+  };
+
+  frame.src = PAGE_PATHS[page];
+}
+
+// ── Connect flow ───────────────────────────────────────
+async function doConnect(ip) {
+  deviceIp = ip.trim();
+  localStorage.setItem(LS_IP, deviceIp);
+
+  const errEl = document.getElementById('connect-error');
+  const btn   = document.getElementById('btn-connect');
+  errEl.classList.remove('visible');
+  btn.disabled = true;
+  btn.textContent = 'Testando…';
+
+  setConnecting();
+
+  const ok = await testConnection(deviceIp);
+
+  btn.disabled  = false;
+  btn.textContent = 'Conectar';
+
+  if (ok) {
+    // Show app shell, hide connection screen
+    document.getElementById('connect-screen').classList.add('hidden');
+    document.getElementById('app').style.display = 'flex';
+    setConnectionState(true);
+    loadPage(currentPage);
+    toast('Conectado a ' + deviceIp, 'ok');
+  } else {
+    setConnectionState(false);
+    const isHttps = location.protocol === 'https:';
+    let msg = `Não foi possível conectar a http://${deviceIp}. Verifique o IP e se o celular está na rede WiFi correta.`;
+    if (isHttps) {
+      msg += ' No Chrome Android, quando aparecer o aviso de "acesso à rede local", toque em Permitir.';
+    }
+    errEl.textContent = msg;
+    errEl.classList.add('visible');
+    // Show direct-open button as fallback
+    document.getElementById('btn-open-direct').classList.add('visible');
+  }
+}
+
+// ── Events ─────────────────────────────────────────────
+document.getElementById('btn-connect').addEventListener('click', () => {
+  const ip = document.getElementById('ip-input').value.trim() || '192.168.4.1';
+  doConnect(ip);
+});
+
+document.getElementById('btn-open-direct').addEventListener('click', () => {
+  const ip = document.getElementById('ip-input').value.trim() || deviceIp;
+  window.open(`http://${ip}/preset-config`, '_blank');
+});
+
+document.getElementById('ip-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const ip = e.target.value.trim() || '192.168.4.1';
+    doConnect(ip);
+  }
+});
+
+document.getElementById('status-pill').addEventListener('click', () => {
+  if (connected) {
+    if (confirm(`Desconectar de ${deviceIp}?`)) {
+      setConnectionState(false);
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('connect-screen').classList.remove('hidden');
+    }
+  } else {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('connect-screen').classList.remove('hidden');
+  }
+});
+
+document.getElementById('btn-reconnect').addEventListener('click', () => {
+  doConnect(deviceIp);
+});
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!connected) return;
+    loadPage(btn.dataset.page);
+  });
+});
+
+// ── Init ───────────────────────────────────────────────
+(function init() {
+  // Pre-fill IP input
+  document.getElementById('ip-input').value = deviceIp;
+
+  // Show HTTPS warning
+  if (location.protocol === 'https:') {
+    document.getElementById('https-warn').classList.add('visible');
+  }
+
+  // Auto-reconnect if previously connected
+  const wasConnected = localStorage.getItem(LS_CONN) === '1';
+  if (wasConnected) {
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('connect-screen').classList.add('hidden');
+    setConnecting();
+    testConnection(deviceIp).then(ok => {
+      if (ok) {
+        setConnectionState(true);
+        loadPage(currentPage);
+      } else {
+        setConnectionState(false);
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('connect-screen').classList.remove('hidden');
+      }
+    });
+  }
+
+  // Register service worker
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>

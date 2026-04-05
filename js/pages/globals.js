@@ -13,6 +13,17 @@ const MODO_MIDI_OPTIONS = [
   "MX5",
   "NANO CORTEX",
   "QUAD CORTEX",
+  "MODO AVANCADO",
+  "SYNERGY AMPS",
+  "BigSky",
+  "BlueSky",
+  "TimeLine",
+  "ELCAPISTAN",
+  "FLINT",
+  "HX-ONE",
+  "VTR NARCISO",
+  "VTR LOKI",
+  "VTR KAILANI",
 ];
 
 const SELECT_MODE_OPTIONS = ["Modo 1", "Modo 2", "Modo 3"];

@@ -51,8 +51,8 @@ function showSavedBanner() {
         ];
         const BACKGROUND_COLORS = [...PRESET_COLORS, { name: "Preto", hex: "#000000", uint32: 0x000000 }];
 
-        const modoMidiOptionsValues = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "MODO AVANCADO", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI"];
-        const advMidiModeOptions = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI"];
+        const modoMidiOptionsValues = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "MODO AVANCADO", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI", "VTR KAILANI"];
+        const advMidiModeOptions = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI", "VTR KAILANI"];
         let advMidiChData = [0, 0, 0, 0, 0];
         let advMidiChNumData = [1, 2, 3, 4, 5];
 
@@ -217,6 +217,7 @@ function showSavedBanner() {
             if (!cfg) return {};
             if (cfg.spin_send_pc === undefined) cfg.spin_send_pc = false;
             if (cfg.cc2 === undefined) cfg.cc2 = 0;
+            if (cfg.tap_mode2 === undefined) cfg.tap_mode2 = false;
             if (cfg.start_value_cc2 === undefined) cfg.start_value_cc2 = false;
             if (cfg.canal_cc2 === undefined && cfg.cc2_ch !== undefined) {
                 const ch = parseInt(cfg.cc2_ch, 10);
@@ -1273,6 +1274,8 @@ function showSavedBanner() {
                 swGlobalConfig.tap2_ch = isNaN(t2ch) ? 0 : t2ch;
                 swGlobalConfig.tap3_cc = isNaN(t3cc) ? 0 : t3cc;
                 swGlobalConfig.tap3_ch = isNaN(t3ch) ? 0 : t3ch;
+                const tapM2BtnG = document.getElementById("tapMode2Btn_global");
+                swGlobalConfig.tap_mode2 = tapM2BtnG ? tapM2BtnG.classList.contains("active") : false;
 
                 const cc2El = document.getElementById("switchCC2_global");
                 if (cc2El) swGlobalConfig.cc2 = parseInt(cc2El.value, 10) || 0;
@@ -1483,6 +1486,22 @@ function showSavedBanner() {
                 t3ch.appendChild(newNumericInput("tap3_ch_global", 0, 16, (swGlobalConfig.tap3_ch||0)));
                 row3.appendChild(t3ch);
                 group.appendChild(row3);
+
+                // MODO TAP toggle (MODO 1 / MODO 2)
+                const tapModeRow = document.createElement("div"); tapModeRow.className = "form-group start-group-centered"; tapModeRow.style.marginTop = "8px";
+                const tapModeBtn_g = document.createElement("button"); tapModeBtn_g.type = "button"; tapModeBtn_g.id = "tapMode2Btn_global";
+                const isTapMode2_g = !!(swGlobalConfig.tap_mode2);
+                tapModeBtn_g.className = "single-toggle-button" + (isTapMode2_g ? " active" : "");
+                tapModeBtn_g.setAttribute("aria-pressed", isTapMode2_g ? "true" : "false");
+                tapModeBtn_g.textContent = isTapMode2_g ? "MODO 2" : "MODO 1";
+                tapModeBtn_g.addEventListener("click", function() {
+                    const isOn = tapModeBtn_g.classList.toggle("active");
+                    tapModeBtn_g.setAttribute("aria-pressed", isOn ? "true" : "false");
+                    tapModeBtn_g.textContent = isOn ? "MODO 2" : "MODO 1";
+                    updateSwGlobalDataFromUI();
+                });
+                tapModeRow.appendChild(tapModeBtn_g);
+                group.appendChild(tapModeRow);
 
                 dynamicArea.appendChild(group);
 

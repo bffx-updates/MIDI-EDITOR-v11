@@ -92,6 +92,7 @@ static inline const char *resetReasonToString(esp_reset_reason_t reason) {
 #endif
 void aplicarConfiguracoesDeCorLEDs();
 extern uint16_t restoreWriteDelayMs;
+static volatile bool g_restorePackageUploadInProgress = false;
 
 // Hardware Test externs
 extern Adafruit_NeoPixel strip;
@@ -640,9 +641,14 @@ void setupSystemRoutes() {
   server.on(
       "/api/restore", HTTP_POST,
       [](AsyncWebServerRequest *request) {
+        if (g_restorePackageUploadInProgress) {
+          request->send(429, "application/json",
+                        "{\"success\":false,\"message\":\"Outro restore ainda esta em andamento.\"}");
+          return;
+        }
+        g_restorePackageUploadInProgress = true;
         postBodyBuffer =
             String(); // Limpa e libera capacidade do buffer para o novo upload
-        request->send(202); // Aceita a requisi, processamento em chunks
       },
       NULL, // Handler para o corpo da requisi (chunks)
       [](AsyncWebServerRequest *request, uint8_t *data, size_t len,
@@ -1131,6 +1137,7 @@ void setupSystemRoutes() {
             serializeJson(responseDoc, *response);
             request->send(response);
           }
+          g_restorePackageUploadInProgress = false;
 
           if (success) {
             delay(2000);

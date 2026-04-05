@@ -27,6 +27,7 @@ extern bool isLiveMode;
 extern bool liveModeInitialized;
 
 extern uint16_t restoreWriteDelayMs;
+static volatile bool g_saveSinglePresetUploadInProgress = false;
 
 static inline void nvsCommitPause(uint16_t ms) {
 #ifdef ESP32
@@ -569,6 +570,11 @@ void setupPresetRoutes() {
   server.on(
       "/save-single-preset-data", HTTP_POST,
       [](AsyncWebServerRequest *request) {
+        if (g_saveSinglePresetUploadInProgress) {
+          request->send(429, "text/plain",
+                        "Outro save/restore de preset ainda esta em andamento.");
+          return;
+        }
         // Rate limiting para evitar sobrecarga
         static unsigned long lastSaveSingleMs = 0;
         unsigned long now = millis();
@@ -606,7 +612,7 @@ void setupPresetRoutes() {
             Serial.printf("[SAVE-SINGLE] HTTP_POST request started for btn=%d, "
                           "lvl=%d. Buffer cleared.\n",
                           btn, lvl);
-            request->send(202);
+            g_saveSinglePresetUploadInProgress = true;
           } else {
             Serial.printf("[SAVE-SINGLE] Erro inicial:  btn=%d, lvl=%d inv.\n",
                           btn, lvl);
@@ -646,11 +652,20 @@ void setupPresetRoutes() {
 
         if (!params_valid_for_body) {
           if (index + len == total) {
+            if (postBodyPsram) {
+              heap_caps_free(postBodyPsram);
+              postBodyPsram = nullptr;
+            }
             postBodyBuffer = String();
+            postBodyPsramLength = 0;
+            postBodyPsramCapacity = 0;
+            g_saveSinglePresetUploadInProgress = false;
             Serial.printf(
                 "[SAVE-SINGLE BODY] Par inv (btn=%d, lvl=%d) no corpo. "
                 "Corpo ignorado.\n",
                 btn_param, lvl_param);
+            request->send(400, "text/plain",
+                          "Identificacao de preset invalida na requisicao.");
           }
           return;
         }
@@ -690,6 +705,7 @@ void setupPresetRoutes() {
               "[SAVE-SINGLE] Tamanho total do payload acumulado: %u bytes\n",
               usePsramUpload ? (unsigned)postBodyPsramLength
                              : (unsigned)postBodyBuffer.length());
+          bool saveSucceeded = false;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -773,6 +789,7 @@ void setupPresetRoutes() {
                 }
                 // Debug log removido para melhor performance
                 SAVE_MEMORY_BLOB(btn_param, lvl_param);
+                saveSucceeded = true;
               } else {
                 Serial.printf("[SAVE-SINGLE] Falha ao desserializar/processar "
                               "dados para preset btn=%d, lvl=%d (layer 1).\n",
@@ -797,6 +814,7 @@ void setupPresetRoutes() {
                   }
                   SAVE_PRESET_LAYER_BLOB(layer_param, btn_param, lvl_param,
                                          *layerPreset);
+                  saveSucceeded = true;
                 } else {
                   Serial.printf(
                       "[SAVE-SINGLE] Falha ao desserializar dados para "
@@ -819,6 +837,14 @@ void setupPresetRoutes() {
             postBodyPsram = nullptr;
           }
           postBodyBuffer = String();
+          postBodyPsramLength = 0;
+          postBodyPsramCapacity = 0;
+          g_saveSinglePresetUploadInProgress = false;
+          if (saveSucceeded) {
+            request->send(200, "text/plain", "OK");
+          } else {
+            request->send(500, "text/plain", "Falha ao salvar preset.");
+          }
         }
       });
 
