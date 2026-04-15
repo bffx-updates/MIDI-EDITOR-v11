@@ -1,19 +1,19 @@
 export const BFMIDI_COLOR_PALETTE = [
-  "#d7263d",
-  "#0ead69",
-  "#1b6cfb",
-  "#f8b400",
-  "#7a4dd8",
-  "#1dcad3",
-  "#ffffff",
-  "#ff7f11",
-  "#f72585",
-  "#ff6f61",
-  "#59c3ff",
-  "#b28dff",
-  "#ff9ecf",
-  "#82ffc4",
-  "#111111",
+  "#ff0000", // 0  - VERMELHO
+  "#00ff00", // 1  - VERDE
+  "#0000ff", // 2  - AZUL
+  "#ffff00", // 3  - AMARELO
+  "#800080", // 4  - ROXO
+  "#00ffff", // 5  - CYAN
+  "#ffffff", // 6  - BRANCO
+  "#ff5000", // 7  - LARANJA
+  "#ff0080", // 8  - MAGENTA
+  "#ff1414", // 9  - CORAL
+  "#0096ff", // 10 - AZUL CELESTE
+  "#b400ff", // 11 - VIOLETA
+  "#ff64c8", // 12 - ROSA
+  "#32ff64", // 13 - MENTA
+  "#000000", // 14 - PRETO
 ];
 
 export function mountColorPicker(container, currentValue, onChange) {

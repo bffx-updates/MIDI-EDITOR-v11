@@ -1,4 +1,4 @@
-const CACHE_NAME = "bfmidi-editor-v32";
+const CACHE_NAME = "bfmidi-editor-v39";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const ASSETS = [
   "./global-config/global-inline.css",
   "./global-config/global-inline.js",
   "./css/visual-refresh-global.css",
+  "./css/visual-refresh-system.css",
   "./system/index.html",
   "./system/system-inline.css",
   "./system/system-inline.js",

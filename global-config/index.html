@@ -527,7 +527,7 @@
             box-shadow: var(--shadow-card);
         }
         /* Removidas as cores de fundo individuais em cada seção para unificação visual */
-        .section-leds,
+        .section-interface-display,
         .section-modo,
         .section-levels,
         .section-lock,
@@ -1122,21 +1122,30 @@
       .form-group label { color: #cfe7ff; }
       .btn { background: linear-gradient(180deg,#e6f7ff,#cfeaff); color:#071025; }
       .btn-save { background: linear-gradient(180deg,var(--accent),#7be0ff); color:#071025; }
->>>>>>> Global styles mantidos para demais botoes; floating-footer usa classes especificas
       #statusMessage { color: var(--muted); }
     </style>
 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/visual-refresh-global.css" />
   <script src="../js/parity-bridge-client.js"></script>
 </head>
 <body>
   <div class="page">
-    <div class="header">
-      <div class="brand">
-        <div class="logo">BFMiDI</div>
-        <div>
-          <h1>CONFIG GLOBAIS</h1>
-          <div class="subtitle">Firmware: <span id="fwMain" class="fw-version">...</span></div>
-        </div>
+    <div class="page-topbar">
+      <div>
+        <h1>Configuration</h1>
+        <p>Manage global device parameters and interface settings</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn-top btn-top-muted" type="button" onclick="window.location.href='/preset-config'">
+          <span class="material-symbols-outlined" style="font-size:1rem;line-height:1;">arrow_back</span>
+          BACK
+        </button>
+        <button class="btn-top btn-top-accent" type="button" onclick="submitGlobalConfig({ silent: false, force: true })">
+          <span class="material-symbols-outlined" style="font-size:1rem;line-height:1;">save</span>
+          SAVE
+        </button>
       </div>
     </div>
 
@@ -1165,101 +1174,110 @@
     <div class="grid">
       <div class="card">
         <form id="globalConfigForm">
-            <!-- CARD: DISPLAY -->
-            <div class="settings-section section-leds">
-                <h2>DISPLAY</h2>
-
-                <!-- Linha de botoes retangulares (DISPLAY: CADEIA / SIGLA FX / BACK PADRAO) -->
-                <div class="form-group">
-                    <div class="rect-toggle-row display-toggle-row">
-                        <!-- SHOW FX: ativa envio MIDI especial em modos HX STOMP / AMPERO X -->
-                        <button type="button"
-                                id="btnMostrarCadeia"
-                                class="rect-toggle rect-toggle-fx-off"
-                                data-target-checkbox="mostrarCadeia"
-                                style="display:none;">
-                            <span>SHOW FX</span>
-                        </button>
-
-                        <!-- GIG VIEW (SEMPRE / LIVE MODE) -->
-                        <div style="display:flex; flex-direction:column; align-items:center;">
-                            <span style="font-weight:bold; color:#ddd; font-size:12px; margin-bottom:4px;">GIG VIEW</span>
-                            <button type="button"
-                                    id="btnMostrarFxQuando"
-                                    class="rect-toggle rect-toggle-fx-on"
-                                    data-target-checkbox="mostrarFxQuando">
-                                <span id="btnMostrarFxQuandoLabel">SEMPRE VISIVEL</span>
-                            </button>
+            <div class="settings-section section-interface-display">
+                <h2>INTERFACE &amp; DISPLAY</h2>
+                <div class="interface-display-grid">
+                    <div class="studio-subcard">
+                        <h3>SCREEN CONFIG</h3>
+                        <div class="display-control-list">
+                            <div class="display-control-row" id="showFxRow" style="display:none;">
+                                <span class="display-control-label">Show FX Chain</span>
+                                <button type="button"
+                                        id="btnMostrarCadeia"
+                                        class="display-inline-btn rect-toggle rect-toggle-fx-off"
+                                        data-target-checkbox="mostrarCadeia">
+                                    <span>SHOW FX</span>
+                                </button>
+                            </div>
+                            <div class="display-control-row">
+                                <span class="display-control-label">Gig View Mode</span>
+                                <button type="button"
+                                        id="btnMostrarFxQuando"
+                                        class="display-inline-btn rect-toggle rect-toggle-fx-on"
+                                        data-target-checkbox="mostrarFxQuando">
+                                    <span id="btnMostrarFxQuandoLabel">SEMPRE VISIVEL</span>
+                                </button>
+                            </div>
                         </div>
 
+                        <input type="checkbox" id="mostrarTelaFX" name="mostrarTelaFX" style="display:none;">
+                        <input type="checkbox" id="mostrarCadeia" name="mostrarCadeia" style="display:none;">
+                        <input type="hidden" id="mostrarFxModo" name="mostrarFxModo" value="1">
+                        <input type="hidden" id="mostrarFxQuando" name="mostrarFxQuando" value="0">
                     </div>
-                </div>
 
-                <!-- Checkboxes reais ocultos (compativeis com backend) -->
-                <!-- SHOW FX SCREEN (legado): usada para mostrar tela/CADEIA FX em firmwares antigos -->
-                <input type="checkbox" id="mostrarTelaFX" name="mostrarTelaFX" style="display:none;">
-                <!-- CADEIA: reutiliza a variavel SHOW FX SCREEN existente no firmware -->
-                <input type="checkbox" id="mostrarCadeia" name="mostrarCadeia" style="display:none;">
-                <!-- FX DISPLAY: modo (SIGLAS/ICONES/OFF) + quando (SEMPRE/LIVE MODE) -->
-                <input type="hidden" id="mostrarFxModo" name="mostrarFxModo" value="1">
-                <input type="hidden" id="mostrarFxQuando" name="mostrarFxQuando" value="0">
-            </div>
-
-            <!-- CARD: LEDS -->
-            <div class="settings-section section-leds">
-                <h2>LEDS</h2>
-                <div class="form-group" style="display:flex; gap:10px;">
-                    <button type="button"
-                            id="ledBrilhoButton"
-                            class="rect-toggle rect-toggle-fx-on"
-                            style="flex:1; height:48px;">
-                        BRILHO LED 60%
-                    </button>
-
-                    <button type="button"
-                            id="ledPreviewButton"
-                            class="rect-toggle rect-toggle-fx-off"
-                            style="flex:1; height:48px;">
-                        <span>LED PREVIEW OFF</span>
-                    </button>
-                    <!-- checkbox oculto para manter compatibilidade com backend -->
-                    <input type="checkbox" id="ledPreview" name="ledPreview" style="display:none;">
+                    <div class="studio-subcard">
+                        <h3>LED CONTROL</h3>
+                        <div class="led-control-list">
+                            <div>
+                                <div class="led-brightness-head">
+                                    <label for="ledBrilhoButton">Brightness</label>
+                                    <span class="led-brightness-value" id="ledBrilhoValueDisplay">60%</span>
+                                </div>
+                                <button type="button"
+                                        id="ledBrilhoButton"
+                                        class="led-adjust-btn rect-toggle rect-toggle-fx-on">
+                                    ADJUST LEVEL
+                                </button>
+                            </div>
+                            <div class="led-preview-row">
+                                <span class="display-control-label">LED Preview Mode</span>
+                                <button type="button"
+                                        id="ledPreviewButton"
+                                        class="led-preview-btn rect-toggle rect-toggle-fx-off">
+                                    <span>OFF</span>
+                                </button>
+                                <input type="checkbox" id="ledPreview" name="ledPreview" style="display:none;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="settings-section section-modo">
-                <h2>MODO AMIGAVEL</h2>
-                <div class="form-group">
-                    <label for="modoMidi">MODO MIDI:</label>
-                    <select id="modoMidi" name="modoMidi">
-                        <option value="MODO AVANCADO">MODO AVANCADO</option>
-                        <option value="" disabled>---- MODOS STANDALONE ----</option>
-                        <option value="GLOBAL">GLOBAL</option>
-                        <option value="AMPERO AS2">AMPERO AS2</option>
-                        <option value="AMPERO MINI">AMPERO MINI</option>
-                        <option value="HX STOMP">HX STOMP</option>
-                        <option value="A. STAGE 2">A. STAGE 2</option>
-                        <option value="GP-200LT">GP-200LT</option>
-                        <option value="VALETON GP5">VALETON GP5</option>
-                        <option value="POCKET MASTER">POCKET MASTER</option>
-                        <option value="TONEX">TONEX</option>
-                        <option value="KEMPER PLAYER">KEMPER PLAYER</option>
-                        <option value="AMPERO MP350">AMPERO MP350</option>
-                        <option value="MX5">MX5</option>
-                        <option value="NANO CORTEX">NANO CORTEX</option>
-                        <option value="QUAD CORTEX">QUAD CORTEX</option>
-                        <option value="SYNERGY AMPS">SYNERGY AMPS</option>
-                        <option value="BigSky">BigSky</option>
-                        <option value="BlueSky">BlueSky</option>
-                        <option value="TimeLine">TimeLine</option>
-                        <option value="ELCAPISTAN">ELCAPISTAN</option>
-                        <option value="FLINT">FLINT</option>
-                        <option value="HX-ONE">HX-ONE</option>
-                        <option value="VTR NARCISO">VTR NARCISO</option>
-                        <option value="VTR LOKI">VTR LOKI</option>
-                        <option value="VTR KAILANI">VTR KAILANI</option>
-                    </select>
+                <h2>HARDWARE SETUP</h2>
+                <div class="hardware-select-grid">
+                    <div class="form-group">
+                        <label for="modoMidi">Target Device</label>
+                        <select id="modoMidi" name="modoMidi">
+                            <option value="MODO AVANCADO">MODO AVANCADO</option>
+                            <option value="" disabled>---- MODOS STANDALONE ----</option>
+                            <option value="GLOBAL">GLOBAL</option>
+                            <option value="AMPERO AS2">AMPERO AS2</option>
+                            <option value="AMPERO MINI">AMPERO MINI</option>
+                            <option value="HX STOMP">HX STOMP</option>
+                            <option value="A. STAGE 2">A. STAGE 2</option>
+                            <option value="GP-200LT">GP-200LT</option>
+                            <option value="VALETON GP5">VALETON GP5</option>
+                            <option value="POCKET MASTER">POCKET MASTER</option>
+                            <option value="TONEX">TONEX</option>
+                            <option value="KEMPER PLAYER">KEMPER PLAYER</option>
+                            <option value="AMPERO MP350">AMPERO MP350</option>
+                            <option value="MX5">MX5</option>
+                            <option value="NANO CORTEX">NANO CORTEX</option>
+                            <option value="QUAD CORTEX">QUAD CORTEX</option>
+                            <option value="SYNERGY AMPS">SYNERGY AMPS</option>
+                            <option value="BigSky">BigSky</option>
+                            <option value="BlueSky">BlueSky</option>
+                            <option value="TimeLine">TimeLine</option>
+                            <option value="ELCAPISTAN">ELCAPISTAN</option>
+                            <option value="FLINT">FLINT</option>
+                            <option value="HX-ONE">HX-ONE</option>
+                            <option value="VTR NARCISO">VTR NARCISO</option>
+                            <option value="VTR LOKI">VTR LOKI</option>
+                            <option value="VTR KAILANI">VTR KAILANI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="selectModeIndex">Footswitch Logic</label>
+                        <select id="selectModeIndex" name="selectModeIndex">
+                            <option value="0">Modo 1 (Curto/Longo)</option>
+                            <option value="1">Modo 2 (Apenas Curto)</option>
+                            <option value="2">Modo 3 (Curto p/ Slow)</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div id="advMidiChWrap" style="display:none; margin-top:10px;">
                     <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px; font-weight:bold; color:#aaa; font-size:12px; text-transform:uppercase;">
                         <span style="width:60px; text-align:center;">CANAL:</span>
@@ -1308,6 +1326,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="form-group" id="kemperGetNamesWrap" style="display:none; margin-top:10px;">
                     <div style="display:flex; gap:10px; align-items:stretch;">
                         <button type="button" id="kemperGetNamesBtn" class="rect-toggle rect-toggle-fx-off" style="flex:1; height:48px;">
@@ -1321,36 +1340,50 @@
                     <input type="checkbox" id="kemperAutoLoader" name="kemperAutoLoader" style="display:none;">
                 </div>
 
-
-            </div>
-
-            <!-- CARD: INICIO AUTOMATICO -->
-            <div class="settings-section section-autostart">
-                <h2>INICIO AUTOMATICO</h2>
-                <div class="form-group" style="display:flex; align-items:center; justify-content:center; gap:12px;">
-                    <button type="button" id="autoStartToggleBtn" class="rect-toggle rect-toggle-fx-off" style="width:90px; height:48px;">
-                        <span id="autoStartToggleLabel">OFF</span>
-                    </button>
-                    <button type="button" id="autoStartRowBtn" class="autostart-single-box">
-                        <span id="autoStartRowLabel">A</span>
-                    </button>
-                    <button type="button" id="autoStartColBtn" class="autostart-single-box">
-                        <span id="autoStartColLabel">1</span>
-                    </button>
-                    <input type="checkbox" id="autoStartEnabled" name="autoStartEnabled" style="display:none;">
-                    <input type="hidden" id="autoStartRow" name="autoStartRow" value="0">
-                    <input type="hidden" id="autoStartCol" name="autoStartCol" value="0">
-                </div>
-                <div class="form-group" style="display:flex; align-items:center; justify-content:center; margin-top:10px;">
-                    <button type="button" id="autoStartLiveModeBtn" class="rect-toggle rect-toggle-fx-off" style="width:180px; height:42px;">
-                        <span id="autoStartLiveModeLabel">PRESET MODE</span>
-                    </button>
-                    <input type="checkbox" id="autoStartLiveMode" name="autoStartLiveMode" style="display:none;">
+                <div class="embedded-switch-card">
+                    <h3>GLOBAL SWITCH</h3>
+                    <div class="switch-config-area" id="switchConfigArea">
+                        <div class="switch-config-grid-main">
+                            <div class="form-group">
+                                <label for="switchMode">Function</label>
+                                <div class="custom-select-wrapper" data-select-id="switchMode">
+                                    <select id="switchMode" name="switchMode"></select>
+                                </div>
+                            </div>
+                            <div class="form-group" id="ccFieldFormGroup">
+                                <label for="switchCC">CC</label>
+                                <div class="custom-select-wrapper" data-select-id="switchCC">
+                                    <select id="switchCC" name="switchCC"></select>
+                                </div>
+                            </div>
+                            <div class="form-group ch-group">
+                                <label for="switchChannel">Ch</label>
+                                <div class="custom-select-wrapper" data-select-id="switchChannel">
+                                    <select id="switchChannel" name="switchChannel"></select>
+                                </div>
+                            </div>
+                            <div class="form-group switch-state-group">
+                                <label for="switchStart">State</label>
+                                <input type="checkbox" id="switchStart" name="switchStart" style="display:none;">
+                                <button type="button" id="startToggleBtn" class="single-toggle-button" aria-pressed="false">INICIAR DESLIGADO</button>
+                            </div>
+                            <div class="form-group switch-color-group">
+                                <label for="selectedLedColorPreview">Color</label>
+                                <div class="custom-color-selector">
+                                    <div id="selectedLedColorPreview" class="selected-color-preview" tabindex="0">
+                                        <div id="selectedLedColorPreviewBox" class="selected-color-preview-box"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dynamicModeConfigArea" class="switch-config-area" style="display:none; margin-top: 12px;">
+                    </div>
                 </div>
             </div>
 
             <div class="settings-section section-levels">
-                <h2>PRESET LEVELS</h2>
+                <h2>ACTIVE CHANNELS</h2>
                 <div class="preset-levels-selector" id="presetLevelsContainer">
                     <div class="preset-level-box" data-level="A">A</div>
                     <div class="preset-level-box" data-level="B">B</div>
@@ -1361,19 +1394,45 @@
                 </div>
             </div>
 
+            <div class="settings-section section-autostart">
+                <h2>AUTO START</h2>
+                <div class="auto-start-enabled-row form-group" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span class="auto-start-enabled-label">Enabled</span>
+                    <button type="button" id="autoStartToggleBtn" class="auto-start-enabled-btn rect-toggle rect-toggle-fx-off">
+                        <span id="autoStartToggleLabel">OFF</span>
+                    </button>
+                    <input type="checkbox" id="autoStartEnabled" name="autoStartEnabled" style="display:none;">
+                </div>
+                <div class="auto-start-bank-patch-row form-group">
+                    <button type="button" id="autoStartRowBtn" class="autostart-single-box">
+                        <span class="autostart-meta">BANK</span>
+                        <span id="autoStartRowLabel">A</span>
+                    </button>
+                    <button type="button" id="autoStartColBtn" class="autostart-single-box">
+                        <span class="autostart-meta">PATCH</span>
+                        <span id="autoStartColLabel">1</span>
+                    </button>
+                    <input type="hidden" id="autoStartRow" name="autoStartRow" value="0">
+                    <input type="hidden" id="autoStartCol" name="autoStartCol" value="0">
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <button type="button" id="autoStartLiveModeBtn" class="auto-start-mode-btn rect-toggle rect-toggle-fx-off">
+                        <span id="autoStartLiveModeLabel">PRESET MODE</span>
+                    </button>
+                    <input type="checkbox" id="autoStartLiveMode" name="autoStartLiveMode" style="display:none;">
+                </div>
+            </div>
+
 
             <div class="settings-section section-presets">
-                <h2>PRESET LEDS</h2>
-
-                <!-- Toggle LED LETRAS / LED NUMEROS -->
-                <div class="form-group" style="margin-bottom: 12px; text-align: center;">
-                    <button type="button" id="ledModeToggleButton" class="rect-toggle rect-toggle-fx-on" style="width: 100%; height: 48px;">
+                <div class="palette-header-row">
+                    <h2>COLOR PALETTE</h2>
+                    <button type="button" id="ledModeToggleButton" class="palette-mode-btn rect-toggle rect-toggle-fx-on">
                         <span id="ledModeToggleLabel">LED LETRAS</span>
                     </button>
                     <input type="checkbox" id="ledModeNumeros" name="ledModeNumeros" style="display:none;">
                 </div>
 
-                <!-- 1a linha: PRESET A, B, C -->
                 <div class="color-row">
                     <div class="color-grid-item">
                         <label id="presetALabel">PRESET A:</label>
@@ -1399,10 +1458,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- 2a linha: PRESET D, PRESET E, PRESET F -->
-                <div class="color-row">
                     <div class="color-grid-item">
                         <label id="presetDLabel">PRESET D:</label>
                         <div class="custom-color-selector">
@@ -1429,92 +1484,40 @@
                     </div>
                 </div>
 
-            </div>
-
-            <!-- CARD: LIVE MODE -->
-            <div class="settings-section section-presets">
-                <h2>LIVE MODE</h2>
-
-                <div class="color-row">
-                    <div class="color-grid-item">
-                        <label>MODO LIVE 1</label>
-                        <div class="custom-color-selector">
-                            <div id="liveModeSelectedColorPreview" class="selected-color-preview" tabindex="0">
-                                <div id="liveModeSelectedColorPreviewBox" class="selected-color-preview-box"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="color-grid-item">
-                        <label>MODO LIVE 2</label>
-                        <div class="custom-color-selector">
-                            <div id="liveMode2SelectedColorPreview" class="selected-color-preview" tabindex="0">
-                                <div id="liveMode2SelectedColorPreviewBox" class="selected-color-preview-box"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-top: 10px; text-align: center;">
-                    <label style="display:block; margin-bottom:6px;">LAYER 2 (LIVE MODE)</label>
-                    <button type="button" id="liveLayer2ToggleButton" class="live-layer-btn">
-                        <span id="liveLayer2ToggleLabel">Layer 2 ON</span>
-                    </button>
-                    <input type="checkbox" id="liveLayer2Enabled" name="liveLayer2Enabled" style="display:none;">
-                </div>
-
-            </div>
-
-            <div class="settings-section section-swglobal">
-                <h2>SW GLOBAL</h2>
-                <div class="switch-config-area" id="switchConfigArea">
-                    <div class="form-group">
-                        <label for="switchMode">Modo:</label>
-                        <div class="custom-select-wrapper" data-select-id="switchMode">
-                            <select id="switchMode" name="switchMode"></select>
-                        </div>
-                    </div>
-                    <div class="switch-config-grid-led-start">
-                        <div class="form-group led-group">
-                            <label for="switchLedColorValue">LED:</label>
+                <div class="palette-live-area">
+                    <div class="palette-live-grid">
+                        <div class="palette-live-item">
+                            <label for="liveModeSelectedColorPreview">MODE 1</label>
                             <div class="custom-color-selector">
-                                <div id="selectedLedColorPreview" class="selected-color-preview" style="width:100%;" tabindex="0">
-                                    <div id="selectedLedColorPreviewBox" class="selected-color-preview-box"></div>
+                                <div id="liveModeSelectedColorPreview" class="selected-color-preview" tabindex="0">
+                                    <div id="liveModeSelectedColorPreviewBox" class="selected-color-preview-box"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group start-group-inline">
-                            <input type="checkbox" id="switchStart" name="switchStart" style="display:none;">
-                            <button type="button" id="startToggleBtn" class="single-toggle-button" aria-pressed="false">INICIAR DESLIGADO</button>
-                        </div>
-                    </div>
-                    <div class="switch-config-grid-cc-ch">
-                        <div class="form-group" id="ccFieldFormGroup" style="width: 80%;">
-                            <label for="switchCC">CC:</label>
-                            <div class="custom-select-wrapper" data-select-id="switchCC">
-                                <select id="switchCC" name="switchCC"></select>
-                            </div>
-                        </div>
-                        <div class="form-group ch-group" style="width: 20%;">
-                            <label for="switchChannel">CH:</label>
-                            <div class="custom-select-wrapper" data-select-id="switchChannel">
-                                <select id="switchChannel" name="switchChannel"></select>
+                        <div class="palette-live-item">
+                            <label for="liveMode2SelectedColorPreview">MODE 2</label>
+                            <div class="custom-color-selector">
+                                <div id="liveMode2SelectedColorPreview" class="selected-color-preview" tabindex="0">
+                                    <div id="liveMode2SelectedColorPreviewBox" class="selected-color-preview-box"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="dynamicModeConfigArea" class="switch-config-area" style="display:none; margin-top: 12px;">
+
+                    <div class="palette-layer-toggle-wrap">
+                        <button type="button" id="liveLayer2ToggleButton" class="live-layer-btn">
+                            <span id="liveLayer2ToggleLabel">Layer 2 ON</span>
+                        </button>
+                        <input type="checkbox" id="liveLayer2Enabled" name="liveLayer2Enabled" style="display:none;">
+                    </div>
                 </div>
             </div>
 
-            <div class="settings-section section-system">
-                <h2>CHAMADA DE PRESETS</h2>
-                <div class="form-group">
-                    <label for="selectModeIndex">SET PRESET (Modo de Selecao):</label>
-                    <select id="selectModeIndex" name="selectModeIndex">
-                        <option value="0">Modo 1 (Curto/Longo)</option>
-                        <option value="1">Modo 2 (Apenas Curto)</option>
-                        <option value="2">Modo 3 (Curto p/ Slow)</option>
-                    </select>
+            <div class="settings-section section-lock">
+                <h2>SYSTEM LOCK</h2>
+                <div class="preset-levels-selector" id="lockButtonsContainer">
+                    <div class="preset-level-box lock-button" data-lock="setup" id="lockSetupBtn">SETUP</div>
+                    <div class="preset-level-box lock-button" data-lock="global" id="lockGlobalBtn">GLOBAL</div>
                 </div>
             </div>
 
@@ -1523,26 +1526,6 @@
       </div>
     </div>
 
-    <div class="floating-footer-bar">
-      <div class="btn-container">
-        <button class="btn footer-nav-btn nav-preset" id="btnNavPreset" title="Preset Config" aria-label="Preset Config">
-          <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 6h8v2h-8v-2zm0-6h8v4h-8v-4z"></path>
-          </svg>
-        </button>
-        <button class="btn footer-nav-btn nav-global active" id="btnNavGlobal" title="Global Config" aria-label="Global Config">
-          <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.63l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.027 7.027 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.7 8.48a.5.5 0 0 0 .12.63l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.82 14.15a.5.5 0 0 0-.12.63l1.92 3.32c.13.22.39.31.6.22l2.39-.96c.5.4 1.05.72 1.63.94l.36 2.54c.04.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.22.09.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.63l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5z"></path>
-          </svg>
-        </button>
-        <button class="btn footer-nav-btn nav-system" id="btnNavSystem" title="System" aria-label="System">
-          <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
-          </svg>
-        </button>
-        <button class="btn footer-save-btn" id="btnSalvarFooter">SAVE</button>
-      </div>
-    </div>
   </div>
 
 
@@ -1866,6 +1849,14 @@
             }
         }
 
+        function syncLedBrightnessDisplay() {
+            const pct = ledBrilho * 20;
+            const valueDisplay = document.getElementById('ledBrilhoValueDisplay');
+            if (valueDisplay) {
+                valueDisplay.textContent = pct + '%';
+            }
+        }
+
         const MODE_OPTIONS_WEB = [
             { value: 0, text: "STOMP" }, { value: 1, text: "SPIN1" }, 
             { value: 4, text: "RAMPA" }, { value: 10, text: "CUSTOM1" }, 
@@ -2030,10 +2021,7 @@
                 .then(response => response.json())
                 .then(data => {
                     ledBrilho = data.ledBrilho || 3;
-                    if (ledBrilhoButton) {
-                        const pct = ledBrilho * 20;
-                        ledBrilhoButton.textContent = 'BRILHO LED ' + pct + '%';
-                    }
+                    syncLedBrightnessDisplay();
 
                     const ledPreviewCheckbox = document.getElementById('ledPreview');
                     const ledPreviewButton = document.getElementById('ledPreviewButton');
@@ -2368,12 +2356,15 @@
         // Visivel apenas para: AMPERO AS2, A. STAGE 2, AMPERO MP350, HX STOMP
         function updateShowFxButtonVisibility(modoMidi) {
             const btnMostrarCadeia = document.getElementById('btnMostrarCadeia');
+            const showFxRow = document.getElementById('showFxRow');
             if (!btnMostrarCadeia) return;
 
             const modosComShowFx = ['AMPERO AS2', 'A. STAGE 2', 'AMPERO MP350', 'HX STOMP'];
             if (modosComShowFx.includes(modoMidi)) {
+                if (showFxRow) showFxRow.style.display = '';
                 btnMostrarCadeia.style.display = '';
             } else {
+                if (showFxRow) showFxRow.style.display = 'none';
                 btnMostrarCadeia.style.display = 'none';
             }
         }
@@ -2413,12 +2404,12 @@
                 // ON - azul
                 ledPreviewButton.classList.remove('rect-toggle-fx-off');
                 ledPreviewButton.classList.add('rect-toggle-fx-on');
-                span.textContent = 'LED PREVIEW ON';
+                span.textContent = 'ON';
             } else {
                 // OFF - vermelho
                 ledPreviewButton.classList.remove('rect-toggle-fx-on');
                 ledPreviewButton.classList.add('rect-toggle-fx-off');
-                span.textContent = 'LED PREVIEW OFF';
+                span.textContent = 'OFF';
             }
         }
 
@@ -2465,8 +2456,7 @@
                 // ciclo 1..5 => 20..100
                 ledBrilho = ledBrilho + 1;
                 if (ledBrilho > 5) ledBrilho = 1;
-                const pct = ledBrilho * 20;
-                ledBrilhoButton.textContent = 'BRILHO LED ' + pct + '%';
+                syncLedBrightnessDisplay();
                 requestGlobalAutoSave();
             });
         }
@@ -2532,7 +2522,7 @@
             }
             // Show/hide 6th color picker based on mode
             if (presetFColorItem) {
-                presetFColorItem.style.display = ledModeNumeros ? 'block' : 'none';
+                presetFColorItem.style.display = ledModeNumeros ? 'flex' : 'none';
             }
             // Update all preset color labels based on mode
             const letterLabels = ['PRESET A:', 'PRESET B:', 'PRESET C:', 'PRESET D:', 'PRESET E:', 'SW 6:'];

@@ -821,22 +821,27 @@
       }
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/visual-refresh-system.css" />
   <script src="../js/parity-bridge-client.js"></script>
 </head>
 <body>
   <div class="page">
-    <div class="header">
-      <div class="brand">
-        <div class="logo">BFMiDI</div>
-        <div>
-          <h1>SISTEMA</h1>
-          <div class="subtitle">Firmware: <span id="fwMain" class="fw-version">...</span></div>
-        </div>
+    <div class="page-topbar">
+      <div>
+        <h1>System Management</h1>
+        <p>Diagnósticos do dispositivo, configurações de placa e ferramentas de sistema</p>
       </div>
-      <div class="badge-pill" style="visibility:hidden;">
-        <span class="badge-dot"></span>
-        <span>Firmware</span>
-        <strong>--</strong>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn-top btn-top-muted" type="button" onclick="tryFetchSystemInfo()">
+          <span class="material-symbols-outlined" style="font-size:1rem;line-height:1;">refresh</span>
+          REFRESH
+        </button>
+        <button class="btn-top btn-top-accent" type="button" onclick="rebootDevice()">
+          <span class="material-symbols-outlined" style="font-size:1rem;line-height:1;">restart_alt</span>
+          REBOOT DEVICE
+        </button>
       </div>
     </div>
 
@@ -854,86 +859,83 @@
             <div class="section-subtitle">Selecione o modelo e opções de tela</div>
           </div>
 
-          <label for="board-select">Placa selecionada</label>
-          <div class="custom-select-wrapper">
-            <div class="custom-select-trigger" id="boardSelectDisplay">
-              <span class="label" id="boardSelectLabel">Selecione a placa</span>
-              <div class="arrow"></div>
+          <div class="board-config-grid">
+            <div class="board-config-panel">
+              <label for="board-select" style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#707d97;margin-bottom:8px;display:block;">SELECT BOARD</label>
+              <div class="custom-select-wrapper">
+                <div class="custom-select-trigger" id="boardSelectDisplay">
+                  <span class="label" id="boardSelectLabel">Selecione a placa</span>
+                  <div class="arrow"></div>
+                </div>
+                <div class="custom-options-panel" id="boardOptionsPanel"></div>
+              </div>
+              <select id="board-select" name="board" onchange="onBoardChange(this.value)" style="display:none"></select>
+              <p class="board-config-note">Ensure this matches your physical hardware revision. Incorrect selection may cause IO mapping issues.</p>
             </div>
-            <div class="custom-options-panel" id="boardOptionsPanel"></div>
-          </div>
-          <select id="board-select" name="board" onchange="onBoardChange(this.value)" style="display:none">
-          </select>
-
-          <div class="row" style="margin-top:10px; align-items:center;">
-            <div class="col" style="flex:1; min-width:220px;">
-              <label for="invertTela">Inverter Tela</label>
-              <span class="small">Rotaciona a tela (1) para instalações invertidas.</span>
+            <div class="board-config-panel">
+              <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#707d97;margin-bottom:12px;">SCREEN ORIENTATION</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div>
+                  <div style="font-size:0.88rem;color:#c5cfdf;font-weight:500;">Rotate Display 180°</div>
+                  <div style="font-size:0.78rem;color:#8090a8;margin-top:2px;">For inverted mounting</div>
+                </div>
+                <button id="btnTelaOrientacao" class="btn btn-orientacao" type="button" onclick="toggleTelaOrientacao()" style="min-width:100px;white-space:nowrap;">TELA NORMAL</button>
+              </div>
+              <input type="hidden" id="invertTela" value="0" />
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:6px;font-size:0.78rem;color:rgba(255,179,0,0.8);">
+                <span class="material-symbols-outlined" style="font-size:1rem;line-height:1;">warning</span>
+                Requires reboot to apply changes.
+              </div>
             </div>
-            <!-- Checkbox removido; estado controlado apenas pelo botão TELA NORMAL / TELA INVERTIDA -->
-            <input type="hidden" id="invertTela" value="0" />
-          </div>
-
-          <div class="controls">
-            <button
-              id="btnTelaOrientacao"
-              class="btn btn-orientacao"
-              type="button"
-              onclick="toggleTelaOrientacao()">
-              TELA NORMAL
-            </button>
           </div>
         </div>
 
-        <!-- Section: Backup -->
+        <!-- Section: Backup & Restore -->
         <div class="section backup">
           <div class="section-header">
             <div class="section-pill backup">
               <span class="icon"></span>
-              <span>Backup</span>
+              <span>Backup &amp; Restore</span>
             </div>
-            <div class="section-subtitle"></div>
           </div>
-
-          <div class="backup-actions">
-            <button class="btn small" id="btnBackupClient" type="button" onclick="downloadBackupClientSide()">Download Backup</button>
-          </div>
-
-          <div id="backupProgressContainer" style="margin-top:8px; display:none;">
-            <div class="mem-bar" style="margin-top:0;">
-              <div id="backupProgressBar" class="mem-bar-fill" style="width:0%;"></div>
+          <div class="backup-restore-grid">
+            <div class="backup-col">
+              <div class="backup-hero">
+                <span class="material-symbols-outlined">cloud_download</span>
+                <h4>Download Backup</h4>
+                <p>Save all presets &amp; global config to .syx</p>
+              </div>
+              <button class="btn small" id="btnBackupClient" type="button" onclick="downloadBackupClientSide()">EXPORT DATA</button>
+              <div id="backupProgressContainer" style="margin-top:8px; display:none;">
+                <div class="mem-bar" style="margin-top:0;">
+                  <div id="backupProgressBar" class="mem-bar-fill" style="width:0%;"></div>
+                </div>
+                <div id="backupProgressText" class="small" style="margin-top:4px;">Preparando...</div>
+              </div>
+              <div id="backupMessage" class="small" style="margin-top:6px;"></div>
+              <div id="backupBanner" style="display:none;margin-top:8px;padding:8px;border-radius:8px;background:linear-gradient(180deg,var(--success),#3ca94a);color:#071025;font-weight:700;text-align:center;font-size:0.86rem;"></div>
             </div>
-            <div id="backupProgressText" class="small" style="margin-top:4px;">Preparando...</div>
-          </div>
-          <div id="backupMessage" class="small" style="margin-top:6px;"></div>
-          <div id="backupBanner" style="display:none;margin-top:8px;padding:8px;border-radius:8px;background:linear-gradient(180deg,var(--success),#3ca94a);color:#071025;font-weight:700;text-align:center;font-size:0.86rem;"></div>
-        </div>
-
-        <!-- Section: Restaurar -->
-        <div class="section restore">
-          <div class="section-header">
-            <div class="section-pill restore">
-              <span class="icon"></span>
-              <span>Restaurar</span>
+            <div class="restore-col">
+              <div class="restore-head">
+                <h4>Restore from File</h4>
+                <span>.json</span>
+              </div>
+              <div class="restore-dropzone">
+                <input id="backupFile" type="file" accept=".json" />
+                <span class="material-symbols-outlined">upload_file</span>
+                <small>Click or Drag file here</small>
+              </div>
+              <button class="btn small" id="restoreBtn" type="button" onclick="uploadBackup()">Upload &amp; Restaurar</button>
+              <div id="restoreProgress" style="margin-top:8px; display:none;">
+                <div class="mem-bar" style="margin-top:0;">
+                  <div id="progressBar" class="mem-bar-fill" style="width:0%;"></div>
+                </div>
+                <div id="progressText" class="small" style="margin-top:4px;">Aguardando envio...</div>
+              </div>
+              <div id="restoreMessage" class="small" style="margin-top:6px;"></div>
+              <div id="restoreBanner" style="display:none;margin-top:8px;padding:8px;border-radius:8px;background:linear-gradient(180deg,var(--success),#3ca94a);color:#071025;font-weight:700;text-align:center;font-size:0.86rem;"></div>
             </div>
-            <div class="section-subtitle"></div>
           </div>
-
-          <div class="backup-actions">
-            <div>
-              <input id="backupFile" type="file" accept=".json" />
-            </div>
-            <button class="btn small" id="restoreBtn" onclick="uploadBackup()">Upload & Restaurar</button>
-          </div>
-
-          <div id="restoreProgress" style="margin-top:8px; display:none;">
-            <div class="mem-bar" style="margin-top:0;">
-              <div id="progressBar" class="mem-bar-fill" style="width:0%;"></div>
-            </div>
-            <div id="progressText" class="small" style="margin-top:4px;">Aguardando envio...</div>
-          </div>
-          <div id="restoreMessage" class="small" style="margin-top:6px;"></div>
-          <div id="restoreBanner" style="display:none;margin-top:8px;padding:8px;border-radius:8px;background:linear-gradient(180deg,var(--success),#3ca94a);color:#071025;font-weight:700;text-align:center;font-size:0.86rem;"></div>
         </div>
 
         <!-- Section: Monitor MIDI -->
@@ -978,23 +980,26 @@
           <div id="resetStatusMessage" style="margin-top: 10px; font-weight: bold; text-align: center; color: white;"></div>
         </div>
 
-        <!-- Section: Hardware Test -->
-        <div class="section config" style="border-color: rgba(255,165,0,0.95);">
+        <!-- Section: Hardware Diagnostics -->
+        <div class="section hardware-diagnostics">
           <div class="section-header">
-            <div class="section-pill config">
-              <span class="icon" style="background: #ffa500; box-shadow: 0 0 10px #ffa500;"></span>
-              <span>Teste de Hardware</span>
+            <div class="section-pill pill-hardware">
+              <span class="icon"></span>
+              <span>Hardware Diagnostics</span>
             </div>
           </div>
-          <div class="controls" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-            <button type="button" id="btnTestLeds" class="btn small" style="min-width: 0; background: linear-gradient(180deg, #ff6b6b, #ee5a5a); color: #fff;" onclick="startHardwareTest('leds')">
-              <span id="testLedsIcon">💡</span> LEDs
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px;">
+            <button type="button" id="btnTestLeds" class="btn small" style="min-width:0;flex-direction:column;gap:6px;height:72px;padding:10px 8px;" onclick="startHardwareTest('leds')">
+              <span id="testLedsIcon" class="material-symbols-outlined" style="font-size:1.5rem;line-height:1;">light_mode</span>
+              <span style="font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">TEST LEDS</span>
             </button>
-            <button type="button" id="btnTestDisplay" class="btn small" style="min-width: 0; background: linear-gradient(180deg, #4ecdc4, #3dbdb5); color: #fff;" onclick="startHardwareTest('display')">
-              <span id="testDisplayIcon">🖥️</span> Display
+            <button type="button" id="btnTestDisplay" class="btn small" style="min-width:0;flex-direction:column;gap:6px;height:72px;padding:10px 8px;" onclick="startHardwareTest('display')">
+              <span id="testDisplayIcon" class="material-symbols-outlined" style="font-size:1.5rem;line-height:1;">screenshot_monitor</span>
+              <span style="font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">TEST DISPLAY</span>
             </button>
-            <button type="button" id="btnTestMidi" class="btn small" style="min-width: 0; background: linear-gradient(180deg, #a855f7, #9333ea); color: #fff;" onclick="startHardwareTest('midi')">
-              <span id="testMidiIcon">🎹</span> MIDI
+            <button type="button" id="btnTestMidi" class="btn small" style="min-width:0;flex-direction:column;gap:6px;height:72px;padding:10px 8px;" onclick="startHardwareTest('midi')">
+              <span id="testMidiIcon" class="material-symbols-outlined" style="font-size:1.5rem;line-height:1;">piano</span>
+              <span style="font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">TEST MIDI IO</span>
             </button>
           </div>
           <div id="hardwareTestStatus" style="margin-top: 10px; text-align: center;">
@@ -1141,24 +1146,20 @@
           </div>
           
           <!-- Status Visual do WiFi -->
-          <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 12px; margin-bottom: 14px;">
-            <div class="info-row" style="margin-top: 0;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span id="wifiStatusIcon" style="width: 10px; height: 10px; border-radius: 50%; background: #666; box-shadow: 0 0 8px rgba(102,102,102,0.6);"></span>
-                <span style="font-weight: 600; color: #cfe7ff;">Status da Conexão</span>
-              </div>
-              <div id="wifiStatus" class="info-value" style="font-size: 0.85rem;">Carregando...</div>
+          <div class="wifi-hero">
+            <div class="wifi-icon-wrap">
+              <span class="material-symbols-outlined" style="font-size:3rem;color:#24d06f;position:relative;z-index:1;">wifi</span>
+              <span class="wifi-dot" id="wifiStatusIcon"></span>
             </div>
-            <div id="wifiCurrentNetwork" class="info-row" style="margin-top: 6px; display: none;">
-              <div style="color: var(--muted); font-size: 0.82rem;">Rede Atual</div>
-              <div id="wifiCurrentSSID" style="color: #7be0ff; font-weight: 700; font-size: 0.82rem;">-</div>
+            <div id="wifiStatus" class="wifi-status">Carregando...</div>
+            <div id="wifiCurrentNetwork" class="wifi-network" style="display:none;">
+              SSID: <span id="wifiCurrentSSID">-</span>
             </div>
+            <button class="btn small wifi-config-btn" type="button" onclick="toggleWifiForm()">CONFIGURE WIFI</button>
           </div>
           
-          <hr style="border-color: rgba(255,255,255,0.1); margin: 14px 0;">
-          
           <!-- Toggle para habilitar STA -->
-          <div style="background: rgba(57,160,255,0.05); border: 1px solid rgba(57,160,255,0.2); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px;">
+          <div class="wifi-advanced-card">
             <div class="row" style="align-items: center; margin: 0;">
               <label for="staEnabled" style="flex-grow: 1; margin: 0; font-size: 0.9rem; color: #dff3ff;">
                 <span style="display: block; font-weight: 700;">Modo STA (Cliente Wi-Fi)</span>
@@ -1169,7 +1170,7 @@
           </div>
 
           <!-- Formulário de Conexão WiFi -->
-          <div id="wifi-sta-form" style="display:none;">
+          <div id="wifi-sta-form" style="display:none; margin-top:12px;">
             
             <!-- Botão de Procurar Redes -->
             <div style="margin-bottom: 14px;">
@@ -1210,6 +1211,15 @@
             <div id="wifi-connect-status" class="small" style="margin-top: 10px; padding: 8px; border-radius: 8px; display: none;"></div>
           </div>
         </div>
+
+        <div class="section help">
+          <div class="help-icon-wrap">
+            <span class="material-symbols-outlined">support</span>
+          </div>
+          <h3>Need Help?</h3>
+          <p>Use a documentacao do projeto para procedimentos de backup, restore e diagnostico do dispositivo.</p>
+          <a href="/README.md" onclick="return false;">OPEN DOCS</a>
+        </div>
       </div>
       <aside class="info">
         <div class="info-card">
@@ -1240,27 +1250,6 @@
     <div class="footer">
       <div class="notice">&nbsp;</div>
       <div class="small">Última atualização: <span id="buildDateVal">...</span></div>
-    </div>
-  </div>
-
-  <div class="floating-footer-bar">
-    <div class="btn-container">
-      <button class="btn footer-nav-btn nav-preset" id="btnNavPreset" title="Preset Config" aria-label="Preset Config">
-        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 6h8v2h-8v-2zm0-6h8v4h-8v-4z"></path>
-        </svg>
-      </button>
-      <button class="btn footer-nav-btn nav-global" id="btnNavGlobal" title="Global Config" aria-label="Global Config">
-        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.63l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.027 7.027 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.7 8.48a.5.5 0 0 0 .12.63l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.82 14.15a.5.5 0 0 0-.12.63l1.92 3.32c.13.22.39.31.6.22l2.39-.96c.5.4 1.05.72 1.63.94l.36 2.54c.04.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.22.09.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.63l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5z"></path>
-        </svg>
-      </button>
-      <button class="btn footer-nav-btn nav-system active" id="btnNavSystem" title="System" aria-label="System">
-        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
-        </svg>
-      </button>
-      <button class="btn footer-save-btn" id="btnSalvarFooter">SAVE</button>
     </div>
   </div>
 
@@ -2938,6 +2927,32 @@
 
       // Then send one per second
       hardwareTestInterval = setInterval(sendNextPC, 1000);
+    }
+
+    async function rebootDevice() {
+      if (!confirm('Reiniciar o dispositivo BFMIDI agora?')) return;
+      const boardSelect = document.getElementById('board-select');
+      const invertTela = document.getElementById('invertTela');
+      const board = boardSelect ? encodeURIComponent(boardSelect.value || '') : '';
+      const invert = invertTela ? (invertTela.value || '0') : '0';
+      try {
+        await fetch('/savesystem?board=' + board + '&invert=' + invert);
+      } catch(e) {
+        // device reboot disconnects serial — expected
+      }
+    }
+
+    function toggleWifiForm() {
+      const form = document.getElementById('wifi-sta-form');
+      if (!form) return;
+      const staEnabled = document.getElementById('staEnabled');
+      if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        if (staEnabled) staEnabled.checked = true;
+        updateWifiForm();
+      } else {
+        form.style.display = 'none';
+      }
     }
   </script>
 </body>

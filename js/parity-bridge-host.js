@@ -86,7 +86,10 @@ function normalizeGlobalConfigPayload(raw) {
     backgroundEnabled: Boolean(data.backgroundEnabled),
     backgroundColorConfig: asInt(data.backgroundColorConfig, 0x000000),
     selectModeIndex: asInt(data.selectModeIndex, 0),
-    swGlobal: Array.isArray(data.swGlobal) ? data.swGlobal : [],
+    rampaValor: asInt(data.rampaValor, 1000),
+    swGlobal: (data.swGlobal && typeof data.swGlobal === "object" && !Array.isArray(data.swGlobal))
+      ? data.swGlobal
+      : {},
     presetLevels: Array.isArray(data.presetLevels) ? data.presetLevels : [],
     lockSetup: Boolean(data.lockSetup),
     lockGlobal: Boolean(data.lockGlobal),
@@ -95,6 +98,11 @@ function normalizeGlobalConfigPayload(raw) {
     autoStartRow: asInt(data.autoStartRow, 0),
     autoStartCol: asInt(data.autoStartCol, 0),
     autoStartLiveMode: Boolean(data.autoStartLiveMode),
+    kemperGetNames: Boolean(data.kemperGetNames),
+    kemperAutoLoader: Boolean(data.kemperAutoLoader),
+    advMidiCh: Array.isArray(data.advMidiCh) ? data.advMidiCh : [],
+    advMidiChNum: Array.isArray(data.advMidiChNum) ? data.advMidiChNum : [],
+    boardName: typeof data.boardName === "string" ? data.boardName : undefined,
   };
 }
 

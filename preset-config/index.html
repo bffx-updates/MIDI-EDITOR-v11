@@ -7590,8 +7590,8 @@
 
             // Mapeamento: posição i → índice firmware 86+i
             const SOLID_TO_PERFIS_MAP = Array.from({ length: 32 }, (_, i) => i + 86);
-            // Gradientes preto-cor: índices 100+i
-            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 100);
+            // Gradientes preto-cor: índices 118+i (firmware getIndexedGradientSpec: idx >= 118 && idx < 150)
+            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 118);
 
             const GRADIENT1_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
                 const hex = '#' + col.value.toString(16).padStart(6, '0');
@@ -7608,7 +7608,7 @@
             const CUSTOM_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
                 const hex = '#' + col.value.toString(16).padStart(6, '0');
                 const gradCss = `linear-gradient(180deg, #000000 0%, ${hex} 48%, #000000 100%)`;
-                return makeGradientSwatch('Custom ' + col.name, col.value, 100 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
+                return makeGradientSwatch('Custom ' + col.name, col.value, 118 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
             });
 
             const MIX_FORMAT_GRADIENTS_WEB = [
@@ -7707,7 +7707,7 @@
                 const idx = SOLID_TO_PERFIS_MAP[i];
                 PERFIS_CORES_WEB[idx] = { ...col, actualIndex: idx, storedValue: col.value };
             });
-            // 4. Custom preto-cor — indices 100-131
+            // 4. Custom preto-cor — indices 118-149
             SOLID_COLORS_WEB.forEach((color, i) => {
                 const custIdx = CUSTOM_BLACK_GRADIENT_INDEXES[i];
                 PERFIS_CORES_WEB[custIdx] = makeBlackCoreGradientSwatch(

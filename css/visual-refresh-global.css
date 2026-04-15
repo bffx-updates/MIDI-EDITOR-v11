@@ -101,6 +101,9 @@ body {
   border: 0 !important;
   box-shadow: none !important;
   padding: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
 }
 
 #globalConfigForm {
@@ -151,17 +154,25 @@ body {
 .section-levels h2::before { content: "graphic_eq"; }
 .section-lock h2::before { content: "lock"; }
 .section-presets h2::before { content: "palette"; }
+.section-swglobal h2::before { content: "toggle_on"; }
+.section-system h2::before { content: "tune"; }
 
 .section-interface-display,
 .section-modo,
-.section-presets {
+.section-presets,
+.section-swglobal {
   grid-column: 1;
 }
 
 .section-autostart,
 .section-levels,
-.section-lock {
+.section-lock,
+.section-system {
   grid-column: 2;
+}
+
+.section-levels {
+  grid-row: 1;
 }
 
 #statusMessage {
@@ -827,9 +838,11 @@ select {
   .section-interface-display,
   .section-modo,
   .section-presets,
+  .section-swglobal,
   .section-autostart,
   .section-levels,
-  .section-lock {
+  .section-lock,
+  .section-system {
     grid-column: 1;
   }
 }
