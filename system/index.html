@@ -509,6 +509,45 @@
       box-shadow:0 10px 26px rgba(0,0,0,0.75);
     }
 
+    .system-log-card{
+      cursor:pointer;
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast);
+    }
+
+    .system-log-card:hover{
+      transform:translateY(-2px);
+      border-color:rgba(57,160,255,0.35);
+      box-shadow:0 12px 28px rgba(0,0,0,0.8), 0 0 0 1px rgba(57,160,255,0.12);
+    }
+
+    .system-log-card:focus-visible{
+      outline:none;
+      border-color:rgba(57,160,255,0.55);
+      box-shadow:0 0 0 2px rgba(57,160,255,0.18), 0 12px 28px rgba(0,0,0,0.8);
+    }
+
+    .system-log-panel{
+      display:none;
+      margin-top:10px;
+    }
+
+    .system-log-output{
+      width:100%;
+      height:260px;
+      background-color:#050608;
+      color:#00dd00;
+      font-family:'Courier New',monospace;
+      border:1px solid rgba(255,255,255,0.16);
+      border-radius:10px;
+      padding:10px;
+      box-sizing:border-box;
+      resize:vertical;
+      box-shadow:0 8px 22px rgba(0,0,0,0.7);
+    }
+
     .info-title{
       font-weight:600;
       font-size:0.9rem;
@@ -938,47 +977,6 @@
           </div>
         </div>
 
-        <!-- Section: Monitor MIDI -->
-        <div class="section monitor">
-          <div class="section-header">
-            <div class="section-pill monitor">
-              <span class="icon"></span>
-              <span>Monitor MIDI</span>
-            </div>
-            <div class="section-subtitle"></div>
-          </div>
-          <div class="controls" style="margin-top:4px;">
-            <button class="btn small" onclick="toggleMidiMonitor(event)">Abrir Monitor</button>
-          </div>
-          <div id="midiMonitor" style="display:none; margin-top:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
-              <div class="small" style="color:var(--text-secondary);font-weight:600;">
-                Monitorando: <span id="midiMonitorDirectionText" style="color:var(--accent);">SAIDA</span>
-              </div>
-              <button class="btn small" id="midiMonitorDirectionBtn" type="button" onclick="toggleMidiMonitorDirection()">ENTRADA/SAIDA: SAIDA</button>
-            </div>
-            <textarea id="midiLog" readonly
-              style="width:100%;height:260px;background-color:#050608;color:#00dd00;font-family:'Courier New',monospace;border:1px solid rgba(255,255,255,0.16);border-radius:10px;padding:10px;box-sizing:border-box;resize:vertical;box-shadow:0 8px 22px rgba(0,0,0,0.7);"></textarea>
-            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
-              <button class="btn ghost small" onclick="clearMidiLog()">Limpar</button>
-              <button class="btn small" onclick="copyMidiLog(this)">Copiar Log</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section: Reset -->
-        <div class="section reset">
-          <div class="section-header">
-            <div class="section-pill restore" style="color: #ff00aa;">
-              <span class="icon" style="background: #ff00aa; box-shadow: 0 0 10px #ff00aa;"></span>
-              <span>Reset de Fábrica</span>
-            </div>
-          </div>
-          <div class="controls">
-            <button type="button" id="resetNvsButton" class="btn btn-reset" style="width: 100%;">RESETAR CONFIGURAÇÕES</button>
-          </div>
-          <div id="resetStatusMessage" style="margin-top: 10px; font-weight: bold; text-align: center; color: white;"></div>
-        </div>
 
         <!-- Section: Hardware Diagnostics -->
         <div class="section hardware-diagnostics">
@@ -1030,6 +1028,25 @@
             <div class="info-row">
               <span>Codigo</span>
               <span id="resetReasonCode" class="info-value">-</span>
+            </div>
+          </div>
+          <div class="info-card system-log-card" id="systemLogCard" role="button" tabindex="0"
+               onclick="toggleSystemLog()"
+               onkeydown="handleSystemLogCardKey(event)"
+               style="margin-top:10px;">
+            <div class="info-title"><span class="icon"></span>SystemLog</div>
+            <div class="info-row">
+              <span>Serial print e status atual do firmware</span>
+              <span id="systemLogCardState" class="info-value">FECHADO</span>
+            </div>
+          </div>
+          <div id="systemLogPanel" class="system-log-panel">
+            <div id="systemLogMeta" class="small" style="margin:2px 0 8px 2px;">Clique em SystemLog para carregar o log.</div>
+            <textarea id="systemLogOutput" class="system-log-output" readonly></textarea>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;flex-wrap:wrap;">
+              <button class="btn ghost small" type="button" onclick="copySystemLog(this)">Copiar Log</button>
+              <button class="btn ghost small" type="button" onclick="clearSystemLog()">Limpar Log</button>
+              <button class="btn small" type="button" onclick="refreshSystemLog()">Atualizar</button>
             </div>
           </div>
           <div class="controls" style="margin-top:10px;">
@@ -1136,82 +1153,6 @@
           <div id="usbHostActionStatus" class="usb-host-status-text"></div>
         </div>
 
-        <!-- Section: Wi-Fi -->
-        <div class="section config">
-          <div class="section-header">
-            <div class="section-pill config">
-              <span class="icon"></span>
-              <span>Conexão Wi-Fi</span>
-            </div>
-          </div>
-          
-          <!-- Status Visual do WiFi -->
-          <div class="wifi-hero">
-            <div class="wifi-icon-wrap">
-              <span class="material-symbols-outlined" style="font-size:3rem;color:#24d06f;position:relative;z-index:1;">wifi</span>
-              <span class="wifi-dot" id="wifiStatusIcon"></span>
-            </div>
-            <div id="wifiStatus" class="wifi-status">Carregando...</div>
-            <div id="wifiCurrentNetwork" class="wifi-network" style="display:none;">
-              SSID: <span id="wifiCurrentSSID">-</span>
-            </div>
-            <button class="btn small wifi-config-btn" type="button" onclick="toggleWifiForm()">CONFIGURE WIFI</button>
-          </div>
-          
-          <!-- Toggle para habilitar STA -->
-          <div class="wifi-advanced-card">
-            <div class="row" style="align-items: center; margin: 0;">
-              <label for="staEnabled" style="flex-grow: 1; margin: 0; font-size: 0.9rem; color: #dff3ff;">
-                <span style="display: block; font-weight: 700;">Modo STA (Cliente Wi-Fi)</span>
-                <span style="display: block; font-size: 0.75rem; color: var(--muted); margin-top: 2px;">Conectar este dispositivo a uma rede existente</span>
-              </label>
-              <input type="checkbox" id="staEnabled" onchange="updateWifiForm()" style="transform: scale(1.3); cursor: pointer;">
-            </div>
-          </div>
-
-          <!-- Formulário de Conexão WiFi -->
-          <div id="wifi-sta-form" style="display:none; margin-top:12px;">
-            
-            <!-- Botão de Procurar Redes -->
-            <div style="margin-bottom: 14px;">
-              <button id="scanWifiBtn" class="btn small" onclick="scanWifi()" style="width: 100%; min-width: 0;">
-                <span id="scanBtnIcon">📡</span> <span id="scanBtnText">Procurar Redes Wi-Fi</span>
-              </button>
-            </div>
-            
-            <!-- Seleção de Rede -->
-            <div style="margin-bottom: 12px;">
-              <label for="wifi-ssid" style="display: flex; align-items: center; gap: 6px;">
-                <span>🌐</span> Rede (SSID)
-              </label>
-              <select id="wifi-ssid" name="wifi-ssid" style="width:100%; height:36px; padding: 6px 12px; border-radius: 10px; background: #15181c; border: 1px solid rgba(255,255,255,0.15); color: white; font-size: 0.9rem; cursor: pointer;">
-                <option value="">Selecione uma rede</option>
-              </select>
-            </div>
-            
-            <!-- Campo de Senha -->
-            <div style="margin-bottom: 14px;">
-              <label for="wifi-password" style="display: flex; align-items: center; gap: 6px;">
-                <span>🔒</span> Senha da Rede
-              </label>
-              <input type="password" id="wifi-password" placeholder="Digite a senha" style="width:100%; height:36px; padding: 6px 12px; border-radius: 10px; background: #15181c; border: 1px solid rgba(255,255,255,0.15); color: white; box-sizing: border-box; font-size: 0.9rem;">
-            </div>
-            
-            <!-- Botões de Ação -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-              <button class="btn ghost small" onclick="forgetWifiNetwork()" style="min-width: 0; border-color: #ff6b6b; color: #ff6b6b;">
-                <span>🗑️</span> Esquecer
-              </button>
-              <button class="btn save small" onclick="connectToWifi()" style="min-width: 0;">
-                <span>💾</span> Conectar
-              </button>
-            </div>
-            
-            <!-- Feedback de Status -->
-            <div id="wifi-connect-status" class="small" style="margin-top: 10px; padding: 8px; border-radius: 8px; display: none;"></div>
-          </div>
-        </div>
-
         <div class="section help">
           <div class="help-icon-wrap">
             <span class="material-symbols-outlined">support</span>
@@ -1244,6 +1185,35 @@
             <div id="nvsTotal">Total: -- bytes</div>
           </div>
         </div>
+
+        <!-- Wi-Fi Status -->
+        <div class="info-card" style="margin-top:12px;">
+          <div class="info-title">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#24d06f;margin-right:4px;line-height:1;">wifi</span>
+            <span>Conexão Wi-Fi</span>
+            <span id="wifiStatusIcon" style="display:inline-block;width:10px;height:10px;border-radius:999px;background:#666;box-shadow:0 0 8px rgba(102,102,102,0.6);margin-left:auto;flex-shrink:0;"></span>
+          </div>
+          <div class="info-row" style="margin-top:6px;">
+            <span>Status</span>
+            <span id="wifiStatus" class="info-value">Carregando...</span>
+          </div>
+          <div id="wifiCurrentNetwork" class="info-row" style="display:none;margin-top:4px;">
+            <span>SSID</span>
+            <span id="wifiCurrentSSID" class="info-value">-</span>
+          </div>
+        </div>
+
+        <!-- Reset de Fábrica -->
+        <div class="info-card" style="margin-top:12px;">
+          <div class="info-title" style="color:#ff00aa;">
+            <span class="icon" style="background:#ff00aa;box-shadow:0 0 8px #ff00aa;"></span>
+            <span>Reset de Fábrica</span>
+          </div>
+          <div style="margin-top:10px;">
+            <button type="button" id="resetNvsButton" class="btn btn-reset" style="width:100%;">RESETAR CONFIGURAÇÕES</button>
+          </div>
+          <div id="resetStatusMessage" style="margin-top:8px;font-weight:bold;text-align:center;color:white;font-size:0.82rem;"></div>
+        </div>
       </aside>
     </div>
 
@@ -1254,161 +1224,92 @@
   </div>
 
   <script>
-    let midiSocket;
-    let midiMonitorDirection = 'out';
-    const midiMonitorBuffers = { out: [], in: [] };
-    const MIDI_MONITOR_MAX_LINES = 400;
     let usbHostPollingTimer = null;
     let usbHostBusy = false;
     let usbHostSupported = false;
     let usbHostControlsEnabled = false;
+    let systemLogPollingTimer = null;
+    const SYSTEM_LOG_POLL_MS = 2000;
 
-    function parseMidiMonitorLine(rawLine) {
-      const line = String(rawLine || '');
-      if (line.startsWith('[IN] ')) {
-        return { direction: 'in', text: line.substring(5) };
-      }
-      if (line.startsWith('[OUT] ')) {
-        return { direction: 'out', text: line.substring(6) };
-      }
-      return { direction: 'out', text: line };
+    function setSystemLogOpenState(isOpen) {
+      const stateEl = document.getElementById('systemLogCardState');
+      if (stateEl) stateEl.textContent = isOpen ? 'ABERTO' : 'FECHADO';
     }
 
-    function pushMidiMonitorLine(direction, text) {
-      const key = direction === 'in' ? 'in' : 'out';
-      const bucket = midiMonitorBuffers[key];
-      bucket.push(text);
-      if (bucket.length > MIDI_MONITOR_MAX_LINES) {
-        bucket.splice(0, bucket.length - MIDI_MONITOR_MAX_LINES);
+    function stopSystemLogPolling() {
+      if (systemLogPollingTimer) {
+        clearInterval(systemLogPollingTimer);
+        systemLogPollingTimer = null;
       }
     }
 
-    function renderMidiMonitor() {
-      const log = document.getElementById('midiLog');
-      const btn = document.getElementById('midiMonitorDirectionBtn');
-      const label = document.getElementById('midiMonitorDirectionText');
-      if (!log) return;
-
-      const visibleLines = midiMonitorBuffers[midiMonitorDirection] || [];
-      log.value = visibleLines.join('');
-      log.scrollTop = log.scrollHeight;
-
-      const modeText = midiMonitorDirection === 'in' ? 'ENTRADA' : 'SAIDA';
-      if (btn) btn.textContent = 'ENTRADA/SAIDA: ' + modeText;
-      if (label) label.textContent = modeText;
-    }
-
-    function appendMidiMonitorStatus(text) {
-      const currentBucket = midiMonitorBuffers[midiMonitorDirection];
-      currentBucket.push(String(text));
-      if (currentBucket.length > MIDI_MONITOR_MAX_LINES) {
-        currentBucket.splice(0, currentBucket.length - MIDI_MONITOR_MAX_LINES);
+    async function refreshSystemLog(silent = false) {
+      const output = document.getElementById('systemLogOutput');
+      const meta = document.getElementById('systemLogMeta');
+      if (!output) return;
+      if (!silent && !output.value) output.value = 'Carregando SystemLog...\n';
+      try {
+        const response = await fetch('/api/system/logs', { cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const text = await response.text();
+        output.value = text || 'SystemLog vazio.\n';
+        output.scrollTop = output.scrollHeight;
+        if (meta) meta.textContent = 'Atualizado: ' + new Date().toLocaleTimeString('pt-BR');
+      } catch (err) {
+        output.value = 'Erro ao carregar SystemLog: ' + err.message + '\n';
+        if (meta) meta.textContent = 'Falha ao atualizar o SystemLog.';
       }
-      renderMidiMonitor();
     }
 
-    function toggleMidiMonitorDirection() {
-      midiMonitorDirection = midiMonitorDirection === 'out' ? 'in' : 'out';
-      renderMidiMonitor();
+    async function clearSystemLog() {
+      const output = document.getElementById('systemLogOutput');
+      const meta = document.getElementById('systemLogMeta');
+      try {
+        await fetch('/api/system/logs/clear', { method: 'POST' });
+        if (output) output.value = '';
+        stopSystemLogPolling();
+        if (meta) meta.textContent = 'Log limpo. Clique em Atualizar para continuar.';
+      } catch (e) {
+        if (meta) meta.textContent = 'Erro ao limpar log.';
+      }
     }
 
-    function toggleMidiMonitor(event) {
-      const monitor = document.getElementById('midiMonitor');
-      const button = event.currentTarget;
-      if (monitor.style.display === 'none') {
-        monitor.style.display = 'block';
-        button.textContent = 'Fechar Monitor';
-        startMidiSocket();
+    async function copySystemLog(btn) {
+      const output = document.getElementById('systemLogOutput');
+      if (!output || !output.value) return;
+      try {
+        await navigator.clipboard.writeText(output.value);
+        const orig = btn.textContent;
+        btn.textContent = 'Copiado!';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      } catch (e) {
+        output.select();
+        document.execCommand('copy');
+      }
+    }
+
+    function toggleSystemLog() {
+      const panel = document.getElementById('systemLogPanel');
+      if (!panel) return;
+      const isHidden = panel.style.display === 'none' || panel.style.display === '';
+      if (isHidden) {
+        panel.style.display = 'block';
+        setSystemLogOpenState(true);
+        refreshSystemLog();
+        stopSystemLogPolling();
+        systemLogPollingTimer = setInterval(() => refreshSystemLog(true), SYSTEM_LOG_POLL_MS);
       } else {
-        monitor.style.display = 'none';
-        button.textContent = 'Abrir Monitor';
-        stopMidiSocket();
+        panel.style.display = 'none';
+        setSystemLogOpenState(false);
+        stopSystemLogPolling();
       }
     }
 
-    function startMidiSocket() {
-      const log = document.getElementById('midiLog');
-      renderMidiMonitor();
-      appendMidiMonitorStatus('Conectando ao monitor MIDI...\n');
-      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = wsProtocol + '//' + window.location.host + '/ws';
-
-      midiSocket = new WebSocket(wsUrl);
-
-      midiSocket.onopen = function() {
-        appendMidiMonitorStatus('Conectado! Aguardando dados MIDI...\n============================================\n');
-        if (midiSocket.readyState === WebSocket.OPEN) {
-          midiSocket.send('start_midi_monitor');
-        }
-      };
-
-      midiSocket.onmessage = function(event) {
-        const parsed = parseMidiMonitorLine(event.data);
-        pushMidiMonitorLine(parsed.direction, parsed.text);
-        if (parsed.direction === midiMonitorDirection) {
-          renderMidiMonitor();
-        }
-      };
-
-      midiSocket.onclose = function() {
-        appendMidiMonitorStatus('============================================\nDesconectado do monitor MIDI.\n');
-      };
-
-      midiSocket.onerror = function(error) {
-        appendMidiMonitorStatus('Erro na conexao WebSocket. O servidor suporta WebSockets?\n');
-        console.error('WebSocket Error: ', error);
-      };
-    }
-
-    function stopMidiSocket() {
-      if (midiSocket) {
-        if (midiSocket.readyState === WebSocket.OPEN) {
-          midiSocket.send('stop_midi_monitor');
-        }
-        midiSocket.close();
-        midiSocket = null;
+    function handleSystemLogCardKey(event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleSystemLog();
       }
-    }
-
-    function copyMidiLog(button) {
-      const logTextarea = document.getElementById('midiLog');
-      const textToCopy = logTextarea.value;
-      if (!textToCopy) return;
-
-      const originalText = button.textContent;
-
-      function setCopied() {
-        button.textContent = 'Copiado!';
-        button.disabled = true;
-        setTimeout(() => {
-          button.textContent = originalText;
-          button.disabled = false;
-        }, 2000);
-      }
-
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(textToCopy)
-          .then(setCopied)
-          .catch(err => {
-            console.error('Erro ao copiar texto: ', err);
-            alert('Falha ao copiar o texto.');
-          });
-      } else {
-        logTextarea.select();
-        logTextarea.setSelectionRange(0, 99999);
-        try {
-          document.execCommand('copy');
-          setCopied();
-        } catch (err) {
-          console.error('Fallback: Erro ao copiar texto', err);
-          alert('Falha ao copiar o texto.');
-        }
-      }
-    }
-
-    function clearMidiLog() {
-      midiMonitorBuffers[midiMonitorDirection] = [];
-      renderMidiMonitor();
     }
 
     function applyNvsInfo(info) {
@@ -1999,10 +1900,9 @@
           const statusDiv = document.getElementById('wifiStatus');
           const currentNetworkDiv = document.getElementById('wifiCurrentNetwork');
           const currentSSIDDiv = document.getElementById('wifiCurrentSSID');
-          
+
           statusDiv.textContent = statusText;
-          
-          // Atualiza ícone de status com cores
+
           if (statusText.includes('Conectado')) {
             statusIcon.style.background = '#4CAF50';
             statusIcon.style.boxShadow = '0 0 12px rgba(76, 175, 80, 0.8)';
@@ -2017,19 +1917,6 @@
             statusIcon.style.boxShadow = '0 0 8px rgba(102, 102, 102, 0.6)';
             currentNetworkDiv.style.display = 'none';
           }
-          
-          const staEnabledCheckbox = document.getElementById('staEnabled');
-          staEnabledCheckbox.checked = data.sta_enabled || false;
-          
-          const ssidSelect = document.getElementById('wifi-ssid');
-          // Adiciona o SSID salvo como uma opção se não estiver na lista
-          if (data.sta_ssid && !Array.from(ssidSelect.options).some(opt => opt.value === data.sta_ssid)) {
-              const option = new Option(data.sta_ssid, data.sta_ssid);
-              ssidSelect.add(option);
-          }
-          ssidSelect.value = data.sta_ssid || '';
-
-          updateWifiForm();
         })
         .catch(err => {
           document.getElementById('wifiStatus').textContent = 'Erro ao carregar status';
@@ -2039,162 +1926,6 @@
         });
     }
 
-    function updateWifiForm() {
-      const staEnabled = document.getElementById('staEnabled').checked;
-      document.getElementById('wifi-sta-form').style.display = staEnabled ? 'block' : 'none';
-    }
-
-    function scanWifi() {
-      const scanBtn = document.getElementById('scanWifiBtn');
-      const scanBtnIcon = document.getElementById('scanBtnIcon');
-      const scanBtnText = document.getElementById('scanBtnText');
-      const ssidSelect = document.getElementById('wifi-ssid');
-      
-      scanBtn.disabled = true;
-      scanBtnIcon.textContent = '⏳';
-      scanBtnText.textContent = 'Procurando...';
-      ssidSelect.innerHTML = '<option value="">Aguarde...</option>';
-
-      fetch('/api/wifi/scan')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Falha ao escanear redes.');
-          }
-          return response.json();
-        })
-        .then(networks => {
-          ssidSelect.innerHTML = '<option value="">Selecione uma rede</option>';
-          networks.sort((a, b) => b.rssi - a.rssi);
-          
-          if (networks.length === 0) {
-            ssidSelect.innerHTML = '<option value="">Nenhuma rede encontrada</option>';
-          } else {
-            networks.forEach(net => {
-              const signalStrength = net.rssi > -50 ? '📶 Excelente' : net.rssi > -70 ? '📶 Bom' : '📶 Fraco';
-              const label = `${net.ssid} (${signalStrength})`;
-              const option = new Option(label, net.ssid);
-              ssidSelect.add(option);
-            });
-          }
-          
-          scanBtn.disabled = false;
-          scanBtnIcon.textContent = '✓';
-          scanBtnText.textContent = `${networks.length} redes encontradas`;
-          
-          setTimeout(() => {
-            scanBtnIcon.textContent = '📡';
-            scanBtnText.textContent = 'Procurar Redes Wi-Fi';
-          }, 3000);
-        })
-        .catch(err => {
-          console.error('Erro ao escanear redes Wi-Fi:', err);
-          ssidSelect.innerHTML = '<option value="">Falha ao escanear</option>';
-          scanBtn.disabled = false;
-          scanBtnIcon.textContent = '❌';
-          scanBtnText.textContent = 'Erro ao escanear';
-          
-          setTimeout(() => {
-            scanBtnIcon.textContent = '📡';
-            scanBtnText.textContent = 'Procurar Redes Wi-Fi';
-          }, 3000);
-        });
-    }
-
-    function connectToWifi() {
-      const statusDiv = document.getElementById('wifi-connect-status');
-      const payload = {
-        enabled: document.getElementById('staEnabled').checked,
-        ssid: document.getElementById('wifi-ssid').value,
-        password: document.getElementById('wifi-password').value
-      };
-
-      if (payload.enabled && !payload.ssid) {
-        statusDiv.style.display = 'block';
-        statusDiv.style.background = 'rgba(255, 92, 92, 0.1)';
-        statusDiv.style.border = '1px solid rgba(255, 92, 92, 0.3)';
-        statusDiv.style.color = '#ff5c5c';
-        statusDiv.textContent = '⚠️ Por favor, selecione uma rede.';
-        return;
-      }
-
-      statusDiv.style.display = 'block';
-      statusDiv.style.background = 'rgba(57, 160, 255, 0.1)';
-      statusDiv.style.border = '1px solid rgba(57, 160, 255, 0.3)';
-      statusDiv.style.color = 'var(--accent)';
-      statusDiv.textContent = '⏳ Salvando configurações e reiniciando... Por favor, aguarde.';
-
-      fetch('/api/wifi/connect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          statusDiv.style.background = 'rgba(76, 175, 80, 0.1)';
-          statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.3)';
-          statusDiv.style.color = 'var(--success)';
-          statusDiv.textContent = '✓ ' + data.message;
-        } else {
-          statusDiv.style.background = 'rgba(255, 92, 92, 0.1)';
-          statusDiv.style.border = '1px solid rgba(255, 92, 92, 0.3)';
-          statusDiv.style.color = 'var(--danger)';
-          statusDiv.textContent = '❌ Erro: ' + data.message;
-        }
-      })
-      .catch(err => {
-        statusDiv.style.background = 'rgba(255, 92, 92, 0.1)';
-        statusDiv.style.border = '1px solid rgba(255, 92, 92, 0.3)';
-        statusDiv.style.color = 'var(--danger)';
-        statusDiv.textContent = '❌ Erro de comunicação ao tentar conectar.';
-        console.error('Erro ao conectar ao Wi-Fi:', err);
-      });
-    }
-
-    function forgetWifiNetwork() {
-      if (!confirm('Tem certeza que deseja esquecer a rede Wi-Fi configurada? O dispositivo será reiniciado em modo AP.')) {
-        return;
-      }
-      
-      const statusDiv = document.getElementById('wifi-connect-status');
-      statusDiv.style.display = 'block';
-      statusDiv.style.background = 'rgba(255, 165, 0, 0.1)';
-      statusDiv.style.border = '1px solid rgba(255, 165, 0, 0.3)';
-      statusDiv.style.color = '#ffa500';
-      statusDiv.textContent = '⏳ Removendo configurações WiFi...';
-
-      fetch('/api/wifi/forget', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          statusDiv.style.background = 'rgba(76, 175, 80, 0.1)';
-          statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.3)';
-          statusDiv.style.color = 'var(--success)';
-          statusDiv.textContent = '✓ Rede esquecida! Reiniciando...';
-          
-          // Limpa os campos
-          document.getElementById('wifi-ssid').value = '';
-          document.getElementById('wifi-password').value = '';
-          document.getElementById('staEnabled').checked = false;
-          updateWifiForm();
-        } else {
-          statusDiv.style.background = 'rgba(255, 92, 92, 0.1)';
-          statusDiv.style.border = '1px solid rgba(255, 92, 92, 0.3)';
-          statusDiv.style.color = 'var(--danger)';
-          statusDiv.textContent = '❌ Erro: ' + data.message;
-        }
-      })
-      .catch(err => {
-        statusDiv.style.background = 'rgba(255, 92, 92, 0.1)';
-        statusDiv.style.border = '1px solid rgba(255, 92, 92, 0.3)';
-        statusDiv.style.color = 'var(--danger)';
-        statusDiv.textContent = '❌ Erro de comunicação.';
-        console.error('Erro ao esquecer rede WiFi:', err);
-      });
-    }
 
     function initSystemFooterMenu() {
       document.getElementById('btnNavPreset')?.addEventListener('click', () => { window.location.href = '/preset-config'; });
@@ -2942,18 +2673,6 @@
       }
     }
 
-    function toggleWifiForm() {
-      const form = document.getElementById('wifi-sta-form');
-      if (!form) return;
-      const staEnabled = document.getElementById('staEnabled');
-      if (form.style.display === 'none' || form.style.display === '') {
-        form.style.display = 'block';
-        if (staEnabled) staEnabled.checked = true;
-        updateWifiForm();
-      } else {
-        form.style.display = 'none';
-      }
-    }
   </script>
 </body>
 </html>

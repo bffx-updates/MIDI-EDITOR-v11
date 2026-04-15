@@ -1,4 +1,4 @@
-const CACHE_NAME = "bfmidi-editor-v39";
+const CACHE_NAME = "bfmidi-editor-v42";
 const ASSETS = [
   "./",
   "./index.html",

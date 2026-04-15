@@ -597,6 +597,21 @@ export class ParityBridgeHost {
         );
       }
 
+      if (pathname === "/api/system/logs" && method === "GET") {
+        return textResult(
+          [
+            "BFMIDI Editor Externo",
+            `Timestamp: ${new Date().toISOString()}`,
+            "SystemLog nao disponivel via protocolo serial.",
+            "Conecte via WiFi para acessar o log completo do firmware.",
+          ].join("\n")
+        );
+      }
+
+      if (pathname === "/api/system/logs/clear" && method === "POST") {
+        return jsonResult({ ok: true });
+      }
+
       if (pathname.startsWith("/api/")) {
         return jsonResult(
           {
