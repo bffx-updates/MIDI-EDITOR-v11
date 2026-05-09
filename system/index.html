@@ -1150,6 +1150,19 @@
             </div>
           </div>
 
+          <div class="info-card" style="margin-top:10px;" id="usbHostEcoCard">
+            <div class="info-row" style="margin-top:0;">
+              <span>ECO HOST</span>
+              <span id="usbHostEcoStateVal" class="info-value">OFF</span>
+            </div>
+            <div style="font-size:0.82rem; color:#c9d4e0; margin-top:10px; line-height:1.35;">
+              Espelha no Serial Monitor (USB CDC) os bytes recebidos do USB Host. Desabilitado por padrao para liberar recursos.
+            </div>
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+              <button class="btn small" type="button" id="btnUsbHostEcoToggle" onclick="toggleEcoHost()">LIGAR</button>
+            </div>
+          </div>
+
           <div id="usbHostActionStatus" class="usb-host-status-text"></div>
         </div>
 
@@ -1228,6 +1241,7 @@
     let usbHostBusy = false;
     let usbHostSupported = false;
     let usbHostControlsEnabled = false;
+    let ecoHostState = false;
     let systemLogPollingTimer = null;
     const SYSTEM_LOG_POLL_MS = 2000;
 
@@ -1404,6 +1418,9 @@
       const updateCard = document.getElementById('usbHostUpdateCard');
       if (updateCard) updateCard.style.display = enabled ? 'block' : 'none';
 
+      const ecoCard = document.getElementById('usbHostEcoCard');
+      if (ecoCard) ecoCard.style.display = enabled ? 'block' : 'none';
+
       const actionStatus = document.getElementById('usbHostActionStatus');
       if (actionStatus) {
         actionStatus.style.display = enabled ? 'block' : 'none';
@@ -1488,6 +1505,10 @@
       if (productVal) productVal.textContent = data.product || 'N/A';
       if (statusVal) statusVal.textContent = data.status || '-';
       if (filterVal) filterVal.textContent = formatUsbHostMidiFilter(data.midiFilterChannel);
+      if (typeof data.ecoHost === 'boolean') {
+        ecoHostState = data.ecoHost;
+        updateEcoHostUI();
+      }
       if (controlsEnabled && filterSelect && !usbHostBusy) {
         const pendingFilter = typeof data.pendingMidiFilterChannel === 'number' ? data.pendingMidiFilterChannel : -1;
         const selectedFilter = pendingFilter >= 0 ? pendingFilter : data.midiFilterChannel;
@@ -1554,6 +1575,35 @@
         }
         console.error('Erro ao consultar USB Host:', err);
       }
+    }
+
+    async function toggleEcoHost() {
+      const actionStatus = document.getElementById('usbHostActionStatus');
+      const enabled = !ecoHostState;
+      try {
+        const response = await fetch('/api/host-eco', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error('Falha ao alterar ECO HOST');
+        }
+        ecoHostState = !!result.ecoHost;
+        updateEcoHostUI();
+        if (actionStatus) actionStatus.textContent = ecoHostState ? 'ECO HOST ligado.' : 'ECO HOST desligado.';
+      } catch (err) {
+        if (actionStatus) actionStatus.textContent = 'Erro ao alterar ECO HOST: ' + err.message;
+        console.error('Erro ECO HOST:', err);
+      }
+    }
+
+    function updateEcoHostUI() {
+      const stateVal = document.getElementById('usbHostEcoStateVal');
+      const toggleBtn = document.getElementById('btnUsbHostEcoToggle');
+      if (stateVal) stateVal.textContent = ecoHostState ? 'ON' : 'OFF';
+      if (toggleBtn) toggleBtn.textContent = ecoHostState ? 'DESLIGAR' : 'LIGAR';
     }
 
     async function refreshUsbHostStatus() {

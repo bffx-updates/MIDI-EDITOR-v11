@@ -1,43 +1,32 @@
-// Extracted from global-config/index.html to reduce inline template parsing on ESP
-
-// Corrige placeholder caso o firmware nao seja injetado no HTML bruto
-      window.addEventListener('DOMContentLoaded', function () {
-        try {
-          var fwEl = document.getElementById('fwMain');
-          if (!fwEl) return;
-          var txt = (fwEl.textContent || fwEl.innerText || '').trim();
-
-          if (!txt || /FIRMWARE[_-]VERSION/i.test(txt)) {
-            fetch('/api/system/info')
-              .then(function (r) { return r.ok ? r.json() : null; })
-              .then(function (info) {
-                if (info && info.firmwareVersion) {
-                  fwEl.textContent = info.firmwareVersion;
-                }
-              })
-              .catch(function () {});
-          }
-        } catch (e) {}
-      });
-
-function showSavedBanner() {
-            const banner = document.getElementById('saveBanner');
-            if (!banner) return;
-            banner.style.transform = 'translate(0, 0)';
+    <script>
+        function showSavedBanner() {
+            const bannerId = 'saveBanner';
+            let banner = document.getElementById(bannerId);
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = bannerId;
+                banner.className = 'save-banner';
+                banner.setAttribute('aria-hidden', 'true');
+                banner.textContent = 'SALVO!';
+                document.body.appendChild(banner);
+            }
+            banner.classList.add('show');
+            banner.setAttribute('aria-hidden', 'false');
+            banner.style.display = 'block';
+            // Hide after 500ms (fade out quickly)
             setTimeout(() => {
-                banner.style.transform = 'translate(0, -150%)';
-            }, 2000);
+                banner.classList.remove('show');
+                banner.setAttribute('aria-hidden', 'true');
+                setTimeout(() => { banner.style.display = 'none'; }, 150);
+            }, 500);
         }
 
         const form = document.getElementById('globalConfigForm');
         const statusMessage = document.getElementById('statusMessage');
         const ledBrilhoButton = document.getElementById('ledBrilhoButton');
-        const ledBrilhoValueDisplay = document.getElementById('ledBrilhoValueDisplay');
         let ledBrilho = 3; // 1..5 => 20..100%
         
         const modoMidiSelect = document.getElementById('modoMidi');
-        let selectedBackgroundColorUint32 = 0;
-
         const PRESET_COLORS = [
             { name: "Vermelho", hex: "#FF0000", uint32: 0xFF0000 },
             { name: "Verde",    hex: "#00FF00", uint32: 0x00FF00 },
@@ -49,91 +38,11 @@ function showSavedBanner() {
             { name: "Laranja",  hex: "#FF5000", uint32: 0xFF5000 }, // 255, 80, 0
             { name: "Magenta",  hex: "#FF0080", uint32: 0xFF0080 }  // 255, 0, 128
         ];
-        const BACKGROUND_COLORS = [...PRESET_COLORS, { name: "Preto", hex: "#000000", uint32: 0x000000 }];
-
-        const modoMidiOptionsValues = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "MODO AVANCADO", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI", "VTR KAILANI"];
-        const advMidiModeOptions = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI", "VTR KAILANI"];
-        let advMidiChData = [0, 0, 0, 0, 0];
-        let advMidiChNumData = [1, 2, 3, 4, 5];
-
-        let lockSetup = false;
-        let lockGlobal = false;
-        const kemperGetNamesCheckbox = document.getElementById('kemperGetNames');
-        const kemperGetNamesButton = document.getElementById('kemperGetNamesBtn');
-        const kemperGetNamesLabel = document.getElementById('kemperGetNamesLabel');
-        const kemperAutoLoaderCheckbox = document.getElementById('kemperAutoLoader');
-        const kemperAutoLoaderButton = document.getElementById('kemperAutoLoaderBtn');
-        const kemperAutoLoaderLabel = document.getElementById('kemperAutoLoaderLabel');
-        const kemperGetNamesWrap = document.getElementById('kemperGetNamesWrap');
-
-        function syncKemperGetNamesButton() {
-            if (!kemperGetNamesCheckbox || !kemperGetNamesButton || !kemperGetNamesLabel) return;
-            const enabled = !!kemperGetNamesCheckbox.checked;
-            kemperGetNamesButton.classList.toggle('rect-toggle-fx-on', enabled);
-            kemperGetNamesButton.classList.toggle('rect-toggle-fx-off', !enabled);
-            kemperGetNamesLabel.textContent = enabled ? 'GET NAMES ON' : 'GET NAMES OFF';
-        }
-
-        function syncKemperAutoLoaderButton() {
-            if (!kemperAutoLoaderCheckbox || !kemperAutoLoaderButton || !kemperAutoLoaderLabel) return;
-            const enabled = !!kemperAutoLoaderCheckbox.checked;
-            kemperAutoLoaderButton.classList.toggle('rect-toggle-fx-on', enabled);
-            kemperAutoLoaderButton.classList.toggle('rect-toggle-fx-off', !enabled);
-            kemperAutoLoaderLabel.textContent = enabled ? 'AUTO LOADER ON' : 'AUTO LOADER OFF';
-        }
-
-        function updateKemperGetNamesVisibility(modoMidi) {
-            if (!kemperGetNamesWrap) return;
-            kemperGetNamesWrap.style.display = (modoMidi === 'KEMPER PLAYER') ? '' : 'none';
-        }
-
-        function initAdvMidiChDropdowns() {
-            for (let i = 0; i < 5; i++) {
-                const modeSelect = document.getElementById('advMidiChMode' + i);
-                if (!modeSelect) continue;
-
-                modeSelect.innerHTML = '';
-                advMidiModeOptions.forEach(function(mode, idx) {
-                    const option = document.createElement('option');
-                    option.value = idx;
-                    option.textContent = mode;
-                    modeSelect.appendChild(option);
-                });
-                modeSelect.value = String(advMidiChData[i] || 0);
-
-                if (!modeSelect.dataset.bound) {
-                    modeSelect.addEventListener('change', function() {
-                        advMidiChData[i] = parseInt(this.value, 10) || 0;
-                        scheduleGlobalAutoSave();
-                    });
-                    modeSelect.dataset.bound = '1';
-                }
-
-                const numSelect = document.getElementById('advMidiChNum' + i);
-                if (numSelect) {
-                    numSelect.value = String(advMidiChNumData[i] || (i + 1));
-                    if (!numSelect.dataset.bound) {
-                        numSelect.addEventListener('change', function() {
-                            advMidiChNumData[i] = parseInt(this.value, 10) || (i + 1);
-                            scheduleGlobalAutoSave();
-                        });
-                        numSelect.dataset.bound = '1';
-                    }
-                }
-            }
-        }
-
-        function updateAdvMidiChVisibility(modoMidi) {
-            const wrap = document.getElementById('advMidiChWrap');
-            if (!wrap) return;
-            wrap.style.display = (modoMidi === 'MODO AVANCADO') ? '' : 'none';
-        }
-
-        function syncLedBrilhoUI() {
-            const pct = Math.max(1, Math.min(5, parseInt(ledBrilho, 10) || 3)) * 20;
-            if (ledBrilhoValueDisplay) ledBrilhoValueDisplay.textContent = pct + '%';
-            if (ledBrilhoButton) ledBrilhoButton.textContent = 'ADJUST LEVEL';
-        }
+        const modoMidiOptionsValues = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "MODO AVANCADO", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI", "VTR KAILANI", "BFMiDi - Keyboard"];
+        // Modos amigaveis disponiveis para cada canal no MODO AVANCADO (exclui MODO AVANCADO de si mesmo)
+        const advMidiModeOptions = ["GLOBAL", "AMPERO AS2", "AMPERO MINI", "HX STOMP", "A. STAGE 2", "GP-200LT", "VALETON GP5", "POCKET MASTER", "TONEX", "KEMPER PLAYER", "AMPERO MP350", "MX5", "NANO CORTEX", "QUAD CORTEX", "SYNERGY AMPS", "BigSky", "BlueSky", "TimeLine", "ELCAPISTAN", "FLINT", "HX-ONE", "VTR NARCISO", "VTR LOKI", "VTR KAILANI", "BFMiDi - Keyboard"];
+        let advMidiChData = [0,0,0,0,0]; // indices into modoMidiOptionsValues (0-13)
+        let advMidiChNumData = [1,2,3,4,5]; // MIDI channel numbers (1-16)
 
         function hexToUint32(hex) {
             return parseInt(hex.replace("#", ""), 16);
@@ -147,70 +56,224 @@ function showSavedBanner() {
             return "#" + hex;
         }
 
-        let selectedPresetColorsUint32 = [0,0,0,0,0,0]; // A-E + F (6 para LED NUMEROS)
+                let selectedPresetColorsUint32 = [0,0,0,0,0,0]; // A-E + F (6 para LED NUMEROS)
         let selectedLiveModeColorUint32 = 0;
         let selectedLiveMode2ColorUint32 = 0;
         let selectedSwGlobalLedIndex = 0; // Para a cor do LED do SW Global
         let selectedSwGlobalLed2Index = 0; // Para a cor do LED2 (CC2 longo)
         let presetLevels = [true, true, true, true, true]; // A, B, C, D, E
-        const PRESET_LEVEL_KEYS = ['A', 'B', 'C', 'D', 'E'];
         let ledModeNumeros = false; // false = LED LETRAS (A-F), true = LED NUMEROS (1-6)
 
         let swGlobalConfig = {};
+        let globalConfigBootstrapping = true;
+        let globalAutoSaveTimer = null;
+        let globalSaveInFlight = false;
+        let globalSaveQueued = false;
+        let lastGlobalSavedPayload = '';
+        const kemperGetNamesCheckbox = document.getElementById('kemperGetNames');
+        const kemperGetNamesButton = document.getElementById('kemperGetNamesBtn');
+        const kemperGetNamesLabel = document.getElementById('kemperGetNamesLabel');
+        const kemperGetNamesWrap = document.getElementById('kemperGetNamesWrap');
+        const kemperRigManagerModeCheckbox = document.getElementById('kemperRigManagerMode');
+        const kemperRigManagerModeButton = document.getElementById('kemperRigManagerModeBtn');
+        const kemperRigManagerModeLabel = document.getElementById('kemperRigManagerModeLabel');
 
-        function toBooleanLoose(value, fallback = false) {
-            if (typeof value === 'boolean') return value;
-            if (typeof value === 'number') return value !== 0;
-            if (typeof value === 'string') {
-                const normalized = value.trim().toLowerCase();
-                if (normalized === '1' || normalized === 'true' || normalized === 'on' || normalized === 'yes') return true;
-                if (normalized === '0' || normalized === 'false' || normalized === 'off' || normalized === 'no' || normalized === '') return false;
-            }
-            return fallback;
+        function dispatchSyntheticChange(el) {
+            if (!el) return;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
-        function normalizePresetLevels(rawLevels) {
-            const fallback = [true, true, true, true, true];
+        function syncKemperGetNamesButton() {
+            if (!kemperGetNamesCheckbox || !kemperGetNamesButton || !kemperGetNamesLabel) return;
+            const enabled = !!kemperGetNamesCheckbox.checked;
+            kemperGetNamesButton.classList.toggle('rect-toggle-fx-on', enabled);
+            kemperGetNamesButton.classList.toggle('rect-toggle-fx-off', !enabled);
+            kemperGetNamesLabel.textContent = enabled ? 'GET NAMES ON' : 'GET NAMES OFF';
+        }
 
-            if (Array.isArray(rawLevels)) {
-                return PRESET_LEVEL_KEYS.map((_, index) => toBooleanLoose(rawLevels[index], fallback[index]));
+        function syncKemperRigManagerModeButton() {
+            if (!kemperRigManagerModeCheckbox || !kemperRigManagerModeButton || !kemperRigManagerModeLabel) return;
+            const enabled = !!kemperRigManagerModeCheckbox.checked;
+            kemperRigManagerModeButton.classList.toggle('rect-toggle-fx-on', enabled);
+            kemperRigManagerModeButton.classList.toggle('rect-toggle-fx-off', !enabled);
+            kemperRigManagerModeLabel.textContent = enabled ? 'MODO RECONECT' : 'MODO NORMAL';
+        }
+
+        function updateKemperGetNamesVisibility(modoMidi) {
+            if (!kemperGetNamesWrap) return;
+            kemperGetNamesWrap.style.display = (modoMidi === 'KEMPER PLAYER') ? '' : 'none';
+        }
+
+        function buildCustomSelectOption(selectElement, optionNode, wrapper, refreshFn) {
+            const customOption = document.createElement('div');
+            customOption.classList.add('custom-option');
+            customOption.textContent = optionNode.text;
+            customOption.dataset.value = optionNode.value;
+
+            if (optionNode.disabled) {
+                customOption.classList.add('separator');
+                customOption.setAttribute('aria-hidden', 'true');
+                return customOption;
             }
 
-            if (typeof rawLevels === 'string') {
-                const compact = rawLevels.trim();
-                if (compact.length >= PRESET_LEVEL_KEYS.length && /^[01TFtf]+$/.test(compact)) {
-                    return PRESET_LEVEL_KEYS.map((_, index) => {
-                        const ch = compact[index];
-                        return ch === '1' || ch === 'T' || ch === 't';
+            if (optionNode.selected) customOption.classList.add('selected');
+            customOption.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectElement.value = optionNode.value;
+                refreshFn();
+                wrapper.classList.remove('open');
+                selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            return customOption;
+        }
+
+        function initAdvMidiChDropdowns() {
+            for (let i = 0; i < 5; i++) {
+                const sel = document.getElementById('advMidiChMode' + i);
+                if (!sel) continue;
+                sel.innerHTML = '';
+                advMidiModeOptions.forEach(function(mode, idx) {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = mode;
+                    sel.appendChild(opt);
+                });
+                sel.value = advMidiChData[i] || 0;
+                sel.addEventListener('change', function() {
+                    advMidiChData[i] = parseInt(this.value, 10);
+                });
+                // Channel number dropdown
+                const numSel = document.getElementById('advMidiChNum' + i);
+                if (numSel) {
+                    numSel.value = advMidiChNumData[i] || (i + 1);
+                    numSel.addEventListener('change', function() {
+                        advMidiChNumData[i] = parseInt(this.value, 10);
                     });
                 }
-                if (compact.includes(',')) {
-                    const parts = compact.split(',');
-                    return PRESET_LEVEL_KEYS.map((_, index) => toBooleanLoose(parts[index], fallback[index]));
+                
+                // Inicializa o visual customizado
+                if (typeof initializeCustomSelect === 'function') {
+                    if (numSel) {
+                        initializeCustomSelect(numSel);
+                        updateCustomSelectVisual(numSel);
+                    }
+                    initializeCustomSelect(sel);
+                    updateCustomSelectVisual(sel);
                 }
             }
-
-            if (rawLevels && typeof rawLevels === 'object') {
-                return PRESET_LEVEL_KEYS.map((key, index) => {
-                    if (Object.prototype.hasOwnProperty.call(rawLevels, key)) {
-                        return toBooleanLoose(rawLevels[key], fallback[index]);
-                    }
-                    if (Object.prototype.hasOwnProperty.call(rawLevels, key.toLowerCase())) {
-                        return toBooleanLoose(rawLevels[key.toLowerCase()], fallback[index]);
-                    }
-                    if (Object.prototype.hasOwnProperty.call(rawLevels, index)) {
-                        return toBooleanLoose(rawLevels[index], fallback[index]);
-                    }
-                    return fallback[index];
-                });
-            }
-
-            return fallback.slice();
         }
 
-        function ensurePresetLevelsArray() {
-            presetLevels = normalizePresetLevels(presetLevels);
-            return presetLevels;
+        function updateAdvMidiChVisibility(modoMidi) {
+            const wrap = document.getElementById('advMidiChWrap');
+            if (!wrap) return;
+            wrap.style.display = (modoMidi === 'MODO AVANCADO') ? '' : 'none';
+        }
+
+        function requestGlobalAutoSave(delayMs = 500) {
+            return;
+        }
+
+        function buildGlobalConfigPayload() {
+            const formData = new FormData(form);
+            updateSwGlobalDataFromUI(); // Garante que os dados da UI estao no objeto JS
+            return {
+                ledBrilho: parseInt(ledBrilho),
+                ledPreview: document.getElementById('ledPreview').checked,
+                modoMidiIndex: modoMidiOptionsValues.indexOf(formData.get('modoMidi')),
+                // SHOW FX SCREEN legado (usado pelo firmware para tela/cadeia FX)
+                mostrarTelaFX: document.getElementById('mostrarTelaFX').checked,
+                // CADEIA segue o mesmo estado (para uso futuro se necessario)
+                mostrarCadeia: document.getElementById('mostrarCadeia').checked,
+                // SIGLA FX controla apenas exibicao das siglas FX na MAIN SCREEN (0=OFF, 1=PREVIEW, 2=LIVE MODE)
+                mostrarFxModo: parseInt(document.getElementById('mostrarFxModo').value),
+                mostrarFxQuando: parseInt(document.getElementById('mostrarFxQuando').value),
+
+                coresPresetConfig: selectedPresetColorsUint32,
+                corLiveModeConfig: selectedLiveModeColorUint32,
+                corLiveMode2Config: selectedLiveMode2ColorUint32,
+                liveLayer2Enabled: document.getElementById('liveLayer2Enabled') ? document.getElementById('liveLayer2Enabled').checked : true,
+                kemperGetNames: kemperGetNamesCheckbox ? kemperGetNamesCheckbox.checked : false,
+                kemperRigManagerMode: kemperRigManagerModeCheckbox ? kemperRigManagerModeCheckbox.checked : false,
+                selectModeIndex: parseInt(formData.get('selectModeIndex')),
+                swGlobal: swGlobalConfig, // Adiciona o objeto completo do SW Global
+                presetLevels: presetLevels,
+                // LED Mode (LETRAS / NUMEROS)
+                ledModeNumeros: ledModeNumeros,
+                // INICIO AUTOMATICO
+                autoStartEnabled: document.getElementById('autoStartEnabled') ? document.getElementById('autoStartEnabled').checked : false,
+                autoStartRow: parseInt(document.getElementById('autoStartRow')?.value || 0),
+                autoStartCol: parseInt(document.getElementById('autoStartCol')?.value || 0),
+                autoStartLiveMode: document.getElementById('autoStartLiveMode') ? document.getElementById('autoStartLiveMode').checked : false,
+                advMidiCh: advMidiChData.slice(0, 5),
+                advMidiChNum: advMidiChNumData.slice(0, 5),
+                expCC: parseInt(document.getElementById('expCC')?.value || 11),
+                expCanal: parseInt(document.getElementById('expCanal')?.value || 1)
+            };
+        }
+
+        function submitGlobalConfig(options = {}) {
+            const silent = !!options.silent;
+            const force = !!options.force;
+            if (!form) return Promise.resolve(false);
+
+            const dataToSave = buildGlobalConfigPayload();
+            const payloadKey = JSON.stringify(dataToSave);
+            if (!force && payloadKey === lastGlobalSavedPayload) {
+                return Promise.resolve(false);
+            }
+
+            if (globalSaveInFlight) {
+                globalSaveQueued = true;
+                return Promise.resolve(false);
+            }
+
+            globalSaveInFlight = true;
+            if (!silent) {
+                statusMessage.textContent = 'Salvando...';
+                statusMessage.style.color = 'orange';
+            }
+
+            return fetch('/api/global-config/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSave)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    lastGlobalSavedPayload = payloadKey;
+                    if (!silent) {
+                        statusMessage.textContent = 'Configuracoes salvas com sucesso!';
+                        statusMessage.style.color = 'green';
+                        setTimeout(() => { statusMessage.textContent = ''; }, 5000);
+                    }
+                    setTimeout(() => {
+                        showSavedBanner();
+                    }, 100);
+                    return true;
+                }
+
+                statusMessage.textContent = 'Erro ao salvar: ' + (result.message || 'Erro desconhecido.');
+                statusMessage.style.color = 'red';
+                setTimeout(() => { statusMessage.textContent = ''; }, 5000);
+                return false;
+            })
+            .catch(error => {
+                console.error('Erro ao salvar configuracoes:', error);
+                statusMessage.textContent = 'Erro de comunicacao ao salvar.';
+                statusMessage.style.color = 'red';
+                setTimeout(() => { statusMessage.textContent = ''; }, 5000);
+                return false;
+            })
+            .finally(() => {
+                globalSaveInFlight = false;
+                if (globalSaveQueued) {
+                    globalSaveQueued = false;
+                    submitGlobalConfig({ silent: true });
+                }
+            });
         }
 
         function normalizeSwGlobalConfig(cfg) {
@@ -304,8 +367,8 @@ function showSavedBanner() {
                         previewElement.style.backgroundImage = `linear-gradient(to right, black 2%, ${color.hex} 50%, black 98%)`;
                     }
                     storageUpdateCallback(valueToStore);
+                    requestGlobalAutoSave(220);
                     overlayElement.classList.remove('active');
-                    scheduleGlobalAutoSave();
                 });
                 panelElement.appendChild(swatch);
             });
@@ -344,7 +407,60 @@ function showSavedBanner() {
             });
         });
 
-        function initializeCustomSelect() { return; }
+        function initializeCustomSelect(selectElement) {
+            if (!selectElement) return;
+            
+            // Find the wrapper. The HTML might already have it.
+            let wrapper = selectElement.closest('.custom-select-wrapper');
+            
+            // If the wrapper already has the trigger, it's initialized.
+            if (wrapper && wrapper.querySelector('.custom-select-trigger')) {
+                return;
+            }
+
+            // If no wrapper, create one and move the select inside.
+            if (!wrapper) {
+                wrapper = document.createElement('div');
+                wrapper.classList.add('custom-select-wrapper');
+                selectElement.parentNode.insertBefore(wrapper, selectElement);
+                wrapper.appendChild(selectElement);
+            }
+
+            const trigger = document.createElement('div');
+            trigger.classList.add('custom-select-trigger');
+            wrapper.appendChild(trigger);
+
+            const optionsPanel = document.createElement('div');
+            optionsPanel.classList.add('custom-options-panel');
+            wrapper.appendChild(optionsPanel);
+
+            function updateTriggerText() {
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                trigger.textContent = selectedOption ? selectedOption.text : '';
+                const currentCustomSelected = optionsPanel.querySelector('.custom-option.selected');
+                if (currentCustomSelected) currentCustomSelected.classList.remove('selected');
+                const newCustomSelected = Array.from(optionsPanel.children).find(opt => opt.dataset.value === selectElement.value);
+                if (newCustomSelected) newCustomSelected.classList.add('selected');
+            }
+
+            Array.from(selectElement.options).forEach(optionNode => {
+                optionsPanel.appendChild(buildCustomSelectOption(selectElement, optionNode, wrapper, updateTriggerText));
+            });
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Fecha outros dropdowns abertos
+                document.querySelectorAll('.custom-select-wrapper.open').forEach(openWrapper => {
+                    if (openWrapper !== wrapper) {
+                        openWrapper.classList.remove('open');
+                    }
+                });
+                // Alterna o estado do dropdown atual
+                wrapper.classList.toggle('open');
+            });
+
+            updateTriggerText();
+        }
 
         document.addEventListener('click', function(event) {
             document.querySelectorAll('.custom-select-wrapper.open').forEach(openWrapper => {
@@ -362,15 +478,16 @@ function showSavedBanner() {
 
         window.addEventListener('load', () => {
             if (modoMidiSelect) initializeCustomSelect(modoMidiSelect);
-            const selectModeInit = document.getElementById('selectModeIndex');
-            if (selectModeInit) initializeCustomSelect(selectModeInit);
             initializeSwGlobalFields();
 
             fetch('/api/global-config/read')
                 .then(response => response.json())
                 .then(data => {
                     ledBrilho = data.ledBrilho || 3;
-                    syncLedBrilhoUI();
+                    if (ledBrilhoButton) {
+                        const pct = ledBrilho * 20;
+                        ledBrilhoButton.textContent = 'BRILHO LED ' + pct + '%';
+                    }
 
                     const ledPreviewCheckbox = document.getElementById('ledPreview');
                     const ledPreviewButton = document.getElementById('ledPreviewButton');
@@ -379,64 +496,38 @@ function showSavedBanner() {
                         syncLedPreviewButton();
                     }
                     if (modoMidiSelect) {
-                        const modoIdxParsed = parseInt(data.modoMidiIndex, 10);
-                        const modoIdx = Number.isFinite(modoIdxParsed) ? modoIdxParsed : 0;
-                        modoMidiSelect.value = modoMidiOptionsValues[modoIdx] || 'GLOBAL';
+                        modoMidiSelect.value = modoMidiOptionsValues[data.modoMidiIndex];
                         updateCustomSelectVisual(modoMidiSelect);
+                        // Atualiza visibilidade do botao SHOW FX baseado no modo MIDI
                         updateShowFxButtonVisibility(modoMidiSelect.value);
-                        updateAdvMidiChVisibility(modoMidiSelect.value);
+                        if (kemperGetNamesCheckbox) {
+                            kemperGetNamesCheckbox.checked = !!data.kemperGetNames;
+                            syncKemperGetNamesButton();
+                        }
+                        if (kemperRigManagerModeCheckbox) {
+                            kemperRigManagerModeCheckbox.checked = !!data.kemperRigManagerMode;
+                            syncKemperRigManagerModeButton();
+                        }
                         updateKemperGetNamesVisibility(modoMidiSelect.value);
-                        if (!modoMidiSelect.dataset.bound) {
-                            modoMidiSelect.addEventListener('change', function() {
-                                updateShowFxButtonVisibility(this.value);
-                                updateAdvMidiChVisibility(this.value);
-                                updateKemperGetNamesVisibility(this.value);
-                                scheduleGlobalAutoSave();
-                            });
-                            modoMidiSelect.dataset.bound = '1';
+                        // MODO AVANCADO: carrega dados per-channel
+                        if (data.advMidiCh && Array.isArray(data.advMidiCh)) {
+                            for (let i = 0; i < 5; i++) {
+                                advMidiChData[i] = (typeof data.advMidiCh[i] === 'number') ? data.advMidiCh[i] : 0;
+                            }
                         }
-                    }
-
-                    advMidiChData = Array.isArray(data.advMidiCh)
-                        ? data.advMidiCh.slice(0, 5).map(value => {
-                            const parsed = parseInt(value, 10);
-                            return Number.isFinite(parsed) ? parsed : 0;
-                        })
-                        : advMidiChData;
-                    while (advMidiChData.length < 5) advMidiChData.push(0);
-
-                    advMidiChNumData = Array.isArray(data.advMidiChNum)
-                        ? data.advMidiChNum.slice(0, 5).map((value, index) => {
-                            const parsed = parseInt(value, 10);
-                            return Number.isFinite(parsed) ? parsed : (index + 1);
-                        })
-                        : advMidiChNumData;
-                    while (advMidiChNumData.length < 5) advMidiChNumData.push(advMidiChNumData.length + 1);
-                    initAdvMidiChDropdowns();
-
-                    if (kemperGetNamesCheckbox && kemperAutoLoaderCheckbox) {
-                        kemperGetNamesCheckbox.checked = !!data.kemperGetNames;
-                        kemperAutoLoaderCheckbox.checked = !!data.kemperAutoLoader;
-                        syncKemperGetNamesButton();
-                        syncKemperAutoLoaderButton();
-
-                        if (kemperGetNamesButton && !kemperGetNamesButton.dataset.bound) {
-                            kemperGetNamesButton.addEventListener('click', function() {
-                                kemperGetNamesCheckbox.checked = !kemperGetNamesCheckbox.checked;
-                                syncKemperGetNamesButton();
-                                scheduleGlobalAutoSave();
-                            });
-                            kemperGetNamesButton.dataset.bound = '1';
+                        if (data.advMidiChNum && Array.isArray(data.advMidiChNum)) {
+                            for (let i = 0; i < 5; i++) {
+                                advMidiChNumData[i] = (typeof data.advMidiChNum[i] === 'number') ? data.advMidiChNum[i] : (i + 1);
+                            }
                         }
-
-                        if (kemperAutoLoaderButton && !kemperAutoLoaderButton.dataset.bound) {
-                            kemperAutoLoaderButton.addEventListener('click', function() {
-                                kemperAutoLoaderCheckbox.checked = !kemperAutoLoaderCheckbox.checked;
-                                syncKemperAutoLoaderButton();
-                                scheduleGlobalAutoSave();
-                            });
-                            kemperAutoLoaderButton.dataset.bound = '1';
-                        }
+                        initAdvMidiChDropdowns();
+                        updateAdvMidiChVisibility(modoMidiSelect.value);
+                        // Adiciona listener para mudanca de modo MIDI
+                        modoMidiSelect.addEventListener('change', function() {
+                            updateShowFxButtonVisibility(this.value);
+                            updateKemperGetNamesVisibility(this.value);
+                            updateAdvMidiChVisibility(this.value);
+                        });
                     }
                     // Estado inicial CADEIA: usa SHOW FX SCREEN legado (mostrarTelaFX)
                     const mostrarTelaFxCheckbox = document.getElementById('mostrarTelaFX');
@@ -468,7 +559,8 @@ function showSavedBanner() {
                                 btnMostrarCadeia.classList.remove('rect-toggle-fx-on');
                                 btnMostrarCadeia.classList.add('rect-toggle-fx-off');
                             }
-                            scheduleGlobalAutoSave();
+                            dispatchSyntheticChange(mostrarCadeiaCheckbox);
+                            dispatchSyntheticChange(mostrarTelaFxCheckbox);
                         });
                     }
 
@@ -518,7 +610,6 @@ function showSavedBanner() {
                             currentState = (currentState + 1) % 3;
                             mostrarSiglaFxInput.value = currentState;
                             syncSiglaFxUI();
-                            scheduleGlobalAutoSave();
                         });
 
                         // Debug opcional: mostra no console o estado carregado
@@ -616,7 +707,7 @@ function showSavedBanner() {
                                 else current = 1;
                                 fxModoInput.value = current;
                                 syncFxUI();
-                                scheduleGlobalAutoSave();
+                                dispatchSyntheticChange(fxModoInput);
                             });
                         }
 
@@ -627,44 +718,10 @@ function showSavedBanner() {
                             current = (current + 1) % 3;
                             fxQuandoInput.value = current;
                             syncFxUI();
-                            scheduleGlobalAutoSave();
+                            dispatchSyntheticChange(fxQuandoInput);
                         });
                     })();
 
-                    // Estado inicial BACKGROUND MODE (BACK PADRAO / BACK COLOR)
-                    const bgToggle = document.getElementById('bgColorEnabled');
-                    const btnBg = document.getElementById('btnBackgroundMode');
-                    const btnBgLabel = document.getElementById('btnBackgroundModeLabel');
-                    const bgPickerGroup = document.getElementById('backgroundColorPickerGroup');
-
-                    if (bgToggle && btnBg && btnBgLabel) {
-                        bgToggle.checked = !!data.backgroundEnabled;
-                        const bgColorPreview = document.getElementById('backgroundSelectedColorPreview');
-                        function syncBgUI() {
-                            if (bgToggle.checked) {
-                                // BACK COLOR (ON)
-                                btnBg.classList.remove('rect-toggle-bg-off');
-                                btnBg.classList.add('rect-toggle-bg-on');
-                                btnBgLabel.textContent = 'BACK COLOR';
-                                if (bgPickerGroup) bgPickerGroup.style.display = 'inline-flex';
-                                if (bgColorPreview) bgColorPreview.style.display = '';
-                            } else {
-                                // BACK PADRAO (OFF)
-                                btnBg.classList.remove('rect-toggle-bg-on');
-                                btnBg.classList.add('rect-toggle-bg-off');
-                                btnBgLabel.textContent = 'BACK PADRAO';
-                                if (bgPickerGroup) bgPickerGroup.style.display = 'none';
-                                if (bgColorPreview) bgColorPreview.style.display = 'none';
-                            }
-                        }
-                        syncBgUI();
-                        btnBg.addEventListener('click', function () {
-                            bgToggle.checked = !bgToggle.checked;
-                            syncBgUI();
-                            scheduleGlobalAutoSave();
-                        });
-                    }
-                    
                     // Carrega cores dos presets (A-E + F para LED NUMEROS = 6 cores)
                     ['A', 'B', 'C', 'D', 'E', 'F'].forEach((presetLetter, index) => {
                         createCustomColorSelector(
@@ -710,39 +767,35 @@ function showSavedBanner() {
                         liveLayer2Button.addEventListener('click', () => {
                             liveLayer2Checkbox.checked = !liveLayer2Checkbox.checked;
                             syncLiveLayer2Button();
-                            scheduleGlobalAutoSave();
+                            dispatchSyntheticChange(liveLayer2Checkbox);
                         });
                     }
 
-                    // Carrega cor do Background
-                    createCustomColorSelector(
-                        'backgroundSelectedColorPreview',
-                        'backgroundColorOptionsPanel',
-                        BACKGROUND_COLORS,
-                        (colorUint32) => { selectedBackgroundColorUint32 = colorUint32; },
-                        data.backgroundColorConfig || 0x000000,
-                        false // isIndexBased = false
-                    );
-                    
                     swGlobalConfig = normalizeSwGlobalConfig(data.swGlobal || {}); // Carrega o objeto swGlobal
 
-                    // Mantem SW GLOBAL visivel por padrao para preservar a experiencia visual do editor
+                    // Esconde card SW GLOBAL para placas que nao tem TAP_FULL (7S e 4S)
+                    const boardName = data.boardName || '';
+                    const boards7S = ['BFMIDI-1 7S_A1', 'BFMIDI-1 7S_B1', 'BFMIDI-1 7S_C1', 'BFMIDI-2 7S', 'BFMIDI-1 4S', 'BFMIDI-3 7S'];
                     const swGlobalSection = document.querySelector('.section-swglobal');
                     if (swGlobalSection) {
-                        const shouldShowSwGlobal = (typeof data.showSwGlobal === 'boolean') ? data.showSwGlobal : true;
-                        if (shouldShowSwGlobal) {
-                            swGlobalSection.style.display = '';
+                        if (boards7S.includes(boardName)) {
+                            swGlobalSection.style.display = 'block';
                             loadSwGlobalDataToUI();
                         } else {
                             swGlobalSection.style.display = 'none';
                         }
                     }
 
-                    // Carrega estados LOCK
-                    lockSetup = !!data.lockSetup;
-                    lockGlobal = !!data.lockGlobal;
-                    updateLockButtonsUI();
-                    attachLockButtonsHandlers();
+                    // Mostra card PEDAL DE EXPRESSAO apenas para BFMIDI-3 6S
+                    const expSection = document.querySelector('.section-exp');
+                    if (expSection) {
+                        if (boardName === 'BFMIDI-3 6S') {
+                            expSection.style.display = 'block';
+                            initExpPedalCard(data);
+                        } else {
+                            expSection.style.display = 'none';
+                        }
+                    }
 
                     // Carrega LED Mode (LETRAS / NUMEROS)
                     ledModeNumeros = !!data.ledModeNumeros;
@@ -751,28 +804,28 @@ function showSavedBanner() {
 
                     const selectModeSelect = document.getElementById('selectModeIndex');
                     if (selectModeSelect) {
-                        const logicModeParsed = parseInt(data.selectModeIndex, 10);
-                        const logicMode = Number.isFinite(logicModeParsed) ? logicModeParsed : 0;
-                        selectModeSelect.value = String(logicMode);
+                        selectModeSelect.value = data.selectModeIndex;
                         updateCustomSelectVisual(selectModeSelect);
                     }
 
                     // Carrega niveis de preset
-                    presetLevels = normalizePresetLevels(data.presetLevels);
-                    updatePresetLevelButtons();
+                    if (data.presetLevels) {
+                        presetLevels = data.presetLevels;
+                        updatePresetLevelButtons();
+                    }
 
                     // Carrega configuracao de INICIO AUTOMATICO
                     initAutoStartUI(data);
 
-                    // Habilita auto-save somente apos carga completa dos dados
-                    setTimeout(() => { _globalPageReady = true; }, 500);
+                    // Baseline para deduplicar autosave sem gravar na carga inicial
+                    lastGlobalSavedPayload = JSON.stringify(buildGlobalConfigPayload());
+                    globalConfigBootstrapping = false;
                 })
                 .catch(error => {
                     console.error('Erro ao carregar configuracoes globais:', error);
                     statusMessage.textContent = 'Erro ao carregar configuracoes.';
                     statusMessage.style.color = 'red';
-                    // Habilita auto-save mesmo com erro (usuario pode querer salvar manualmente)
-                    _globalPageReady = true;
+                    globalConfigBootstrapping = false;
                 });
         });
 
@@ -780,18 +833,137 @@ function showSavedBanner() {
         // Visivel apenas para: AMPERO AS2, A. STAGE 2, AMPERO MP350, HX STOMP
         function updateShowFxButtonVisibility(modoMidi) {
             const btnMostrarCadeia = document.getElementById('btnMostrarCadeia');
-            const rowMostrarCadeia = document.getElementById('showFxChainRow');
-            if (!btnMostrarCadeia && !rowMostrarCadeia) return;
+            if (!btnMostrarCadeia) return;
 
             const modosComShowFx = ['AMPERO AS2', 'A. STAGE 2', 'AMPERO MP350', 'HX STOMP'];
             if (modosComShowFx.includes(modoMidi)) {
-                if (rowMostrarCadeia) rowMostrarCadeia.style.display = '';
-                if (btnMostrarCadeia) btnMostrarCadeia.style.display = '';
+                btnMostrarCadeia.style.display = '';
             } else {
-                if (rowMostrarCadeia) rowMostrarCadeia.style.display = 'none';
-                else if (btnMostrarCadeia) btnMostrarCadeia.style.display = 'none';
+                btnMostrarCadeia.style.display = 'none';
             }
         }
+
+        function initExpPedalCard(data) {
+            // Popula select CC (0-127)
+            const ccSel = document.getElementById('expCC');
+            const chSel = document.getElementById('expCanal');
+            if (ccSel && ccSel.options.length === 0) {
+                for (let i = 0; i <= 127; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = i;
+                    ccSel.appendChild(opt);
+                }
+            }
+            if (chSel && chSel.options.length === 0) {
+                for (let i = 1; i <= 16; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = i;
+                    chSel.appendChild(opt);
+                }
+            }
+            if (ccSel) { ccSel.value = data.expCC !== undefined ? data.expCC : 11; updateCustomSelectVisual(ccSel); }
+            if (chSel) { chSel.value = data.expCanal !== undefined ? data.expCanal : 1; updateCustomSelectVisual(chSel); }
+
+            // Mostra valores calibrados atuais nos botoes
+            const calMinInput = document.getElementById('expCalMin');
+            const calMaxInput = document.getElementById('expCalMax');
+            const cal0Label = document.getElementById('expCal0Label');
+            const cal100Label = document.getElementById('expCal100Label');
+            if (calMinInput && data.expCalMin !== undefined) calMinInput.value = data.expCalMin;
+            if (calMaxInput && data.expCalMax !== undefined) calMaxInput.value = data.expCalMax;
+            if (cal0Label && data.expCalMin !== undefined) cal0Label.textContent = 'CALIBRAR 0% [' + data.expCalMin + ']';
+            if (cal100Label && data.expCalMax !== undefined) cal100Label.textContent = 'CALIBRAR 100% [' + data.expCalMax + ']';
+
+            // Botao CALIBRAR 0%
+            const cal0Btn = document.getElementById('expCal0Btn');
+            if (cal0Btn && !cal0Btn._expInitDone) {
+                cal0Btn._expInitDone = true;
+                cal0Btn.addEventListener('click', function () {
+                    cal0Btn.disabled = true;
+                    fetch('/api/exp-calibrate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'min' })
+                    })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (res) {
+                        if (res && res.value !== undefined) {
+                            if (calMinInput) calMinInput.value = res.value;
+                            if (cal0Label) cal0Label.textContent = 'CALIBRAR 0% [' + res.value + ']';
+                        }
+                    })
+                    .catch(function () {})
+                    .finally(function () { cal0Btn.disabled = false; });
+                });
+            }
+
+            // Botao CALIBRAR 100%
+            const cal100Btn = document.getElementById('expCal100Btn');
+            if (cal100Btn && !cal100Btn._expInitDone) {
+                cal100Btn._expInitDone = true;
+                cal100Btn.addEventListener('click', function () {
+                    cal100Btn.disabled = true;
+                    fetch('/api/exp-calibrate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'max' })
+                    })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (res) {
+                        if (res && res.value !== undefined) {
+                            if (calMaxInput) calMaxInput.value = res.value;
+                            if (cal100Label) cal100Label.textContent = 'CALIBRAR 100% [' + res.value + ']';
+                        }
+                    })
+                    .catch(function () {})
+                    .finally(function () { cal100Btn.disabled = false; });
+                });
+            }
+
+            // Polling da barra de progresso (inicia ao abrir o card)
+            if (!window._expBarPollTimer) {
+                window._expBarPollTimer = setInterval(function () {
+                    const expSection = document.querySelector('.section-exp');
+                    if (!expSection || expSection.style.display === 'none') return;
+                    fetch('/api/exp-adc')
+                        .then(function (r) { return r.ok ? r.json() : null; })
+                        .then(function (res) {
+                            if (!res || !res.ok) return;
+                            const bar = document.getElementById('expPedalBar');
+                            const lbl = document.getElementById('expAdcRawLabel');
+                            if (bar) bar.style.width = res.pct + '%';
+                            if (lbl) lbl.textContent = 'ADC: ' + res.raw;
+                        })
+                        .catch(function () {});
+                }, 100);
+            }
+        }
+
+        (function initKemperGetNamesButton() {
+            if (!kemperGetNamesCheckbox || !kemperGetNamesButton) return;
+
+            syncKemperGetNamesButton();
+
+            kemperGetNamesButton.addEventListener('click', function () {
+                kemperGetNamesCheckbox.checked = !kemperGetNamesCheckbox.checked;
+                syncKemperGetNamesButton();
+                dispatchSyntheticChange(kemperGetNamesCheckbox);
+            });
+        })();
+
+        (function initKemperRigManagerModeButton() {
+            if (!kemperRigManagerModeCheckbox || !kemperRigManagerModeButton) return;
+
+            syncKemperRigManagerModeButton();
+
+            kemperRigManagerModeButton.addEventListener('click', function () {
+                kemperRigManagerModeCheckbox.checked = !kemperRigManagerModeCheckbox.checked;
+                syncKemperRigManagerModeButton();
+                dispatchSyntheticChange(kemperRigManagerModeCheckbox);
+            });
+        })();
 
         function syncLedPreviewButton() {
             const ledPreviewCheckbox = document.getElementById('ledPreview');
@@ -804,12 +976,12 @@ function showSavedBanner() {
                 // ON - azul
                 ledPreviewButton.classList.remove('rect-toggle-fx-off');
                 ledPreviewButton.classList.add('rect-toggle-fx-on');
-                span.textContent = 'ON';
+                span.textContent = 'LED PREVIEW ON';
             } else {
                 // OFF - vermelho
                 ledPreviewButton.classList.remove('rect-toggle-fx-on');
                 ledPreviewButton.classList.add('rect-toggle-fx-off');
-                span.textContent = 'OFF';
+                span.textContent = 'LED PREVIEW OFF';
             }
         }
 
@@ -823,182 +995,81 @@ function showSavedBanner() {
             ledPreviewButton.addEventListener('click', function () {
                 ledPreviewCheckbox.checked = !ledPreviewCheckbox.checked;
                 syncLedPreviewButton();
-                scheduleGlobalAutoSave();
+                dispatchSyntheticChange(ledPreviewCheckbox);
             });
         })();
 
-        // Previne submit manual do form (agora tudo e auto-save)
-        form.addEventListener('submit', (event) => { event.preventDefault(); });
+        (function initGlobalFooterMenu() {
+            document.getElementById('btnNavPreset')?.addEventListener('click', () => { window.location.href = '/preset-config'; });
+            document.getElementById('btnNavGlobal')?.addEventListener('click', () => { window.location.href = '/global-config'; });
+            document.getElementById('btnNavSystem')?.addEventListener('click', () => { window.location.href = '/system'; });
 
-        async function saveGlobalConfig() {
-            updateSwGlobalDataFromUI();
-            const dataToSave = {
-                ledBrilho: parseInt(ledBrilho),
-                ledPreview: document.getElementById('ledPreview').checked,
-                modoMidiIndex: modoMidiOptionsValues.indexOf(document.getElementById('modoMidi').value),
-                mostrarTelaFX: document.getElementById('mostrarTelaFX').checked,
-                mostrarCadeia: document.getElementById('mostrarCadeia').checked,
-                mostrarFxModo: parseInt(document.getElementById('mostrarFxModo').value),
-                mostrarFxQuando: parseInt(document.getElementById('mostrarFxQuando').value),
-                coresPresetConfig: selectedPresetColorsUint32,
-                corLiveModeConfig: selectedLiveModeColorUint32,
-                corLiveMode2Config: selectedLiveMode2ColorUint32,
-                liveLayer2Enabled: document.getElementById('liveLayer2Enabled') ? document.getElementById('liveLayer2Enabled').checked : true,
-                kemperGetNames: document.getElementById('kemperGetNames') ? document.getElementById('kemperGetNames').checked : false,
-                kemperAutoLoader: document.getElementById('kemperAutoLoader') ? document.getElementById('kemperAutoLoader').checked : false,
-                backgroundEnabled: document.getElementById('bgColorEnabled') ? document.getElementById('bgColorEnabled').checked : false,
-                backgroundColorConfig: selectedBackgroundColorUint32,
-                selectModeIndex: parseInt(document.getElementById('selectModeIndex').value),
-                swGlobal: swGlobalConfig,
-                presetLevels: presetLevels,
-                lockSetup: lockSetup,
-                lockGlobal: lockGlobal,
-                ledModeNumeros: ledModeNumeros,
-                autoStartEnabled: document.getElementById('autoStartEnabled') ? document.getElementById('autoStartEnabled').checked : false,
-                autoStartRow: parseInt(document.getElementById('autoStartRow')?.value || 0),
-                autoStartCol: parseInt(document.getElementById('autoStartCol')?.value || 0),
-                autoStartLiveMode: document.getElementById('autoStartLiveMode') ? document.getElementById('autoStartLiveMode').checked : false,
-                advMidiCh: advMidiChData.slice(0, 5),
-                advMidiChNum: advMidiChNumData.slice(0, 5)
-            };
+            document.getElementById('btnSalvarFooter')?.addEventListener('click', () => {
+                submitGlobalConfig({ silent: false, force: true });
+            });
+        })();
 
-            try {
-                const response = await fetch('/api/global-config/save', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dataToSave)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    showSavedBanner();
-                } else {
-                    console.warn('Erro ao salvar global:', result.message);
-                }
-            } catch (error) {
-                console.error('Erro ao salvar configuracoes:', error);
-            }
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                submitGlobalConfig({ silent: false, force: true });
+            });
+
+            form.addEventListener('change', () => {
+                requestGlobalAutoSave();
+            });
+
+            form.addEventListener('input', () => {
+                requestGlobalAutoSave();
+            });
         }
-
-        // --- AUTO-SAVE debounced ---
-        let _globalAutoSaveTimer = null;
-        function scheduleGlobalAutoSave() {
-            if (_globalAutoSaveTimer) clearTimeout(_globalAutoSaveTimer);
-            _globalAutoSaveTimer = setTimeout(() => { _globalAutoSaveTimer = null; saveGlobalConfig(); }, 1000);
-        }
-
-        // Event delegation via capture phase no body:
-        // Necessario porque color panels sao appendados a document.body (fora de .grid)
-        // e handlers de swatch usam stopPropagation(). Capture phase executa antes.
-        let _globalPageReady = false;
-
-        document.body.addEventListener('change', (e) => {
-            if (!_globalPageReady) return;
-            const tag = e.target.tagName;
-            if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') scheduleGlobalAutoSave();
-        }, true);
-        document.body.addEventListener('input', (e) => {
-            if (!_globalPageReady) return;
-            const tag = e.target.tagName;
-            if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') scheduleGlobalAutoSave();
-        }, true);
-        document.body.addEventListener('click', (e) => {
-            if (!_globalPageReady) return;
-            if (e.target.closest('.btn-voltar, .floating-footer-bar')) return;
-            const el = e.target.closest('button, .toggle-button, .color-swatch, .swatch, .preset-level-box, .lock-btn, [data-action]');
-            if (el) scheduleGlobalAutoSave();
-        }, true);
-
         if (ledBrilhoButton) {
             ledBrilhoButton.addEventListener('click', () => {
                 // ciclo 1..5 => 20..100
                 ledBrilho = ledBrilho + 1;
                 if (ledBrilho > 5) ledBrilho = 1;
-                syncLedBrilhoUI();
-                scheduleGlobalAutoSave();
+                const pct = ledBrilho * 20;
+                ledBrilhoButton.textContent = 'BRILHO LED ' + pct + '%';
+                requestGlobalAutoSave();
             });
         }
 
         
 
         const presetLevelsContainer = document.getElementById('presetLevelsContainer');
+        const presetLevelMap = ['A', 'B', 'C', 'D', 'E'];
         if (presetLevelsContainer) {
             presetLevelsContainer.addEventListener('click', (event) => {
                 const target = event.target.closest('.preset-level-box');
                 if (!target) return;
                 const levelChar = target.dataset.level;
-                const levelIndex = PRESET_LEVEL_KEYS.indexOf(levelChar);
+                const levelIndex = presetLevelMap.indexOf(levelChar);
                 if (levelIndex === -1) return; // Should not happen
 
-                const levels = ensurePresetLevelsArray();
-                const currentlySelectedCount = levels.filter(Boolean).length;
+                const currentlySelectedCount = presetLevels.filter(Boolean).length;
 
-                if (levels[levelIndex] && currentlySelectedCount <= 1) {
+                if (presetLevels[levelIndex] && currentlySelectedCount <= 1) {
                     return; 
                 }
 
-                levels[levelIndex] = !levels[levelIndex];
+                presetLevels[levelIndex] = !presetLevels[levelIndex];
 
-                target.classList.toggle('selected', levels[levelIndex]);
-                target.setAttribute('aria-pressed', levels[levelIndex] ? 'true' : 'false');
+                target.classList.toggle('selected', presetLevels[levelIndex]);
                 // eslint-disable-next-line no-unused-expressions
                 target.offsetHeight;
 
                 updatePresetLevelButtons();
-                scheduleGlobalAutoSave();
-            });
-            presetLevelsContainer.addEventListener('keydown', (event) => {
-                if (event.key !== 'Enter' && event.key !== ' ') return;
-                const target = event.target.closest('.preset-level-box');
-                if (!target) return;
-                event.preventDefault();
-                target.click();
+                requestGlobalAutoSave();
             });
         }
 
         function updatePresetLevelButtons() {
-            const levels = ensurePresetLevelsArray();
             const boxes = presetLevelsContainer ? presetLevelsContainer.querySelectorAll('.preset-level-box') : [];
             boxes.forEach((box, index) => {
-                const shouldBeSelected = !!levels[index];
+                const shouldBeSelected = !!presetLevels[index];
                 box.classList.toggle('selected', shouldBeSelected);
-                box.setAttribute('aria-pressed', shouldBeSelected ? 'true' : 'false');
-                box.setAttribute('role', 'button');
-                box.setAttribute('tabindex', '0');
                 // eslint-disable-next-line no-unused-expressions
                 box.offsetHeight;
-            });
-        }
-
-
-        function updateLockButtonsUI() {
-            const setupBtn = document.getElementById('lockSetupBtn');
-            const globalBtn = document.getElementById('lockGlobalBtn');
-
-            if (setupBtn) {
-                // selected = ATIVO (vermelho) conforme CSS atualizado
-                setupBtn.classList.toggle('selected', !!lockSetup);
-                setupBtn.offsetHeight;
-            }
-            if (globalBtn) {
-                globalBtn.classList.toggle('selected', !!lockGlobal);
-                globalBtn.offsetHeight;
-            }
-        }
-
-        function attachLockButtonsHandlers() {
-            const container = document.getElementById('lockButtonsContainer');
-            if (!container) return;
-            container.addEventListener('click', (event) => {
-                const target = event.target.closest('.lock-button');
-                if (!target) return;
-                const type = target.dataset.lock; // 'setup' ou 'global'
-                if (type === 'setup') {
-                    lockSetup = !lockSetup;
-                } else if (type === 'global') {
-                    lockGlobal = !lockGlobal;
-                }
-                updateLockButtonsUI();
-                scheduleGlobalAutoSave();
             });
         }
 
@@ -1043,7 +1114,7 @@ function showSavedBanner() {
             btn.addEventListener('click', () => {
                 ledModeNumeros = !ledModeNumeros;
                 updateLedModeToggleUI();
-                scheduleGlobalAutoSave();
+                requestGlobalAutoSave();
             });
         }
 
@@ -1086,8 +1157,12 @@ function showSavedBanner() {
             // Sync visual dos botoes de letra e numero
             function syncRowLabel() {
                 if (rowLabel) {
-                    const idx = parseInt(rowInput.value) || 0;
-                    rowLabel.textContent = rowLetters[idx] || 'A';
+                    let idx = parseInt(rowInput.value) || 0;
+                    if (idx < 0 || idx >= rowLetters.length) {
+                        idx = 0;
+                        rowInput.value = 0;
+                    }
+                    rowLabel.textContent = rowLetters[idx];
                 }
             }
             function syncColLabel() {
@@ -1103,17 +1178,17 @@ function showSavedBanner() {
             toggleBtn.addEventListener('click', () => {
                 checkbox.checked = !checkbox.checked;
                 syncAutoStartToggle();
-                scheduleGlobalAutoSave();
+                dispatchSyntheticChange(checkbox);
             });
 
             // Click handler para botao de letra - cicla A->B->C->D->E->A
             if (rowBtn) {
                 rowBtn.addEventListener('click', () => {
                     let currentRow = parseInt(rowInput.value) || 0;
-                    currentRow = (currentRow + 1) % rowLetters.length;
+                    currentRow = (currentRow + 1) % 5;
                     rowInput.value = currentRow;
                     syncRowLabel();
-                    scheduleGlobalAutoSave();
+                    dispatchSyntheticChange(rowInput);
                 });
             }
 
@@ -1124,7 +1199,7 @@ function showSavedBanner() {
                     currentCol = (currentCol + 1) % 6;
                     colInput.value = currentCol;
                     syncColLabel();
-                    scheduleGlobalAutoSave();
+                    dispatchSyntheticChange(colInput);
                 });
             }
 
@@ -1152,15 +1227,15 @@ function showSavedBanner() {
                 liveModeBtn.addEventListener('click', () => {
                     liveModeCheckbox.checked = !liveModeCheckbox.checked;
                     syncLiveModeBtn();
-                    scheduleGlobalAutoSave();
+                    dispatchSyntheticChange(liveModeCheckbox);
                 });
             }
         }
 
         function initializeSwGlobalFields() {
             populateSelect('switchMode', MODE_OPTIONS_WEB);
-            populateNumericSelect('switchCC', 0, 127, 48);
-            populateNumericSelect('switchChannel', 0, 16, 1);
+            populateNumericSelect('switchCC', 0, 127, 0);
+            populateNumericSelect('switchChannel', 0, 16, 0);
             
             createCustomColorSelector(
                 'selectedLedColorPreview',
@@ -1176,7 +1251,6 @@ function showSavedBanner() {
             // Adiciona listeners
             document.getElementById('switchMode').addEventListener('change', function() {
                 updateSwGlobalSpecificUI(this.value);
-                scheduleGlobalAutoSave();
             });
             
             // Inicializa todos os selects como customizados
@@ -1187,6 +1261,37 @@ function showSavedBanner() {
                     initializeCustomSelect(el);
                 }
             });
+
+            // Start toggle button (igual ao PRESET)
+            (function(){
+                const syncStartBtn = () => {
+                    const cb = document.getElementById('switchStart');
+                    const btn = document.getElementById('startToggleBtn');
+                    if (!cb || !btn) return;
+                    if (cb.checked) {
+                        btn.classList.add('active');
+                        btn.setAttribute('aria-pressed','true');
+                        btn.textContent = 'INICIAR LIGADO';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-pressed','false');
+                        btn.textContent = 'INICIAR DESLIGADO';
+                    }
+                };
+                const cb = document.getElementById('switchStart');
+                const btn = document.getElementById('startToggleBtn');
+                if (cb && btn) {
+                    syncStartBtn();
+                    cb.addEventListener('change', syncStartBtn);
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        cb.checked = !cb.checked;
+                        syncStartBtn();
+                        cb.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+                }
+                window._syncStartBtn = syncStartBtn;
+            })();
         }
 
         function loadSwGlobalDataToUI() {
@@ -1196,10 +1301,11 @@ function showSavedBanner() {
             let uiModo = swGlobalConfig.modo || 0;
             if (uiModo === 5 || uiModo === 6 || uiModo === 52) uiModo = 4;
             document.getElementById('switchMode').value = uiModo;
-            document.getElementById('switchCC').value = swGlobalConfig.cc || 48;
+            document.getElementById('switchCC').value = (swGlobalConfig.cc ?? 0);
             document.getElementById('switchStart').checked = swGlobalConfig.start_value || false;
-            document.getElementById('switchChannel').value = (swGlobalConfig.canal ?? 1);
-            
+            if (window._syncStartBtn) window._syncStartBtn();
+            document.getElementById('switchChannel').value = (swGlobalConfig.canal ?? 0);
+
             selectedSwGlobalLedIndex = swGlobalConfig.led || 0;
             selectedSwGlobalLed2Index = swGlobalConfig.led2 || 0;
             const initialColor = PRESET_COLORS[selectedSwGlobalLedIndex] || PRESET_COLORS[0];
@@ -1327,10 +1433,10 @@ function showSavedBanner() {
             let needsInit = false;
 
             const ccField = document.getElementById('ccFieldFormGroup');
-            if (ccField) ccField.style.display = 'block'; // Mostra por padrao
+            if (ccField) ccField.style.display = ''; // Mostra por padrao
             // Restaura visibilidade padrao de Start e Canal
-            try { const startEl = document.getElementById('switchStart'); startEl?.closest('.form-group')?.style && (startEl.closest('.form-group').style.display = 'block'); } catch (e) {}
-            try { const chEl = document.getElementById('switchChannel'); chEl?.closest('.form-group')?.style && (chEl.closest('.form-group').style.display = 'block'); } catch (e) {}
+            try { const startEl = document.getElementById('switchStart'); startEl?.closest('.form-group')?.style && (startEl.closest('.form-group').style.display = ''); } catch (e) {}
+            try { const chEl = document.getElementById('switchChannel'); chEl?.closest('.form-group')?.style && (chEl.closest('.form-group').style.display = ''); } catch (e) {}
             
             document.getElementById('swFavoritePresetContainer_global')?.remove();
             // Remove UI anterior de rampa (se existir)
@@ -1449,7 +1555,7 @@ function showSavedBanner() {
                 needsInit = true;
             } else if (modeValue >= 7 && modeValue <= 9) { // CONTROL
                 const controlIndex = modeValue - 7;
-                const data = swGlobalConfig.extras.control?.[controlIndex] || {cc:48, modo_invertido:false};
+                const data = swGlobalConfig.extras.control?.[controlIndex] || {cc:0, modo_invertido:false};
                 generateSingleControlUI(dynamicArea, data, controlIndex);
                 dynamicArea.style.display = 'block';
                 needsInit = true;
@@ -1576,7 +1682,7 @@ function showSavedBanner() {
                     }
                 };
                 syncCc2Start();
-                startInput.addEventListener("change", () => { syncCc2Start(); updateSwGlobalDataFromUI(); scheduleGlobalAutoSave(); });
+                startInput.addEventListener("change", () => { syncCc2Start(); updateSwGlobalDataFromUI(); });
                 startBtn.addEventListener("click", (e) => {
                     e.preventDefault();
                     startInput.checked = !startInput.checked;
@@ -1586,14 +1692,6 @@ function showSavedBanner() {
 
                 dynamicArea.style.display = "block";
                 needsInit = true;
-            }
-
-            if (!needsInit && dynamicArea && dynamicArea.children.length === 0) {
-                const noExtra = document.createElement('div');
-                noExtra.className = 'swglobal-no-extra';
-                noExtra.textContent = 'Sem configuracoes adicionais para este modo.';
-                dynamicArea.appendChild(noExtra);
-                dynamicArea.style.display = 'block';
             }
 
             if (needsInit) { dynamicArea.querySelectorAll('select').forEach(el => initializeCustomSelect(el)); }
@@ -1611,6 +1709,18 @@ function showSavedBanner() {
             });
         }
 
+        function getModeForChannelGlobal(channel) {
+            const currentMode = document.getElementById('modoMidi') ? document.getElementById('modoMidi').value : "GLOBAL";
+            if (currentMode !== "MODO AVANCADO") return currentMode;
+            const ch = parseInt(channel, 10);
+            for (let i = 0; i < 5; i++) {
+                if (advMidiChNumData[i] === ch) {
+                    return advMidiModeOptions[advMidiChData[i] || 0] || "GLOBAL";
+                }
+            }
+            return advMidiModeOptions[advMidiChData[0] || 0] || "GLOBAL";
+        }
+
         function isChannelSelectId(id) {
             const lower = (id || '').toLowerCase();
             return lower.includes('channel') || lower.includes('_ch');
@@ -1624,22 +1734,62 @@ function showSavedBanner() {
             for (let i = min; i <= max; i++) {
                 const opt = document.createElement('option');
                 opt.value = i;
-                opt.textContent = (isChannelSelect && i === 0) ? 'X' : i;
+                let txt = i;
+                if (isChannelSelect && i === 0) {
+                    txt = 'X';
+                } else if (isChannelSelect && i > 0) {
+                    const cellMode = getModeForChannelGlobal(i);
+                    if (cellMode && cellMode !== "GLOBAL") {
+                        txt = `${i} - ${cellMode}`;
+                    }
+                }
+                opt.textContent = txt;
                 if (i === def) opt.selected = true;
                 sel.appendChild(opt);
             }
+            // Sync the custom-select visual after repopulating options
+            updateCustomSelectVisual(sel);
         }
 
-        function updateCustomSelectVisual() { return; }
+        function updateCustomSelectVisual(selectElement) {
+            if (!selectElement) return;
+            const wrapper = selectElement.closest('.custom-select-wrapper');
+            if (!wrapper) return;
+            const trigger = wrapper.querySelector('.custom-select-trigger');
+            const optionsPanel = wrapper.querySelector('.custom-options-panel');
+            if (trigger) {
+                trigger.textContent = selectElement.options[selectElement.selectedIndex]?.text || '';
+            }
+            // Rebuild the options panel to keep it in sync
+            if (optionsPanel) {
+                optionsPanel.innerHTML = '';
+                Array.from(selectElement.options).forEach(optionNode => {
+                    optionsPanel.appendChild(buildCustomSelectOption(selectElement, optionNode, wrapper, function() {
+                        updateCustomSelectVisual(selectElement);
+                    }));
+                });
+            }
+        }
 
         function newLabel(text) { const l = document.createElement('label'); l.textContent = text; return l; }
+        
         function newNumericInput(id, min, max, value) {
             const sel = document.createElement('select');
             sel.id = id;
             const isChannelSelect = isChannelSelectId(id);
             for (let i = min; i <= max; i++) {
                 const opt = document.createElement('option');
-                opt.value = i; opt.textContent = (isChannelSelect && i === 0) ? 'X' : i;
+                opt.value = i;
+                let txt = i;
+                if (isChannelSelect && i === 0) {
+                    txt = 'X';
+                } else if (isChannelSelect && i > 0) {
+                    const cellMode = getModeForChannelGlobal(i);
+                    if (cellMode && cellMode !== "GLOBAL") {
+                        txt = `${i} - ${cellMode}`;
+                    }
+                }
+                opt.textContent = txt;
                 if (i === value) opt.selected = true;
                 sel.appendChild(opt);
             }
@@ -1647,13 +1797,9 @@ function showSavedBanner() {
             sel.addEventListener('change', () => updateSpinKnobVisual(id));
 
             const wrapper = document.createElement('div');
-            wrapper.className = 'studio-select-wrapper relative';
+            wrapper.className = 'custom-select-wrapper';
             wrapper.dataset.selectId = id;
             wrapper.appendChild(sel);
-            const chevron = document.createElement('div');
-            chevron.className = 'absolute right-3 top-1/2 -translate-y-1/4 pointer-events-none text-gray-500';
-            chevron.innerHTML = '<span class="material-symbols-outlined text-sm">expand_more</span>';
-            wrapper.appendChild(chevron);
             return wrapper;
         }
         function newToggleSwitch(id, initialChecked, parentElement) {
@@ -1693,7 +1839,6 @@ function showSavedBanner() {
             const syncSpinSend = () => {
                 syncSpinSendPcGlobal(undefined, true);
                 try { updateSwGlobalDataFromUI(); } catch(_) {}
-                scheduleGlobalAutoSave();
             };
             sendCheckbox.addEventListener('change', syncSpinSend);
             sendBtn.addEventListener('click', (e) => { e.preventDefault(); sendCheckbox.checked = !sendCheckbox.checked; syncSpinSend(); });
@@ -1811,13 +1956,9 @@ function showSavedBanner() {
             }
             
             const wrapper = document.createElement('div');
-            wrapper.className = 'studio-select-wrapper relative';
+            wrapper.className = 'custom-select-wrapper';
             wrapper.dataset.selectId = originalSelectId;
             wrapper.appendChild(select);
-            const chevron = document.createElement('div');
-            chevron.className = 'absolute right-3 top-1/2 -translate-y-1/4 pointer-events-none text-gray-500';
-            chevron.innerHTML = '<span class="material-symbols-outlined text-sm">expand_more</span>';
-            wrapper.appendChild(chevron);
             formGroup.appendChild(wrapper);
 
             // Initialize this new select as a custom one
@@ -1825,3 +1966,217 @@ function showSavedBanner() {
 
             return formGroup;
         }
+
+        // ====================================================================
+        // BACK IMAGES (drag-and-drop, redimensiona via canvas, sobe como JPG)
+        // ====================================================================
+        const NUM_BACK_SLOTS_UI = 5;
+
+        async function detectBackImageDims() {
+            // Padrao 320x240 (BFMIDI 1/2). Se /api/system/info disponibilizar boardModel,
+            // usamos 480x320 para BFMIDI3.
+            let w = 320, h = 240, model = '';
+            try {
+                const r = await fetch('/api/system/info');
+                if (r.ok) {
+                    const info = await r.json();
+                    model = (info && (info.boardModel || info.boardName || info.boardVersion) || '').toString();
+                    if (/BFMIDI[\s\-]?3/i.test(model) || info.isBFMIDI3 === true) { w = 480; h = 320; }
+                }
+            } catch (_) {}
+            return { w, h, model };
+        }
+
+        async function fetchBackList() {
+            try {
+                const r = await fetch('/api/back/list', { cache: 'no-store' });
+                if (!r.ok) return [];
+                const j = await r.json();
+                return Array.isArray(j.slots) ? j.slots : [];
+            } catch (_) { return []; }
+        }
+
+        function setBackStatus(msg, isErr) {
+            const el = document.getElementById('backImagesStatus');
+            if (!el) return;
+            el.textContent = msg || '';
+            el.style.color = isErr ? '#ff7777' : '#888';
+        }
+
+        function renderBackSlots(slots, dims) {
+            const grid = document.getElementById('backImagesGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (let i = 1; i <= NUM_BACK_SLOTS_UI; i++) {
+                const slotInfo = slots.find(s => s.slot === i) || { slot: i, exists: false };
+                const wrapper = document.createElement('div');
+                wrapper.className = 'back-img-slot' + (slotInfo.exists ? ' has-image' : '');
+                wrapper.dataset.slot = String(i);
+                wrapper.innerHTML = renderSlotInner(i, slotInfo.exists, dims);
+                grid.appendChild(wrapper);
+                wireSlotEvents(wrapper, dims);
+            }
+        }
+
+        // Render do interior do slot — sem <img> para nao baixar o JPG do
+        // ESP32 toda vez que a tela carrega (era isso que travava o WiFi).
+        function renderSlotInner(slot, exists, dims) {
+            return `
+                <div class="slot-label">BACK ${slot}</div>
+                ${exists
+                    ? `<div class="slot-loaded" style="display:flex;align-items:center;justify-content:center;flex:1;color:#7fc97f;font-weight:700;font-size:13px;letter-spacing:0.5px;">IMG${slot}<br><span style="font-size:9px;color:#888;font-weight:400;margin-top:2px;">carregada</span></div>`
+                    : `<div class="slot-empty">arraste<br>ou clique<br>${dims.w}x${dims.h}</div>`}
+                <button type="button" class="slot-del" aria-label="Remover">X</button>
+            `;
+        }
+
+        function wireSlotEvents(slotEl, dims) {
+            const slot = parseInt(slotEl.dataset.slot, 10);
+            slotEl.addEventListener('click', (e) => {
+                if (e.target.classList.contains('slot-del')) return;
+                pickFileForSlot(slot, dims);
+            });
+            slotEl.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                slotEl.classList.add('drag-over');
+            });
+            slotEl.addEventListener('dragleave', () => {
+                slotEl.classList.remove('drag-over');
+            });
+            slotEl.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                slotEl.classList.remove('drag-over');
+                const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+                if (!file) return;
+                await uploadFileToSlot(file, slot, dims);
+            });
+            attachDelButton(slotEl, slot, dims);
+        }
+
+        function attachDelButton(slotEl, slot, dims) {
+            const delBtn = slotEl.querySelector('.slot-del');
+            if (!delBtn) return;
+            delBtn.addEventListener('click', async (ev) => {
+                ev.stopPropagation();
+                if (!confirm(`Remover BACK ${slot}?`)) return;
+                setBackStatus(`removendo BACK ${slot}...`);
+                let success = false;
+                try {
+                    const r = await fetch(`/api/back/delete?slot=${slot}`, { method: 'POST' });
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    setBackStatus(`BACK ${slot} removido`);
+                    success = true;
+                } catch (err) {
+                    setBackStatus(`erro: ${err.message || err}`, true);
+                }
+                if (success) patchSlotUI(slot, false, dims);
+            });
+        }
+
+        // Atualiza apenas UM slot, sem re-fetchar os outros 4 (evita exaurir
+        // os sockets do AsyncTCP no ESP32, que era o que congelava o servidor).
+        function patchSlotUI(slot, exists, dims) {
+            const wrapper = document.querySelector(`.back-img-slot[data-slot="${slot}"]`);
+            if (!wrapper) return;
+            wrapper.classList.toggle('has-image', !!exists);
+            wrapper.innerHTML = renderSlotInner(slot, exists, dims);
+            // Os listeners no wrapper (click/drag/drop) continuam ativos — so o
+            // botao de delete foi destruido pelo innerHTML e precisa ser religado.
+            attachDelButton(wrapper, slot, dims);
+        }
+
+        function pickFileForSlot(slot, dims) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.addEventListener('change', async () => {
+                const file = input.files && input.files[0];
+                if (file) await uploadFileToSlot(file, slot, dims);
+            });
+            input.click();
+        }
+
+        async function uploadFileToSlot(file, slot, dims) {
+            const slotEl = document.querySelector(`.back-img-slot[data-slot="${slot}"]`);
+            if (slotEl) slotEl.classList.add('uploading');
+            setBackStatus(`processando BACK ${slot}...`);
+            let success = false;
+            try {
+                const blob = await resizeImageToJpeg(file, dims.w, dims.h, 0.85);
+                if (!blob) throw new Error('falha ao processar imagem');
+                const fd = new FormData();
+                fd.append('file', blob, `back${slot}.jpg`);
+                const r = await fetch(`/api/back/upload?slot=${slot}`, { method: 'POST', body: fd });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const j = await r.json().catch(() => ({}));
+                if (!j.ok) throw new Error(j.msg || 'erro no servidor');
+                setBackStatus(`BACK ${slot} enviado (${(j.bytes/1024).toFixed(1)} KB)`);
+                success = true;
+            } catch (err) {
+                setBackStatus(`erro: ${err.message || err}`, true);
+            } finally {
+                if (slotEl) slotEl.classList.remove('uploading');
+                if (success) patchSlotUI(slot, true, dims);
+            }
+        }
+
+        function resizeImageToJpeg(file, targetW, targetH, quality) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = targetW;
+                    canvas.height = targetH;
+                    const ctx = canvas.getContext('2d');
+                    // Fundo preto + cover (corta laterais para preencher)
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(0, 0, targetW, targetH);
+                    const srcRatio = img.width / img.height;
+                    const dstRatio = targetW / targetH;
+                    let sw, sh, sx, sy;
+                    if (srcRatio > dstRatio) {
+                        // imagem mais larga -> corta laterais
+                        sh = img.height;
+                        sw = sh * dstRatio;
+                        sx = (img.width - sw) / 2;
+                        sy = 0;
+                    } else {
+                        sw = img.width;
+                        sh = sw / dstRatio;
+                        sx = 0;
+                        sy = (img.height - sh) / 2;
+                    }
+                    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+                    canvas.toBlob(b => resolve(b), 'image/jpeg', quality);
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+                img.src = url;
+            });
+        }
+
+        async function refreshBackImagesUI(dimsArg) {
+            const grid = document.getElementById('backImagesGrid');
+            if (!grid) return;
+            const dims = dimsArg || (window.__backDims) || (window.__backDims = await detectBackImageDims());
+            window.__backDims = dims;
+            const lbl = document.getElementById('backImagesDimsLabel');
+            if (lbl) lbl.textContent = `(arraste ate ${NUM_BACK_SLOTS_UI} imagens — ${dims.w}x${dims.h})`;
+            const slots = await fetchBackList();
+            renderBackSlots(slots, dims);
+        }
+
+        async function wireBackImagesUI() {
+            if (!document.getElementById('backImagesGrid')) return;
+            await refreshBackImagesUI();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', wireBackImagesUI);
+        } else {
+            wireBackImagesUI();
+        }
+
+    </script>
+</body>

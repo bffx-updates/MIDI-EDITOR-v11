@@ -4905,19 +4905,6 @@
                             </div>
                             <div>
                                 <label
-                                    class="block text-[9px] font-bold text-gray-500 mb-1 uppercase tracking-wide">Back
-                                    Layers</label>
-                                <div class="custom-color-selector">
-                                    <div class="selected-color-preview w-full h-10 rounded-lg border border-[#333336] cursor-pointer bg-[#1a1a1d] relative overflow-hidden group"
-                                        id="selectedBackLayersColorPreview">
-                                        <div class="absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity"
-                                            id="selectedBackLayersColorPreviewBox"></div>
-                                    </div>
-                                    <input id="backLayersColorValue" name="backLayersColorValue" type="hidden" />
-                                </div>
-                            </div>
-                            <div>
-                                <label
                                     class="block text-[9px] font-bold text-gray-500 mb-1 uppercase tracking-wide">Preset
                                     Tag Color</label>
                                 <div class="custom-color-selector">
@@ -5941,9 +5928,6 @@
     </div>
     <div class="color-options-panel-overlay" id="colorPanelOverlay_DisplayBackground">
         <div class="color-options-panel" id="colorPanel_DisplayBackground"></div>
-    </div>
-    <div class="color-options-panel-overlay" id="colorPanelOverlay_BackLayers">
-        <div class="color-options-panel" id="colorPanel_BackLayers"></div>
     </div>
     <div class="color-options-panel-overlay" id="colorPanelOverlay_PresetTag">
         <div class="color-options-panel" id="colorPanel_PresetTag"></div>
@@ -7606,8 +7590,8 @@
 
             // Mapeamento: posição i → índice firmware 86+i
             const SOLID_TO_PERFIS_MAP = Array.from({ length: 32 }, (_, i) => i + 86);
-            // Gradientes preto-cor: índices 118+i (firmware getIndexedGradientSpec: idx >= 118 && idx < 150)
-            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 118);
+            // Gradientes preto-cor: índices 100+i
+            const CUSTOM_BLACK_GRADIENT_INDEXES = Array.from({ length: 32 }, (_, i) => i + 100);
 
             const GRADIENT1_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
                 const hex = '#' + col.value.toString(16).padStart(6, '0');
@@ -7624,7 +7608,7 @@
             const CUSTOM_COLORS_WEB = SOLID_COLORS_WEB.map((col, i) => {
                 const hex = '#' + col.value.toString(16).padStart(6, '0');
                 const gradCss = `linear-gradient(180deg, #000000 0%, ${hex} 48%, #000000 100%)`;
-                return makeGradientSwatch('Custom ' + col.name, col.value, 118 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
+                return makeGradientSwatch('Custom ' + col.name, col.value, 100 + i, GRADIENT3_BASE | col.value, gradCss, gradCss);
             });
 
             const MIX_FORMAT_GRADIENTS_WEB = [
@@ -7723,7 +7707,7 @@
                 const idx = SOLID_TO_PERFIS_MAP[i];
                 PERFIS_CORES_WEB[idx] = { ...col, actualIndex: idx, storedValue: col.value };
             });
-            // 4. Custom preto-cor — indices 118-149
+            // 4. Custom preto-cor — indices 100-131
             SOLID_COLORS_WEB.forEach((color, i) => {
                 const custIdx = CUSTOM_BLACK_GRADIENT_INDEXES[i];
                 PERFIS_CORES_WEB[custIdx] = makeBlackCoreGradientSwatch(
@@ -8347,7 +8331,6 @@
                     nomePreset: presetName,
                     nomePresetTextColor: 0xFFFFFF,
                     backgroundColorConfig: 0x000000,
-                    backLayersColor: 0x000000,
                     backTagColor: 0xFFB300,
                     bank: 0,
                     canal: 1,
@@ -8408,7 +8391,6 @@
                 targetPreset.nomePreset = sourcePreset.nomePreset;
                 targetPreset.nomePresetTextColor = sourcePreset.nomePresetTextColor;
                 targetPreset.backgroundColorConfig = sourcePreset.backgroundColorConfig;
-                targetPreset.backLayersColor = sourcePreset.backLayersColor;
                 targetPreset.backTagColor = sourcePreset.backTagColor;
                 targetPreset.bank = sourcePreset.bank;
                 targetPreset.canal = sourcePreset.canal;
@@ -11006,7 +10988,6 @@
                 const globalIndex = colIndex * NUM_PRESET_ROWS + rowIndex;
                 const presetNameColorPreviewBox = document.getElementById('selectedPresetNameColorPreviewBox');
                 const displayBackgroundPreviewBox = document.getElementById('selectedDisplayBackgroundColorPreviewBox');
-                const backLayersPreviewBox = document.getElementById('selectedBackLayersColorPreviewBox');
                 const presetTagPreviewBox = document.getElementById('selectedPresetTagColorPreviewBox');
                 const layerPresets = allPresetsData[0] || [];
                 if (globalIndex >= layerPresets.length || !layerPresets[globalIndex]) {
@@ -11014,14 +10995,11 @@
                     document.getElementById('presetNameInput').value = defaultPData.nomePreset;
                     if (presetNameColorPreviewBox) applyColorPreview(presetNameColorPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, defaultPData.nomePresetTextColor), 'bar');
                     if (displayBackgroundPreviewBox) applyColorPreview(displayBackgroundPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, defaultPData.backgroundColorConfig || 0), 'bar');
-                    if (backLayersPreviewBox) applyColorPreview(backLayersPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, defaultPData.backLayersColor || 0), 'bar');
                     if (presetTagPreviewBox) applyColorPreview(presetTagPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, defaultPData.backTagColor || 0x1E1E23), 'bar');
                     const presetNameColorValue = document.getElementById('presetNameColorValue');
                     if (presetNameColorValue) presetNameColorValue.value = String(defaultPData.nomePresetTextColor);
                     const displayBackgroundColorValue = document.getElementById('displayBackgroundColorValue');
                     if (displayBackgroundColorValue) displayBackgroundColorValue.value = String(defaultPData.backgroundColorConfig);
-                    const backLayersColorValue = document.getElementById('backLayersColorValue');
-                    if (backLayersColorValue) backLayersColorValue.value = String(defaultPData.backLayersColor);
                     const presetTagColorValue = document.getElementById('presetTagColorValue');
                     if (presetTagColorValue) presetTagColorValue.value = String(defaultPData.backTagColor);
                     document.getElementById('presetBankInput').value = defaultPData.bank;
@@ -11034,7 +11012,6 @@
                 document.getElementById('presetNameInput').value = presetData.nomePreset || "";
                 if (presetNameColorPreviewBox) applyColorPreview(presetNameColorPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, presetData.nomePresetTextColor || 0xFFFFFF), 'bar');
                 if (displayBackgroundPreviewBox) applyColorPreview(displayBackgroundPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, presetData.backgroundColorConfig || 0), 'bar');
-                if (backLayersPreviewBox) applyColorPreview(backLayersPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, presetData.backLayersColor || 0), 'bar');
                 if (presetTagPreviewBox) applyColorPreview(presetTagPreviewBox, getPaletteColorByValue(PRESET_DIRECT_COLORS_WEB, presetData.backTagColor || 0xFFB300), 'bar');
                 const presetNameColorValue = document.getElementById('presetNameColorValue');
                 if (presetNameColorValue) presetNameColorValue.value = String((typeof presetData.nomePresetTextColor === 'number') ? presetData.nomePresetTextColor : 0xFFFFFF);
@@ -11816,127 +11793,6 @@
                         const singleVal = (presetData?.switches?.[switchIndex]?.single_value ?? 127);
                         populateNumericSelect('singleValueInput', 0, 127, singleVal);
                         updateCustomSelect('singleValueInput');
-
-                        // ENVIAR COM BANK + SLOTs 2-4 (paridade com editor interno)
-                        dynamicArea.style.display = 'block';
-                        const swDataForBank = presetData?.switches?.[switchIndex] || {};
-                        const sendWithBankInitial = !!swDataForBank.single_send_with_bank;
-                        const bankGroup = document.createElement('div');
-                        bankGroup.className = 'form-group';
-                        bankGroup.id = 'singleSendWithBankGroup';
-                        const bankBtn = document.createElement('button');
-                        bankBtn.type = 'button';
-                        bankBtn.id = 'singleSendWithBankBtn';
-                        bankBtn.className = 'single-toggle-button' + (sendWithBankInitial ? ' active' : '');
-                        bankBtn.setAttribute('aria-pressed', sendWithBankInitial ? 'true' : 'false');
-                        bankBtn.dataset.enabled = sendWithBankInitial ? '1' : '0';
-                        bankBtn.textContent = sendWithBankInitial ? 'ENVIAR COM BANK: ON' : 'ENVIAR COM BANK: OFF';
-                        bankBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            const cur = bankBtn.dataset.enabled === '1';
-                            const nxt = !cur;
-                            bankBtn.dataset.enabled = nxt ? '1' : '0';
-                            bankBtn.textContent = nxt ? 'ENVIAR COM BANK: ON' : 'ENVIAR COM BANK: OFF';
-                            bankBtn.setAttribute('aria-pressed', nxt ? 'true' : 'false');
-                            bankBtn.classList.toggle('active', nxt);
-                            try { updateLocalPresetDataFromUI(); } catch (_) { }
-                        });
-                        bankGroup.appendChild(bankBtn);
-                        dynamicArea.appendChild(bankGroup);
-
-                        // Slots 2-4: armazenados em currentSwitchData.macros[0..2].
-                        // valueOff usado como flag (0=enviar CC, 1=enviar PC).
-                        const macrosSingleSrc = Array.isArray(swDataForBank.macros) ? swDataForBank.macros : [];
-                        const wrapperSingle = document.createElement('div');
-                        wrapperSingle.className = 'macros-config-wrapper single-extra-slots';
-                        for (let i = 0; i < 3; i++) {
-                            const entry = macrosSingleSrc[i] || {};
-                            const slotCc = typeof entry.cc === 'number' ? entry.cc : 0;
-                            const slotChRaw = entry.channel !== undefined ? entry.channel : (entry.ch !== undefined ? entry.ch : 0);
-                            const slotChParsed = parseInt(slotChRaw, 10);
-                            const slotChannel = Number.isFinite(slotChParsed) ? slotChParsed : 0;
-                            const slotVal = typeof entry.valueOn === 'number' ? entry.valueOn : (typeof entry.on === 'number' ? entry.on : 127);
-                            const slotPcFlag = typeof entry.valueOff === 'number' ? entry.valueOff : (typeof entry.off === 'number' ? entry.off : 0);
-                            const slotSendPc = slotPcFlag !== 0;
-
-                            const row = document.createElement('div');
-                            row.className = 'form-group macro-row single-slot-row';
-
-                            const title = document.createElement('div');
-                            title.className = 'single-slot-title';
-                            title.textContent = `SLOT ${i + 2}`;
-                            row.appendChild(title);
-
-                            const line1 = document.createElement('div');
-                            line1.className = 'custom-inline-group';
-
-                            const ccDiv = document.createElement('div');
-                            ccDiv.className = 'custom-value-container';
-                            ccDiv.appendChild(newLabel('PC/CC:'));
-                            const slotCcId = `single_cc_${switchIndex}_${i}`;
-                            const slotCcWrapper = newNumericInput(slotCcId, 0, 127, slotCc, 'cc');
-                            ccDiv.appendChild(slotCcWrapper);
-                            line1.appendChild(ccDiv);
-
-                            const chDiv = document.createElement('div');
-                            chDiv.className = 'custom-value-container';
-                            chDiv.appendChild(newLabel('Ch:'));
-                            const slotChSelectId = `single_ch_${switchIndex}_${i}`;
-                            chDiv.appendChild(newSelect(slotChSelectId, 0, 16, slotChannel));
-                            line1.appendChild(chDiv);
-
-                            row.appendChild(line1);
-
-                            const line2 = document.createElement('div');
-                            line2.className = 'custom-inline-group';
-
-                            const pcBtnDiv = document.createElement('div');
-                            pcBtnDiv.className = 'custom-value-container';
-                            pcBtnDiv.appendChild(newLabel('Enviar:'));
-                            const pcBtnId = `single_pc_${switchIndex}_${i}`;
-                            const pcBtn = document.createElement('button');
-                            pcBtn.type = 'button';
-                            pcBtn.id = pcBtnId;
-                            pcBtn.className = 'single-toggle-button ' + (slotSendPc ? 'pc-mode' : 'cc-mode');
-                            pcBtn.setAttribute('aria-pressed', slotSendPc ? 'false' : 'true');
-                            pcBtn.dataset.sendPc = slotSendPc ? '1' : '0';
-                            pcBtn.textContent = slotSendPc ? 'ENVIAR PC' : 'ENVIAR CC';
-                            pcBtnDiv.appendChild(pcBtn);
-                            line2.appendChild(pcBtnDiv);
-
-                            const valDiv = document.createElement('div');
-                            valDiv.className = 'custom-value-container';
-                            valDiv.appendChild(newLabel('Valor CC:'));
-                            const slotValId = `single_val_${switchIndex}_${i}`;
-                            valDiv.appendChild(newNumericInput(slotValId, 0, 127, slotVal));
-                            line2.appendChild(valDiv);
-
-                            row.appendChild(line2);
-                            wrapperSingle.appendChild(row);
-
-                            pcBtn.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                const cur = pcBtn.dataset.sendPc === '1';
-                                const nxt = !cur;
-                                pcBtn.dataset.sendPc = nxt ? '1' : '0';
-                                pcBtn.textContent = nxt ? 'ENVIAR PC' : 'ENVIAR CC';
-                                pcBtn.setAttribute('aria-pressed', nxt ? 'false' : 'true');
-                                pcBtn.classList.toggle('pc-mode', nxt);
-                                pcBtn.classList.toggle('cc-mode', !nxt);
-                                valDiv.style.display = nxt ? 'none' : '';
-                                try { updateLocalPresetDataFromUI(); } catch (_) { }
-                            });
-                            valDiv.style.display = slotSendPc ? 'none' : '';
-                        }
-                        dynamicArea.appendChild(wrapperSingle);
-                        // Render custom selects para os campos recém criados
-                        try {
-                            for (let i = 0; i < 3; i++) {
-                                updateCustomSelect(`single_cc_${switchIndex}_${i}`);
-                                updateCustomSelect(`single_ch_${switchIndex}_${i}`);
-                                updateCustomSelect(`single_val_${switchIndex}_${i}`);
-                            }
-                        } catch (_) { }
                     }
                     if (switchStartGroup) {
                         // Adiciona ou remove classe customizada para SINGLE
@@ -12173,32 +12029,6 @@
                     dualCustomCheck.style.display = 'none';
                     dualCustomCheck.checked = !!currentSwitchData.ds_custom_enabled;
                     dualCard.appendChild(dualCustomCheck);
-
-                    // ENVIAR COM BANK (DUAL) — paridade com editor interno.
-                    // Default ON quando ausente. Quando OFF, somente CC1 e enviado no preset load.
-                    const dualBankInitial = (currentSwitchData.dual_send_with_bank !== false);
-                    const dualBankGroup = document.createElement('div');
-                    dualBankGroup.className = 'form-group';
-                    dualBankGroup.id = 'dualSendWithBankGroup';
-                    const dualBankBtn = document.createElement('button');
-                    dualBankBtn.type = 'button';
-                    dualBankBtn.id = 'dualSendWithBankBtn';
-                    dualBankBtn.className = 'single-toggle-button' + (dualBankInitial ? ' active' : '');
-                    dualBankBtn.setAttribute('aria-pressed', dualBankInitial ? 'true' : 'false');
-                    dualBankBtn.dataset.enabled = dualBankInitial ? '1' : '0';
-                    dualBankBtn.textContent = dualBankInitial ? 'ENVIAR COM BANK: ON' : 'ENVIAR COM BANK: OFF';
-                    dualBankBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const cur = dualBankBtn.dataset.enabled === '1';
-                        const nxt = !cur;
-                        dualBankBtn.dataset.enabled = nxt ? '1' : '0';
-                        dualBankBtn.textContent = nxt ? 'ENVIAR COM BANK: ON' : 'ENVIAR COM BANK: OFF';
-                        dualBankBtn.setAttribute('aria-pressed', nxt ? 'true' : 'false');
-                        dualBankBtn.classList.toggle('active', nxt);
-                        try { updateLocalPresetDataFromUI(); } catch (_) { }
-                    });
-                    dualBankGroup.appendChild(dualBankBtn);
-                    dualCard.appendChild(dualBankGroup);
 
                     const dualMain = document.createElement('div');
                     dualMain.className = 'stomp-aux-main';
@@ -14092,29 +13922,6 @@
                         const singleValEl = document.getElementById('singleValueInput');
                         const sv = parseInt(singleValEl ? singleValEl.value : 127, 10);
                         currentSwitchData.single_value = Number.isNaN(sv) ? 127 : Math.max(0, Math.min(127, sv));
-                        // ENVIAR COM BANK
-                        const bankBtn = document.getElementById('singleSendWithBankBtn');
-                        currentSwitchData.single_send_with_bank = !!(bankBtn && bankBtn.dataset.enabled === '1');
-                        // SLOTs 2-4: gravados em macros[0..2]; valueOff = flag PC (1) ou CC (0)
-                        if (!Array.isArray(currentSwitchData.macros)) currentSwitchData.macros = [];
-                        for (let i = 0; i < 3; i++) {
-                            const slotCc = parseInt(document.getElementById(`single_cc_${currentSwitchIndex}_${i}`)?.value, 10) || 0;
-                            const slotChRaw = parseInt(document.getElementById(`single_ch_${currentSwitchIndex}_${i}`)?.value, 10);
-                            const slotCh = (!isNaN(slotChRaw) && slotChRaw >= 0 && slotChRaw <= 16) ? slotChRaw : 0;
-                            const slotValRaw = parseInt(document.getElementById(`single_val_${currentSwitchIndex}_${i}`)?.value, 10);
-                            const slotVal = (!isNaN(slotValRaw)) ? Math.max(0, Math.min(127, slotValRaw)) : 127;
-                            const slotPcBtn = document.getElementById(`single_pc_${currentSwitchIndex}_${i}`);
-                            const slotSendPc = !!(slotPcBtn && slotPcBtn.dataset.sendPc === '1');
-                            currentSwitchData.macros[i] = {
-                                cc: slotCc,
-                                valueOff: slotSendPc ? 1 : 0,
-                                valueOn: slotVal,
-                                channel: slotCh
-                            };
-                        }
-                        if (!currentSwitchData.macros[3]) {
-                            currentSwitchData.macros[3] = { cc: 0, valueOff: 0, valueOn: 127, channel: 0 };
-                        }
                     }
                     const spinSendInput = document.getElementById('spinSendPcToggle');
                     if (spinSendInput) {
@@ -14344,13 +14151,6 @@
                         currentSwitchData.dual_send_pc = !!(dualSendPcEl && dualSendPcEl.checked);
                         const reclickSendPcEl = document.getElementById('reclickSendPcToggle');
                         currentSwitchData.reclick_send_pc = !!(reclickSendPcEl && reclickSendPcEl.checked);
-                        // DUAL STOMP "ENVIAR COM BANK" (default true se botao ausente)
-                        const dualBankBtn = document.getElementById('dualSendWithBankBtn');
-                        if (dualBankBtn) {
-                            currentSwitchData.dual_send_with_bank = (dualBankBtn.dataset.enabled === '1');
-                        } else if (currentSwitchData.dual_send_with_bank === undefined) {
-                            currentSwitchData.dual_send_with_bank = true;
-                        }
                     }
                     // TAP TEMPO: capturar TAP2/TAP3
                     if (currentSwitchData.modo === 18) {

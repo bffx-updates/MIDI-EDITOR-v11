@@ -1,0 +1,82 @@
+﻿
+>             function 
+initializePage() {
+                  apply
+IntegratedEditorLayout(
+);
+                  conso
+le.log("Inicializando 
+pagina...");
+                  docum
+ent.getElementById('btn
+Colar').disabled = 
+true;
+  
+                  apiFe
+tch('/api/global-config
+/read')
+                      
+.then(response => 
+response.ok ? 
+response.json() : 
+Promise.reject('Falha 
+config globais'))
+                      
+.then(configData => {
+                       
+   // Processa configs 
+globais primeiro
+                       
+   const modoMidiIndex 
+= configData.modoMidiIn
+dex || 0;
+                       
+   const 
+modoMidiOpcoes = 
+["GLOBAL", "AMPERO 
+AS2", "AMPERO MINI", 
+"HX STOMP", "A. STAGE 
+2", "GP-200LT", 
+"VALETON GP5", "POCKET 
+MASTER", "TONEX", 
+"KEMPER PLAYER", 
+"AMPERO MP350", "MX5", 
+"NANO CORTEX", "QUAD 
+CORTEX"];
+                       
+   globalMidiMode = mod
+oMidiOpcoes[modoMidiInd
+ex] || "GLOBAL";
+                       
+   document.getElementB
+yId('currentMidiMode').
+textContent = 
+globalMidiMode;
+  
+                       
+   // Cores globais de 
+LIVE MODE 1 e 2 
+(0xRRGGBB)
+                       
+   if (typeof configDat
+a.corLiveModeConfig 
+=== 'number') {
+                       
+       
+liveModeColorLayer1 = c
+onfigData.corLiveModeCo
+nfig;
+                       
+   } else {
+                       
+       
+liveModeColorLayer1 = 
+0xFFFFFF;
+                       
+   }
+                       
+   if (typeof configDat
+a.corLiveMode2Config 
+=== 'number') {
+
+

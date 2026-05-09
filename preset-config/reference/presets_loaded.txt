@@ -1,0 +1,27 @@
+﻿
+            let presets
+LoadedFromServer = 
+Array.from(
+                    pre
+setsLoadedFromServer[la
+yer] = Array(TOTAL_PRES
+ETS).fill(false);
+                if (pre
+setsLoadedFromServer[la
+yerIdx] && globalIndex 
+< presetsLoadedFromServ
+er[layerIdx].length) {
+                    pre
+setsLoadedFromServer[la
+yerIdx][globalIndex] = 
+true;
+                       
+             presetsLoa
+dedFromServer[layerIdx]
+ &&
+                       
+             presetsLoa
+dedFromServer[layerIdx]
+[globalIndex];
+
+

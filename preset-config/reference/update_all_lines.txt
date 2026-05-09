@@ -1,0 +1,188 @@
+3876:        window.saveCurrentPresetData = function (options) {
+3877:            if (typeof window.__BFMIDI_saveCurrentPresetData === 'function') {
+3881:            if (saveBtn && typeof saveBtn.click === 'function') {
+4176:        function getCC_AMPEROST2_Name(v) {
+4242:        function getCC_AMPERO_MINI_Names(v) {
+4260:        function getCC_GP200LT_Names(v) {
+4308:        function getCC_POCKET_MASTER_Names(v) {
+4341:        function getCC_KEMPER_PLAYER_Names(v) {
+4400:        function getCC_VALETON_GP5_Names(v) {
+4503:        function getCC_TONEX_Name(v) {
+4653:        function getCC_MX5_Names(v) {
+4684:        function getCC_NANO_CORTEX_Names(v) {
+4709:        function getCC_QUAD_CORTEX_Names(v) {
+4830:            function ensurePath(path) {
+4835:            async function apiFetch(path, options) {
+4867:            function getPresetKey(layer = currentLiveLayer, col = currentPresetColumnIndex, row = currentPresetRowIndex) {
+4871:            function getPresetSignature(layer = currentLiveLayer, col = currentPresetColumnIndex, row = currentPresetRowIndex) {
+4882:            function markPresetAsSaved(layer = currentLiveLayer, col = currentPresetColumnIndex, row = currentPresetRowIndex) {
+4886:            function hasCurrentPresetUnsavedChanges() {
+4894:            function updateAutoSaveButtonUI() {
+4902:            function setAutoSaveSyncIndicator(state, text) {
+4918:            function setAutoSaveEnabled(enabled, persist = true) {
+4935:            function initAutoSaveControls() {
+4956:            function bindAutoSaveDomWatchers() {
+4998:            function requestAutoSave(reason = 'change') {
+5011:            function toggleFooterOptions() {
+5018:            function handleCopy() {
+5050:            function handlePaste() {
+5099:                updateAllFootButtonsUI();
+5159:            function getDefaultExtrasData() {
+5170:            function normalizeModesClient(sw, extras) {
+5209:            function getCc2ChannelValue(sw) {
+5217:            function getSingleDefaultPresetData(colIndex, rowIndex) {
+5255:            function initializeFullDefaultPresets() {
+5267:            function copySharedPresetFields(sourcePreset, targetPreset) {
+5278:            function syncSharedPresetFieldsForIndex(globalIndex) {
+5289:            function getPresetLayerLoadOrder() {
+5308:            async function fetchPresetLayerFromServer(colIndex, rowIndex, layer) {
+5317:            function mergePresetLayerData(colIndex, rowIndex, layer, presetDataFromServer) {
+5375:            async function fetchAndLoadSinglePreset(colIndex, rowIndex, activateEsp = false) {
+5415:                    updateAllFootButtonsUI();
+5462:                        updateAllFootButtonsUI();
+5481:            async function reloadPresetExtrasFromServer(colIndex, rowIndex) {
+5509:                        const currentModeSelected = (function () {
+5538:            function updateLayerUiState() {
+5569:            function toggleLayerUi(targetLayer = null) {
+5644:                    updateAllFootButtonsUI();
+5648:            function toggleLayer2Visibility() {
+5685:            function updateLayerButtonAppearance() {
+5704:            function initializePage() {
+5814:            function generatePresetButtons() {
+5818:            function ensureDefaultSwitchSelection(force = false) {
+5824:                    if (btn && typeof btn.click === 'function') btn.click();
+5831:            async function selectFootButton(btn) {
+5881:            function closeAllFootModeDropdowns(exceptButton) {
+5897:            function syncFootModeDropdown(btn) {
+5932:            function toggleFootModeDropdown(btn, forceOpen = false) {
+5954:            function generateSwitchButtons(boardName) {
+6021:            function updateAllFootButtonsUI() {
+6084:            function populateModeOptions(switchIndex = currentSwitchIndex) {
+6451:            function isChannelSelectId(id) {
+6456:            function populateNumericSelect(id, min, max, def) {
+6511:            function getSelectNumericValue(id) {
+6518:            function isValueSelectId(id) {
+6522:            function getValueSelectCcValue(selectId) {
+6540:            function getKemperLabelForValueSelect(selectEl) {
+6559:            function repopulateValueSelectsForCC() {
+6615:                    if (typeof updateCustomSelect === 'function') {
+6621:                if (typeof initCustomSelects === 'function') {
+6626:            function populatePresetChannelSelect(id, def) {
+6646:            function populateBankLabels(id, arr, def) {
+6658:            function initializeColorPickers() {
+6672:                    try { updateAllFootButtonsUI(); } catch (_) { }
+6707:                    try { updateAllFootButtonsUI(); } catch (_) { }
+6718:                    try { updateAllFootButtonsUI(); } catch (_) { }
+6723:            function createColorOptionsPanel(panelId, colors, cb) {
+6740:            function syncSpinSendPcUI(desiredValue, isSpinMode = true) {
+6785:            function generateSingleSpinUI(parentElement, spinDataItem, spinIndex, sendAsPc = false, currentCC = 0) {
+6872:                            if (typeof updateCustomSelect === 'function') updateCustomSelect(selectId);
+6878:                            if (typeof updateCustomSelect === 'function') updateCustomSelect(selectId);
+6897:                        if (typeof syncSpinSendPcUI === 'function') syncSpinSendPcUI(undefined, true);
+6919:            function generateSingleControlUI(parentElement, controlDataItem, controlIndex) {
+6969:            function generateSingleCustomUI(parentElement, customDataItem, customIndex, showOnlyOnValue = false, showCCChannel = false, switchIndex = 0) {
+7068:                            if (typeof updateCustomSelect === 'function') updateCustomSelect(slotDef.selectId);
+7074:                            if (typeof updateCustomSelect === 'function') updateCustomSelect(slotDef.selectId);
+7089:            function generatePcCcFields(gridContainer, extrasData) {
+7176:            function newLabel(text) {
+7181:            function newNumericInput(id, min, max, value, inputType = 'number') {
+7252:            function newTransposeValueInput(id, value) {
+7290:            function newToggleSwitch(id, initialChecked, parentElement) {
+7312:            function newSelect(id, min, max, value) {
+7346:            function applyIntegratedEditorLayout() {
+7510:                        return candidates.find(el => el && typeof el.querySelector === 'function' && el.querySelector('h3')) || null;
+7535:            function hideSwitchConfigArea() {
+7548:            function showSwitchConfigArea() {
+7565:            function loadPresetDataToUI(colIndex, rowIndex) {
+7606:            function createRampField(labelText, id, value = 0) {
+7692:            function getSelectedValueLabel(selectEl) {
+7699:                if (typeof getKemperLabelForValueSelect === 'function') {
+7704:            function updateMacroProgress(valueInputId) {
+7722:            function generateMacrosUI(container, switchData, switchIndex) {
+7824:                                if (typeof repopulateValueSelectsForCC === 'function') {
+7878:            function updateSwitchSpecificUI(modeValue, switchIndex) {
+8036:                            if (typeof setIconValue === 'function') {
+8362:                                if (typeof updateCustomSelect === 'function') updateCustomSelect('switchCC');
+8369:                                if (typeof updateCustomSelect === 'function') updateCustomSelect('switchChannel');
+8534:                        if (typeof setFxModeFromData === 'function') {
+8996:                    if (typeof repopulateValueSelectsForCC === 'function') {
+9009:            function loadSwitchDataToUI(colIndex, rowIndex, switchIdx) {
+9084:                                if (typeof repopulateValueSelectsForCC === 'function') {
+9092:                                if (typeof setFxModeFromData === 'function') {
+9175:                            if (typeof setFxModeFromData === 'function') {
+9199:                                if (typeof repopulateValueSelectsForCC === 'function') {
+9221:            function updateCustomSelect(selectId) {
+9252:                if (typeof ensureMiniSliderForWrapper === 'function') {
+9256:            function updatePresetNameColorData(colorValue) {
+9264:            function updatePresetDisplayBackgroundColorData(colorValue) {
+9272:            function updatePresetTagColorData(colorValue) {
+9280:            function updateSwitchLedColorData(colorIndex) {
+9291:            function updateSwitchLed2ColorData(colorIndex) {
+9301:            function updateSwitchHoldColorData(colorIndex) {
+9311:            function updateLiveLayerButtonColorFromCurrentSwitch() {
+9332:            function applyLiveModeColorToCurrentPresetSwitches() {
+9368:                    updateAllFootButtonsUI();
+9372:            function applySwitchCommonFieldsFromMemory(modeValue, globalIndex) {
+9432:                            if (typeof repopulateValueSelectsForCC === 'function') {
+9483:            (function initIconColorAndFill() {
+9485:                function setupColorPicker(triggerId, overlayId, panelId, hiddenInputId, previewBoxId, title) {
+9536:            function toggleGigView() {
+9550:            (function () {
+9556:            function updateLocalPresetDataFromUI(options = {}) {
+9995:                    if (typeof updateAllFootButtonsUI === 'function') {
+9996:                        updateAllFootButtonsUI();
+10005:            function showCopyPasteBanner(message) {
+10031:            function showSavedBanner() {
+10052:            async function saveCurrentPresetData(options = {}) {
+10125:                    updateAllFootButtonsUI();
+10196:            function populateIconSelects() {
+10220:            window.toggleFxMode = function (slot) {
+10255:            function setupEventListeners() {
+10406:                            updateAllFootButtonsUI();
+10468:                        updateAllFootButtonsUI();
+10479:                        if (typeof repopulateValueSelectsForCC === 'function') {
+10497:                        if (typeof repopulateValueSelectsForCC === 'function') {
+10530:                                updateAllFootButtonsUI();
+10595:            function updateActiveButton(containerId, activeIndex) {
+10608:            function updateEspDisplayForPreset(col, row) {
+10612:            function initCustomSelects() {
+10616:            function getNumericRangeFromSelect(selectEl) {
+10633:            function clampToRange(value, min, max) {
+10640:            function selectClosestOptionValue(originalSelect, targetValue) {
+10659:            function updateMiniFieldSliderTrack(sliderEl, min, max, value) {
+10666:            function hasVisualProgressForSelect(selectId) {
+10671:            function ensureMiniSliderForWrapper(originalSelect, wrapper) {
+10710:                        if (typeof updateCustomSelect === 'function') {
+10713:                        if (typeof updateSpinKnobVisual === 'function') {
+10739:            function setupCustomSelect(wrapper) {
+10783:            function populateCustomOptions(originalSelect, optionsDiv, selectedValueSpan, wrapper) {
+10861:            function closeAllSelects(exceptThisWrapper) {
+10870:            function polarToCartesian(cx, cy, r, angleDeg) {
+10874:            function describeArc(cx, cy, r, startAngle, endAngle) {
+10880:            function updateSpinSliderFillForSelect(selectId) {
+10896:            function getOptionLabelText(opt) {
+10902:            function updateSpinProgressBar(selectId) {
+10914:                if (typeof getValueSelectCcValue === 'function') {
+10924:                    if (!labelText && typeof getKemperLabelForValueSelect === 'function') {
+10932:                    labelText = typeof getOptionLabelText === 'function' ? getOptionLabelText(opt) : '';
+10933:                    if (!labelText && typeof getKemperLabelForValueSelect === 'function') {
+10958:            function updateSpinKnobVisual(selectId) {
+11033:            function addKnobDragControl(selectId, parentElement) {
+11034:                function ensureGlobalFader() {
+11055:                                if (typeof updateCustomSelect === 'function') updateCustomSelect(activeKnobSelectId);
+11071:                function showGlobalFader(forSelectId) {
+11079:                function hideGlobalFader() {
+11115:            (function () {
+11211:            window.toggleGigViewState = function () {
+11231:            window.toggleGigView2State = function () {
+11248:            function b64ToBytes(b64) {
+11255:            function renderIconToCanvas(iconId, canvas) {
+11316:            function updateGigViewPreview() {
+11476:            function updateGigView2Preview() {
+11607:            function setIconValue(slot, iconId, opts) {
+11636:            function ensureIconPickerGridBuilt() {
+11675:            window.openIconPicker = function (slot) {
+11683:            (function initIconPickerOverlay() {
+11695:            window.toggleFxMode = function (fxNum) {
+11763:            window.syncRightModeButtons = function (fxNum) {
+11781:            window.setFxModeFromData = function (fxNum, iconValue) {

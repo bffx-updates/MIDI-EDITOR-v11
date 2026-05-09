@@ -1,0 +1,3334 @@
+﻿
+    <title>BFMIDI 
+Editor Preset 
+Tuning</title>
+        body.embedded-p
+reset>aside {
+        body.embedded-p
+reset>main {
+        body.embedded-p
+reset>main>.max-w-6xl {
+        
+body.embedded-preset 
+.embedded-footer {
+        
+body.embedded-preset 
+#statusMessage {
+        body.integrated
+-preset-editor #editorI
+ntegratedContainer {
+        body.integrated
+-preset-editor 
+#displayConfigCard {
+        body.integrated
+-preset-editor 
+#gigViewHeader {
+        body.integrated
+-preset-editor 
+#gigViewHeader 
+.collapse-icon {
+        body.integrated
+-preset-editor 
+#displayConfigGrid {
+        body.integrated
+-preset-editor #display
+ConfigGrid>.grid {
+        body.integrated
+-preset-editor 
+#switchConfigArea {
+        body.integrated
+-preset-editor 
+#switchConfigArea .comm
+and-config-heading {
+        body.integrated
+-preset-editor #switchC
+onfigArea>.bg-\[\#1c1c1
+f\] {
+        body.integrated
+-preset-editor 
+#dynamicModeConfigArea 
+{
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchHeaderRow {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchMetaRow {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchModeRow {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchLedGroup {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchCCGroup {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchChannelGroup {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchStartGroup {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchMetaRow .form-gr
+oup.spin-cc-locked {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchMetaRow .form-gr
+oup.spin-cc-locked 
+.custom-select-wrapper 
+{
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#switchMetaRow .form-gr
+oup.spin-cc-locked 
+.custom-select-trigger 
+{
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+#dynamicModeConfigArea 
+{
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.spin-mod
+e-layout 
+.start-group-centered {
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout {
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout 
+#switchModeRow {
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout 
+#switchLedGroup {
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout 
+#switchCCGroup,
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout 
+#switchChannelGroup {
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout 
+#dynamicModeConfigArea,
+            body.integr
+ated-preset-editor #swi
+tchConfigCardInner.spin
+-mode-layout 
+.start-group-centered {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout 
+#switchHeaderRow {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout 
+#dynamicModeConfigArea 
+{
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout 
+#switchMetaRow {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout 
+#singleValueGroup {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout 
+#switchCCGroup {
+        body.integrated
+-preset-editor #switchC
+onfigCardInner.single-m
+ode-layout 
+#switchChannelGroup {
+        body.integrated
+-preset-editor 
+#dynamicModeConfigArea 
+.extras-group,
+        body.integrated
+-preset-editor 
+#dynamicModeConfigArea 
+.custom-value-container
+ {
+        body.integrated
+-preset-editor 
+#dynamicModeConfigArea 
+input,
+        body.integrated
+-preset-editor 
+#dynamicModeConfigArea 
+select {
+        body.integrated
+-preset-editor 
+#dynamicModeConfigArea 
+input[type="range"] {
+        body.integrated
+-preset-editor 
+.integrated-slot-panel 
+{
+        body.integrated
+-preset-editor 
+.integrated-slot-head {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview .flex 
+{
+        body.integrated
+-preset-editor .integra
+ted-slot-preview 
+input[type="text"] {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview button
+[id^="fxModeToggle"] {
+        body.integrated
+-preset-editor .integra
+ted-slot-colors {
+        body.integrated
+-preset-editor .integra
+ted-slot-colors .integr
+ated-color-module {
+        body.integrated
+-preset-editor 
+.integrated-slot-name {
+        body.integrated
+-preset-editor .integra
+ted-color-module {
+        body.integrated
+-preset-editor .integra
+ted-color-module-title 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-row {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+label {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div {
+        body.integrated
+-preset-editor 
+#displayConfigCard {
+        body.integrated
+-preset-editor 
+#gigViewHeader {
+        body.integrated
+-preset-editor 
+#gigViewHeader h2 {
+        body.integrated
+-preset-editor 
+#gigViewHeader h2 .mate
+rial-symbols-outlined {
+        body.integrated
+-preset-editor 
+#gigViewHeader 
+h2::before {
+        body.integrated
+-preset-editor 
+#displayConfigGrid {
+        body.integrated
+-preset-editor div[id^=
+"gigViewPreviewFrame"] 
+{
+        body.integrated
+-preset-editor 
+#gigView1Group > div,
+        body.integrated
+-preset-editor 
+#gigView2Group_inner > 
+div {
+        body.integrated
+-preset-editor .integra
+ted-slot-bottom {
+        body.integrated
+-preset-editor 
+.integrated-power-wrap 
+{
+        body.integrated
+-preset-editor 
+.integrated-power-btn {
+        body.integrated
+-preset-editor .integra
+ted-power-btn:hover {
+        body.integrated
+-preset-editor .integra
+ted-power-btn[data-stat
+e="off"] {
+        body.integrated
+-preset-editor .integra
+ted-power-btn[data-stat
+e="off"] 
+.power-btn-label {
+        body.integrated
+-preset-editor .integra
+ted-slot-bottom 
+.integrated-slot-name {
+        body.integrated
+-preset-editor 
+.gig-slot-wrapper {
+        body.integrated
+-preset-editor .gig-slo
+t-wrapper>.absolute {
+        body.integrated
+-preset-editor 
+.gig-slot-wrapper>div {
+        body.integrated
+-preset-editor 
+.integrated-slot-head {
+        body.integrated
+-preset-editor 
+.integrated-slot-head 
+h3 {
+        body.integrated
+-preset-editor 
+.integrated-slot-head 
+.integrated-slot-id {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview .flex 
+{
+        body.integrated
+-preset-editor .integra
+ted-slot-preview button
+[id^="fxModeToggle"] {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview button
+[id^="fxModeToggle"]:ho
+ver {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview 
+#fxIconSelect1 button,
+        body.integrated
+-preset-editor .integra
+ted-slot-preview 
+#fxIconSelect2 button {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview 
+#fxIconSelect1 canvas,
+        body.integrated
+-preset-editor .integra
+ted-slot-preview 
+#fxIconSelect2 canvas {
+        body.integrated
+-preset-editor 
+.integrated-slot-name {
+        body.integrated
+-preset-editor 
+.integrated-slot-name .
+integrated-slot-name-la
+bel {
+        body.integrated
+-preset-editor 
+.integrated-slot-name 
+input[type="text"] {
+        body.integrated
+-preset-editor 
+.integrated-slot-name i
+nput[type="text"]:focus
+ {
+        body.integrated
+-preset-editor .integra
+ted-slot-toggle-host {
+        body.integrated
+-preset-editor .integra
+ted-slot-toggle-host .i
+ntegrated-mode-toggle-w
+rap button[id^="fxModeT
+oggle"] {
+        body.integrated
+-preset-editor .integra
+ted-color-module {
+        body.integrated
+-preset-editor .integra
+ted-color-module-title 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+label {
+        body.integrated
+-preset-editor .integra
+ted-color-cell:nth-chil
+d(1) label {
+        body.integrated
+-preset-editor .integra
+ted-color-cell:nth-chil
+d(2) label {
+        body.integrated
+-preset-editor 
+#switchConfigArea .comm
+and-config-heading {
+            body.integr
+ated-preset-editor 
+.integrated-slot-panel 
+{
+            body.integr
+ated-preset-editor .int
+egrated-slot-preview,
+            body.integr
+ated-preset-editor .int
+egrated-slot-colors,
+            body.integr
+ated-preset-editor 
+.integrated-slot-name,
+            body.integr
+ated-preset-editor .int
+egrated-slot-bottom {
+            body.integr
+ated-preset-editor .int
+egrated-slot-toggle-hos
+t {
+            body.integr
+ated-preset-editor .int
+egrated-slot-colors {
+            body.integr
+ated-preset-editor .int
+egrated-slot-bottom {
+        body.integrated
+-preset-editor 
+.integrated-slot-name {
+        body.integrated
+-preset-editor .integra
+ted-slot-name>label {
+        body.integrated
+-preset-editor 
+.integrated-slot-name .
+integrated-slot-name-la
+bel {
+        body.integrated
+-preset-editor 
+.integrated-slot-name 
+input[type="text"] {
+        body.integrated
+-preset-editor .integra
+ted-slot-toggle-host {
+        body.integrated
+-preset-editor .integra
+ted-slot-toggle-host .i
+ntegrated-mode-toggle-w
+rap button[id^="fxModeT
+oggle"] {
+        body.integrated
+-preset-editor .integra
+ted-slot-toggle-host .i
+ntegrated-mode-toggle-w
+rap button[id^="fxModeT
+oggle"]:hover {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div:hover {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div>div {
+        body.integrated
+-preset-editor .integra
+ted-color-cell:nth-chil
+d(2) .custom-color-sele
+ctor>div {
+        body.integrated
+-preset-editor 
+#displayConfigCard {
+        body.integrated
+-preset-editor 
+#gigViewHeader {
+        body.integrated
+-preset-editor 
+#gigViewHeader h2 {
+        body.integrated
+-preset-editor 
+#gigViewHeader 
+.collapse-icon {
+        body.integrated
+-preset-editor 
+#displayConfigGrid {
+        body.integrated
+-preset-editor #display
+ConfigGrid>.grid {
+        body.integrated
+-preset-editor 
+.gig-slot-wrapper {
+        body.integrated
+-preset-editor 
+.gig-slot-wrapper>div {
+        body.integrated
+-preset-editor 
+.integrated-slot-panel 
+{
+        body.integrated
+-preset-editor 
+.integrated-slot-head {
+        body.integrated
+-preset-editor 
+.integrated-slot-head 
+h3 {
+        body.integrated
+-preset-editor 
+.integrated-slot-head 
+.integrated-slot-id {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview {
+        body.integrated
+-preset-editor 
+#gigView1Group>div,
+        body.integrated
+-preset-editor #gigView
+2Group_inner>div {
+        body.integrated
+-preset-editor div[id^=
+"gigViewPreviewFrame"] 
+{
+        body.integrated
+-preset-editor .integra
+ted-slot-preview button
+[id^="fxModeToggle"] {
+        body.integrated
+-preset-editor .integra
+ted-slot-preview button
+[id^="fxModeToggle"]:ho
+ver {
+        body.integrated
+-preset-editor .integra
+ted-slot-colors {
+        body.integrated
+-preset-editor .integra
+ted-color-module {
+        body.integrated
+-preset-editor .integra
+ted-color-module-title 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-row {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+{
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+label {
+        body.integrated
+-preset-editor .integra
+ted-color-cell:nth-chil
+d(1) label {
+        body.integrated
+-preset-editor .integra
+ted-color-cell:nth-chil
+d(2) label {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div:hover {
+        body.integrated
+-preset-editor 
+.integrated-color-cell 
+.custom-color-selector>
+div>div {
+        body.integrated
+-preset-editor .integra
+ted-slot-bottom {
+        body.integrated
+-preset-editor 
+.integrated-power-wrap 
+{
+        body.integrated
+-preset-editor 
+.integrated-power-btn {
+        body.integrated
+-preset-editor .integra
+ted-power-btn:hover {
+        body.integrated
+-preset-editor .integra
+ted-power-btn[data-stat
+e="off"] {
+        body.integrated
+-preset-editor .integra
+ted-power-btn[data-stat
+e="off"] 
+.power-btn-label {
+        body.integrated
+-preset-editor 
+.integrated-slot-name {
+        body.integrated
+-preset-editor 
+.integrated-slot-name .
+integrated-slot-name-la
+bel {
+        body.integrated
+-preset-editor 
+.integrated-slot-name 
+input[type="text"] {
+        body.integrated
+-preset-editor 
+.integrated-slot-name i
+nput[type="text"]:focus
+ {
+            body.integr
+ated-preset-editor 
+.integrated-slot-panel 
+{
+            body.integr
+ated-preset-editor .int
+egrated-slot-colors {
+            body.integr
+ated-preset-editor .int
+egrated-slot-bottom {
+            body.integr
+ated-preset-editor 
+.integrated-power-wrap,
+            body.integr
+ated-preset-editor 
+.integrated-power-btn {
+                <span 
+class="text-sm 
+tracking-wide">PRESET 
+CONFIG</span>
+                    
+<span class="w-1 h-3 
+bg-amber-500 
+rounded-full"></span> 
+Preset Loader
+                <div cl
+ass="preset-selection-c
+ontainer flex flex-col 
+md:flex-row gap-6 
+px-4">
+                       
+ <div class="grid 
+grid-cols-5 gap-2" 
+id="presetRowSelector">
+                       
+ <label 
+class="text-[10px] 
+font-bold 
+text-gray-500 mb-2 
+block 
+tracking-wider">PRESET 
+SLOT</label>
+                       
+ <div class="grid 
+grid-cols-6 gap-2" 
+id="presetColSelector">
+                       
+     <label 
+class="block 
+text-[10px] font-bold 
+text-gray-400 mb-1 
+uppercase">Preset 
+Name</label>
+                       
+         
+id="presetNameInput" 
+maxlength="10" 
+type="text" />
+                       
+         <label 
+class="block 
+text-[10px] font-bold 
+text-gray-400 mb-1 
+uppercase">Preset Name
+                       
+                 id="se
+lectedPresetNameColorPr
+eview">
+                       
+                     id
+="selectedPresetNameCol
+orPreviewBox"></div>
+                       
+             <input id=
+"presetNameColorValue" 
+name="presetNameColorVa
+lue" type="hidden" />
+                       
+         <label 
+class="block 
+text-[10px] font-bold 
+text-gray-400 mb-1 
+uppercase">Preset Tag
+                       
+                 id="se
+lectedPresetTagColorPre
+view">
+                       
+                     id
+="selectedPresetTagColo
+rPreviewBox"></div>
+                       
+             <input id=
+"presetTagColorValue" n
+ame="presetTagColorValu
+e" type="hidden" />
+                       
+     <div class="custom
+-select-wrapper" data-s
+elect-id="presetBankInp
+ut">
+                       
+         <select class=
+"original-select" id="p
+resetBankInput"></selec
+t>
+                       
+     <div class="custom
+-select-wrapper" data-s
+elect-id="presetChannel
+Input">
+                       
+         <select class=
+"original-select" id="p
+resetChannelInput"></se
+lect>
+    <div class="color-o
+ptions-panel-overlay" i
+d="colorPanelOverlay_Pr
+esetName">
+        <div class="col
+or-options-panel" id="c
+olorPanel_PresetName"><
+/div>
+    <div class="color-o
+ptions-panel-overlay" i
+d="colorPanelOverlay_Pr
+esetTag">
+        <div class="col
+or-options-panel" id="c
+olorPanel_PresetTag"></
+div>
+            document.bo
+dy.classList.add('embed
+ded-preset');
+        window.__BFMIDI
+_saveCurrentPresetData 
+= null;
+        window.saveCurr
+entPresetData = 
+function (options) {
+            if (typeof 
+window.__BFMIDI_saveCur
+rentPresetData === 
+'function') {
+                return 
+window.__BFMIDI_saveCur
+rentPresetData(options)
+;
+            console.war
+n('saveCurrentPresetDat
+a ainda nao 
+inicializado');
+                case 
+24: return "Preset -";
+                case 
+25: return "Preset +";
+                case 
+47: return "Modos 
+(Preset/Scene/Stomp)";
+            const 
+NUM_PRESET_COLUMNS = 6;
+            const 
+NUM_PRESET_ROWS = 5;   
+ // Deve corresponder 
+a PRESET_LEVELS no 
+firmware    
+            const 
+TOTAL_PRESETS = 
+NUM_PRESET_COLUMNS * 
+NUM_PRESET_ROWS;
+            let current
+PresetColumnIndex = 0;
+            let 
+currentPresetRowIndex 
+= 0;
+            let 
+presetClipboard = null;
+            const 
+savedSignatureByPreset 
+= new Map();
+            function 
+getPresetKey(layer = 
+currentLiveLayer, col 
+= currentPresetColumnIn
+dex, row = 
+currentPresetRowIndex) 
+{
+            function ge
+tPresetSignature(layer 
+= currentLiveLayer, 
+col = currentPresetColu
+mnIndex, row = 
+currentPresetRowIndex) 
+{
+                    
+const globalIndex = 
+col * NUM_PRESET_ROWS 
++ row;
+                    
+const layerPresets = al
+lPresetsData[layerIdx] 
+|| [];
+                    
+return JSON.stringify(l
+ayerPresets[globalIndex
+] || null);
+            function ma
+rkPresetAsSaved(layer 
+= currentLiveLayer, 
+col = currentPresetColu
+mnIndex, row = 
+currentPresetRowIndex) 
+{
+                savedSi
+gnatureByPreset.set(get
+PresetKey(layer, col, 
+row), getPresetSignatur
+e(layer, col, row));
+            function ha
+sCurrentPresetUnsavedCh
+anges() {
+                const 
+key = getPresetKey();
+                const 
+currentSignature = 
+getPresetSignature();
+                const 
+lastSavedSignature = sa
+vedSignatureByPreset.ge
+t(key);
+                       
+ if (target.closest('#p
+resetRowSelector') || t
+arget.closest('#presetC
+olSelector')) return 
+false;
+                if (win
+dow.isPresetLoadInProgr
+ess) return;
+                    if 
+(window.isPresetLoadInP
+rogress) return;
+                    sav
+eCurrentPresetData({ 
+trigger: 'auto', 
+reason });
+                const 
+globalIndex = currentPr
+esetColumnIndex * 
+NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+defaultPreset = getSing
+leDefaultPresetData(cur
+rentPresetColumnIndex, 
+currentPresetRowIndex);
+                    
+const layer1Data = allP
+resetsData[0][globalInd
+ex] || defaultPreset;
+                    
+const layer2Data = allP
+resetsData[1][globalInd
+ex] || defaultPreset;
+                    
+presetClipboard = {
+                    
+const layerData = allPr
+esetsData[layerIdx][glo
+balIndex] || 
+defaultPreset;
+                    
+presetClipboard = {
+                documen
+t.getElementById('statu
+sMessage').textContent 
+= `Preset ${String.from
+CharCode(65 + currentPr
+esetRowIndex)}${current
+PresetColumnIndex + 1} 
+copiado${liveLayer2Enab
+led ? ' (Layer 1 + 
+Layer 2)' : ''}!`;
+                    loc
+alStorage.setItem('bfmi
+diPresetClipboard', JSO
+N.stringify(presetClipb
+oard));
+                if 
+(!presetClipboard) {
+                       
+ const st = localStorag
+e.getItem('bfmidiPreset
+Clipboard');
+                       
+ if (st) 
+presetClipboard = 
+JSON.parse(st);
+                if 
+(!presetClipboard) 
+return;
+                const 
+col = currentPresetColu
+mnIndex;
+                const 
+row = 
+currentPresetRowIndex;
+                const 
+globalIndex = col * 
+NUM_PRESET_ROWS + row;
+                const 
+defaultPreset = getSing
+leDefaultPresetData(col
+, row);
+                const 
+isNewFormat = presetCli
+pboard.hasLayer2 !== 
+undefined;
+                    
+const 
+originalNameLayer1 = al
+lPresetsData[0][globalI
+ndex]?.nomePreset || de
+faultPreset.nomePreset;
+                    
+const layer1Source = 
+presetClipboard.layer1 
+|| defaultPreset;
+                    all
+PresetsData[0][globalIn
+dex] = JSON.parse(JSON.
+stringify(layer1Source)
+);
+                    all
+PresetsData[0][globalIn
+dex].nomePreset = 
+originalNameLayer1;
+                    if 
+(presetClipboard.layer2
+) {
+                       
+ const 
+originalNameLayer2 = al
+lPresetsData[1][globalI
+ndex]?.nomePreset || de
+faultPreset.nomePreset;
+                       
+ const layer2Source = 
+presetClipboard.layer2 
+|| defaultPreset;
+                       
+ allPresetsData[1][glob
+alIndex] = JSON.parse(J
+SON.stringify(layer2Sou
+rce));
+                       
+ allPresetsData[1][glob
+alIndex].nomePreset = 
+originalNameLayer2;
+                    
+const originalName = al
+lPresetsData[layerIdx][
+globalIndex]?.nomePrese
+t || defaultPreset.nome
+Preset;
+                    all
+PresetsData[layerIdx][g
+lobalIndex] = JSON.pars
+e(JSON.stringify(preset
+Clipboard));
+                    all
+PresetsData[layerIdx][g
+lobalIndex].nomePreset 
+= originalName;
+                loadPre
+setDataToUI(col, row);
+                if 
+(pcCcGrid && allPresets
+Data[layerIdx][globalIn
+dex]?.extras?.pc) {
+                    gen
+eratePcCcFields(pcCcGri
+d, allPresetsData[layer
+Idx][globalIndex].extra
+s);
+                const 
+layersMsg = 
+(isNewFormat && presetC
+lipboard.layer2) ? ' 
+(Layer 1 + Layer 2)' : 
+'';
+                documen
+t.getElementById('statu
+sMessage').textContent 
+= `Preset colado em ${S
+tring.fromCharCode(65 
++ row)}${col + 
+1}${layersMsg}!`;
+            // allPrese
+tsData[layerIndex][glob
+alIndex] => dados do 
+preset por layer do 
+LIVE
+            let 
+allPresetsData = 
+Array.from({ length: 
+TOTAL_LIVE_LAYERS }, 
+() => []);
+            // Marca 
+quais presets (por 
+layer) jÃ¡ foram 
+carregados do ESP
+            let presets
+LoadedFromServer = 
+Array.from(
+                () => A
+rray(TOTAL_PRESETS).fil
+l(false)
+            function ge
+tSingleDefaultPresetDat
+a(colIndex, rowIndex) {
+                const 
+presetName = 
+String.fromCharCode(65 
++ colIndex) + 
+(rowIndex + 1);
+                    
+nomePreset: presetName,
+                    
+nomePresetTextColor: 
+0xFFFFFF,
+            function in
+itializeFullDefaultPres
+ets() {
+                    
+allPresetsData[layer] 
+= [];
+                    pre
+setsLoadedFromServer[la
+yer] = Array(TOTAL_PRES
+ETS).fill(false);
+                    
+for (let col = 0; col 
+< NUM_PRESET_COLUMNS; 
+col++) {
+                       
+ for (let row = 0; row 
+< NUM_PRESET_ROWS; 
+row++) {
+                       
+     allPresetsData[lay
+er].push(getSingleDefau
+ltPresetData(col, 
+row));
+            function co
+pySharedPresetFields(so
+urcePreset, 
+targetPreset) {
+                if 
+(!sourcePreset || 
+!targetPreset) return 
+targetPreset;
+                targetP
+reset.nomePreset = sour
+cePreset.nomePreset;
+                targetP
+reset.nomePresetTextCol
+or = sourcePreset.nomeP
+resetTextColor;
+                targetP
+reset.backgroundColorCo
+nfig = sourcePreset.bac
+kgroundColorConfig;
+                targetP
+reset.backTagColor = so
+urcePreset.backTagColor
+;
+                
+targetPreset.bank = 
+sourcePreset.bank;
+                
+targetPreset.canal = 
+sourcePreset.canal;
+                return 
+targetPreset;
+            function sy
+ncSharedPresetFieldsFor
+Index(globalIndex) {
+                const 
+sharedPreset = allPrese
+tsData[0]?.[globalIndex
+];
+                if 
+(!sharedPreset) return;
+                    
+const targetPreset = al
+lPresetsData[layerIdx]?
+.[globalIndex];
+                    if 
+(!targetPreset) 
+continue;
+                    cop
+ySharedPresetFields(sha
+redPreset, 
+targetPreset);
+            function ge
+tPresetLayerLoadOrder()
+ {
+            async 
+function fetchPresetLay
+erFromServer(colIndex, 
+rowIndex, layer) {
+                    
+const response = await 
+apiFetch(`/get-single-p
+reset-data?btn=${colInd
+ex}&lvl=${rowIndex}&lay
+er=${layer}`);
+            function me
+rgePresetLayerData(colI
+ndex, rowIndex, layer, 
+presetDataFromServer) {
+                if (!pr
+esetDataFromServer) 
+return null;
+                const 
+globalIndex = colIndex 
+* NUM_PRESET_ROWS + 
+rowIndex;
+                const 
+defaultPreset = getSing
+leDefaultPresetData(col
+Index, rowIndex);
+                const 
+mergedPreset = 
+Object.assign({}, 
+defaultPreset, 
+presetDataFromServer);
+                if (pre
+setDataFromServer.switc
+hes) {
+                    
+mergedPreset.switches 
+= presetDataFromServer.
+switches.map((sw, i) 
+=> {
+                       
+ const normalizedSw = 
+normalizeModesClient({ 
+...(sw || {}) }, preset
+DataFromServer.extras 
+|| {});
+                       
+ return 
+Object.assign({}, defau
+ltPreset.switches[i], 
+normalizedSw);
+                if (pre
+setDataFromServer.extra
+s) {
+                    
+mergedPreset.extras = 
+Object.assign({}, 
+defaultPreset.extras, p
+resetDataFromServer.ext
+ras);
+                    if 
+(mergedPreset.extras 
+&& mergedPreset.extras.
+combo) delete mergedPre
+set.extras.combo;
+                    if 
+(presetDataFromServer.e
+xtras.spin) {
+                       
+ mergedPreset.extras.sp
+in = presetDataFromServ
+er.extras.spin.map((s, 
+i) => 
+Object.assign({}, defau
+ltPreset.extras.spin[i]
+, s));
+                    if 
+(presetDataFromServer.e
+xtras.control) {
+                       
+ mergedPreset.extras.co
+ntrol = presetDataFromS
+erver.extras.control.ma
+p((c, i) => 
+Object.assign({}, defau
+ltPreset.extras.control
+[i], c));
+                    if 
+(presetDataFromServer.e
+xtras.custom) {
+                       
+ mergedPreset.extras.cu
+stom = presetDataFromSe
+rver.extras.custom.map(
+(cu, i) => 
+Object.assign({}, defau
+ltPreset.extras.custom[
+i], cu));
+                    if 
+(presetDataFromServer.e
+xtras.pc) {
+                       
+ 
+mergedPreset.extras.pc 
+= presetDataFromServer.
+extras.pc.map((p, i) 
+=> Object.assign({}, de
+faultPreset.extras.pc[i
+], p));
+                    if 
+(presetDataFromServer.e
+xtras.cc) {
+                       
+ 
+mergedPreset.extras.cc 
+= presetDataFromServer.
+extras.cc.map((cce, i) 
+=> Object.assign({}, de
+faultPreset.extras.cc[i
+], cce));
+                if (!al
+lPresetsData[layerIdx])
+ allPresetsData[layerId
+x] = [];
+                    
+const sharedPreset = al
+lPresetsData[0]?.[globa
+lIndex];
+                    if 
+(sharedPreset) {
+                       
+ copySharedPresetFields
+(sharedPreset, 
+mergedPreset);
+                allPres
+etsData[layerIdx][globa
+lIndex] = mergedPreset;
+                    syn
+cSharedPresetFieldsForI
+ndex(globalIndex);
+                if (pre
+setsLoadedFromServer[la
+yerIdx] && globalIndex 
+< presetsLoadedFromServ
+er[layerIdx].length) {
+                    pre
+setsLoadedFromServer[la
+yerIdx][globalIndex] = 
+true;
+                savedSi
+gnatureByPreset.set(get
+PresetKey(layer, 
+colIndex, rowIndex), JS
+ON.stringify(mergedPres
+et));
+                return 
+mergedPreset;
+            async 
+function fetchAndLoadSi
+nglePreset(colIndex, 
+rowIndex, activateEsp 
+= false) {
+                statusM
+essage.textContent = 
+`Carregando preset ${St
+ring.fromCharCode(65 + 
+rowIndex)}${colIndex + 
+1}...`;
+                if (win
+dow.isPresetLoadInProgr
+ess) {
+                    
+console.warn('Preset 
+load ignored: already 
+in progress');
+                window.
+isPresetLoadInProgress 
+= true;
+                    
+const globalIndex = 
+colIndex * 
+NUM_PRESET_ROWS + 
+rowIndex;
+                    
+const layerOrder = getP
+resetLayerLoadOrder();
+                       
+     layerRequests.set(
+layer, fetchPresetLayer
+FromServer(colIndex, 
+rowIndex, layer));
+                    sta
+tusMessage.textContent 
+= `Carregando 
+informacoes do preset $
+{String.fromCharCode(65
+ + 
+rowIndex)}${colIndex + 
+1}...`;
+                    
+const sharedPresetData 
+= await layerRequests.g
+et(sharedLayer);
+                    mer
+gePresetLayerData(colIn
+dex, rowIndex, 
+sharedLayer, 
+sharedPresetData);
+                    loa
+dPresetDataToUI(colInde
+x, rowIndex);
+                    // 
+Nota: 
+loadPresetDataToUI já 
+chama 
+updateCustomSelect 
+para bank/channel
+                    sta
+tusMessage.textContent 
+= `Carregando foots do 
+preset ${String.fromCha
+rCode(65 + 
+rowIndex)}${colIndex + 
+1}...`;
+                       
+ const footPresetData 
+= await layerRequests.g
+et(footLayer);
+                       
+ mergePresetLayerData(c
+olIndex, rowIndex, 
+footLayer, 
+footPresetData);
+                    if 
+(pcCcGrid && allPresets
+Data[currentLayerIdx][g
+lobalIndex]?.extras?.pc
+) {
+                       
+ generatePcCcFields(pcC
+cGrid, allPresetsData[c
+urrentLayerIdx][globalI
+ndex].extras);
+                       
+ const presetData = 
+await layerRequests.get
+(layer);
+                       
+ mergePresetLayerData(c
+olIndex, rowIndex, 
+layer, presetData);
+                    sta
+tusMessage.textContent 
+= `Preset ${String.from
+CharCode(65 + 
+rowIndex)}${colIndex + 
+1} carregado.`;
+                    
+console.error('Erro ao 
+carregar dados do 
+preset:', error);
+                    sta
+tusMessage.textContent 
+= 'Erro ao carregar 
+preset: ' + 
+error.message;
+                    win
+dow.isPresetLoadInProgr
+ess = false;
+            async 
+function reloadPresetEx
+trasFromServer(colIndex
+, rowIndex) {
+                    
+const response = await 
+apiFetch(`/get-single-p
+reset-data?btn=${colInd
+ex}&lvl=${rowIndex}&lay
+er=${currentLiveLayer}`
+);
+                    
+const globalIndex = 
+colIndex * 
+NUM_PRESET_ROWS + 
+rowIndex;
+                    if 
+(!allPresetsData[layerI
+dx][globalIndex]) {
+                       
+ allPresetsData[layerId
+x][globalIndex] = getSi
+ngleDefaultPresetData(c
+olIndex, rowIndex);
+                    if 
+(!allPresetsData[layerI
+dx][globalIndex].extras
+) {
+                       
+ allPresetsData[layerId
+x][globalIndex].extras 
+= 
+getDefaultExtrasData();
+                       
+ allPresetsData[layerId
+x][globalIndex].extras.
+spin = mergedSpin;
+                       
+ allPresetsData[layerId
+x][globalIndex].extras.
+custom = mergedCustom;
+                       
+ allPresetsData[layerId
+x][globalIndex].extras.
+control = 
+mergedControl;
+                       
+ if (!Array.isArray(all
+PresetsData[layerIdx][g
+lobalIndex].switches)) 
+{
+                       
+     allPresetsData[lay
+erIdx][globalIndex].swi
+tches = getSingleDefaul
+tPresetData(colIndex, 
+rowIndex).switches;
+                       
+     const existing = a
+llPresetsData[layerIdx]
+[globalIndex].switches[
+idx] || {};
+                       
+     allPresetsData[lay
+erIdx][globalIndex].swi
+tches[idx] = merged;
+                    
+console.error('Erro ao 
+recarregar EXTRAS do 
+servidor:', err);
+                    upd
+ateLocalPresetDataFromU
+I();
+                // 
+IMPORTANTE: Carregar 
+dados do novo layer na 
+UI
+                    // 
+Carregar dados do 
+preset (nome, bank, 
+canal) para o novo 
+layer
+                    loa
+dPresetDataToUI(current
+PresetColumnIndex, 
+currentPresetRowIndex);
+                    // 
+Se hÃ¡ switch 
+selecionado, carregar 
+seus dados do novo 
+layer
+                       
+ loadSwitchDataToUI(cur
+rentPresetColumnIndex, 
+currentPresetRowIndex, 
+currentSwitchIndex);
+                    
+console.warn('Erro ao 
+carregar dados do novo 
+layer:', e);
+                       
+ const bankSelectId = 
+'presetBankInput';
+                       
+ initializeFullDefaultP
+resets();
+                       
+ generatePresetButtons(
+);
+                       
+ populatePresetChannelS
+elect('presetChannelInp
+ut', 1);
+                       
+ const 
+initialGlobalIndex = cu
+rrentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                       
+     allPresetsData[ini
+tialLayerIdx] &&
+                       
+     allPresetsData[ini
+tialLayerIdx][initialGl
+obalIndex] &&
+                       
+     allPresetsData[ini
+tialLayerIdx][initialGl
+obalIndex].extras?.pc) 
+{
+                       
+     generatePcCcFields
+(initialPcCcGrid, allPr
+esetsData[initialLayerI
+dx][initialGlobalIndex]
+.extras);
+                       
+ fetchAndLoadSinglePres
+et(currentPresetColumnI
+ndex, currentPresetRowI
+ndex).then(() => {
+                       
+ populateNumericSelect(
+'presetBankInput', 0, 
+299, 0);
+                       
+ initializeFullDefaultP
+resets();
+                       
+ generatePresetButtons(
+);
+                       
+ populatePresetChannelS
+elect('presetChannelInp
+ut', 1);
+                       
+ fetchAndLoadSinglePres
+et(currentPresetColumnI
+ndex, currentPresetRowI
+ndex).then(() => {
+            function ge
+neratePresetButtons() {
+                    
+try { updateLocalPreset
+DataFromUI(); } catch 
+(_) { }
+                const 
+globalIndex = currentPr
+esetColumnIndex * 
+NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+cachedPreset = allPrese
+tsData[layerIdx]?.[glob
+alIndex];
+                const 
+hasValidCache = 
+cachedPreset && 
+cachedPreset.switches 
+&& cachedPreset.switche
+s[currentSwitchIndex];
+                    
+try { await fetchAndLoa
+dSinglePreset(currentPr
+esetColumnIndex, 
+currentPresetRowIndex, 
+false); } catch (e) { c
+onsole.warn('fetchAndLo
+adSinglePreset 
+falhou:', e); }
+                    loa
+dSwitchDataToUI(current
+PresetColumnIndex, 
+currentPresetRowIndex, 
+currentSwitchIndex);
+                    // 
+Buscar dados do preset 
+correto para este layer
+                    
+const globalIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                    
+const 
+currentPresetData = all
+PresetsData[layerIdx]?.
+[globalIndex];
+                    if 
+(!currentPresetData || 
+!currentPresetData.swit
+ches || !currentPresetD
+ata.switches[switchInde
+xInLayer]) return;
+                    
+const switchData = curr
+entPresetData.switches[
+switchIndexInLayer];
+            function po
+pulatePresetChannelSele
+ct(id, def) {
+                    upd
+ateSwitchLedColorData(i
+dx); updateLocalPresetD
+ataFromUI();
+                createP
+anel('colorPanelOverlay
+_PresetName', 'colorPan
+el_PresetName', 'select
+edPresetNameColorPrevie
+w', (hex, idx) => {
+                    
+const box = document.ge
+tElementById('selectedP
+resetNameColorPreviewBo
+x');
+                    
+const hidden = document
+.getElementById('preset
+NameColorValue');
+                    upd
+atePresetNameColorData(
+hex); updateLocalPreset
+DataFromUI();
+                    upd
+atePresetDisplayBackgro
+undColorData(hex);
+                    upd
+ateLocalPresetDataFromU
+I();
+                createP
+anel('colorPanelOverlay
+_PresetTag', 'colorPane
+l_PresetTag', 'selected
+PresetTagColorPreview',
+ (hex, idx) => {
+                    
+const box = document.ge
+tElementById('selectedP
+resetTagColorPreviewBox
+');
+                    
+const hidden = document
+.getElementById('preset
+TagColorValue');
+                    upd
+atePresetTagColorData(h
+ex);
+                    upd
+ateLocalPresetDataFromU
+I();
+                    upd
+ateLocalPresetDataFromU
+I();
+                    upd
+ateLocalPresetDataFromU
+I();
+                       
+     try { updateLocalP
+resetDataFromUI(); } 
+catch (_) { }
+                       
+ try { updateLocalPrese
+tDataFromUI(); } catch 
+(_) { }
+                       
+ try { updateLocalPrese
+tDataFromUI(); } catch 
+(_) { }
+                       
+     try { updateLocalP
+resetDataFromUI(); } 
+catch (_) { }
+                const 
+currentPresetExtras = 
+extrasData || 
+getDefaultExtrasData();
+                const e
+nviarExtrasInitialState
+ = currentPresetExtras?
+.enviar_extras || 
+false;
+                const 
+pcArray = currentPreset
+Extras?.pc || [];
+                const 
+ccArray = currentPreset
+Extras?.cc || getDefaul
+tExtrasData().cc;
+                origina
+lSelect.addEventListene
+r('change', updateLocal
+PresetDataFromUI);
+                origina
+lSelect.addEventListene
+r('change', updateLocal
+PresetDataFromUI);
+                // 
+checkboxInput.onchange 
+= updateLocalPresetData
+FromUI;
+                origina
+lSelect.addEventListene
+r('change', updateLocal
+PresetDataFromUI);
+                    doc
+ument.body.classList.ad
+d('integrated-preset-ed
+itor');
+                if (doc
+ument.body.classList.co
+ntains('integrated-pres
+et-editor')) {
+            function lo
+adPresetDataToUI(colInd
+ex, rowIndex) {
+                const 
+globalIndex = colIndex 
+* NUM_PRESET_ROWS + 
+rowIndex;
+                const p
+resetNameColorPreviewBo
+x = document.getElement
+ById('selectedPresetNam
+eColorPreviewBox');
+                const 
+presetTagPreviewBox = d
+ocument.getElementById(
+'selectedPresetTagColor
+PreviewBox');
+                const 
+layerPresets = 
+allPresetsData[0] || 
+[];
+                if 
+(globalIndex >= 
+layerPresets.length || 
+!layerPresets[globalInd
+ex]) {
+                    
+const defaultPData = ge
+tSingleDefaultPresetDat
+a(colIndex, rowIndex);
+                    doc
+ument.getElementById('p
+resetNameInput').value 
+= defaultPData.nomePres
+et;
+                    if 
+(presetNameColorPreview
+Box) { const 
+hexColorString = `#${de
+faultPData.nomePresetTe
+xtColor.toString(16).pa
+dStart(6, '0')}`; prese
+tNameColorPreviewBox.st
+yle.backgroundImage = 
+'linear-gradient(to 
+right, black 2%, ' + 
+hexColorString + ' 
+50%, black 98%)'; }
+                    if 
+(presetTagPreviewBox) 
+{ const hexColorString 
+= `#${defaultPData.back
+TagColor.toString(16).p
+adStart(6, '0')}`; pres
+etTagPreviewBox.style.b
+ackgroundImage = 
+'linear-gradient(to 
+right, black 2%, ' + 
+hexColorString + ' 
+50%, black 98%)'; }
+                    
+const 
+presetNameColorValue = 
+document.getElementById
+('presetNameColorValue'
+);
+                    if 
+(presetNameColorValue) 
+presetNameColorValue.va
+lue = String(defaultPDa
+ta.nomePresetTextColor)
+;
+                    
+const 
+presetTagColorValue = d
+ocument.getElementById(
+'presetTagColorValue');
+                    if 
+(presetTagColorValue) p
+resetTagColorValue.valu
+e = String(defaultPData
+.backTagColor);
+                    doc
+ument.getElementById('p
+resetBankInput').value 
+= defaultPData.bank;
+                    doc
+ument.getElementById('p
+resetChannelInput').val
+ue = 
+defaultPData.canal;
+                    upd
+ateCustomSelect('preset
+BankInput');
+                    upd
+ateCustomSelect('preset
+ChannelInput');
+                const 
+presetData = layerPrese
+ts[globalIndex];
+                documen
+t.getElementById('prese
+tNameInput').value = 
+presetData.nomePreset 
+|| "";
+                if (pre
+setNameColorPreviewBox)
+ { const 
+hexColorString = 
+`#${((typeof presetData
+.nomePresetTextColor 
+=== 'number') ? presetD
+ata.nomePresetTextColor
+ : 0xFFFFFF).toString(1
+6).padStart(6, '0')}`; 
+presetNameColorPreviewB
+ox.style.backgroundImag
+e = 
+'linear-gradient(to 
+right, black 2%, ' + 
+hexColorString + ' 
+50%, black 98%)'; }
+                if (dis
+playBackgroundPreviewBo
+x) { const 
+hexColorString = 
+`#${((typeof presetData
+.backgroundColorConfig 
+=== 'number') ? presetD
+ata.backgroundColorConf
+ig : 0x000000).toString
+(16).padStart(6, 
+'0')}`; displayBackgrou
+ndPreviewBox.style.back
+groundImage = 
+'linear-gradient(to 
+right, black 2%, ' + 
+hexColorString + ' 
+50%, black 98%)'; }
+                if 
+(presetTagPreviewBox) 
+{ const hexColorString 
+= `#${((typeof presetDa
+ta.backTagColor === 
+'number') ? presetData.
+backTagColor : 0xFFB300
+).toString(16).padStart
+(6, '0')}`; presetTagPr
+eviewBox.style.backgrou
+ndImage = 
+'linear-gradient(to 
+right, black 2%, ' + 
+hexColorString + ' 
+50%, black 98%)'; }
+                const 
+presetNameColorValue = 
+document.getElementById
+('presetNameColorValue'
+);
+                if 
+(presetNameColorValue) 
+presetNameColorValue.va
+lue = String((typeof pr
+esetData.nomePresetText
+Color === 'number') ? p
+resetData.nomePresetTex
+tColor : 0xFFFFFF);
+                if (dis
+playBackgroundColorValu
+e) displayBackgroundCol
+orValue.value = 
+String((typeof presetDa
+ta.backgroundColorConfi
+g === 'number') ? prese
+tData.backgroundColorCo
+nfig : 0x000000);
+                const 
+presetTagColorValue = d
+ocument.getElementById(
+'presetTagColorValue');
+                if 
+(presetTagColorValue) p
+resetTagColorValue.valu
+e = String((typeof pres
+etData.backTagColor 
+=== 'number') ? presetD
+ata.backTagColor : 
+0xFFB300);
+                documen
+t.getElementById('prese
+tBankInput').value = 
+presetData.bank !== 
+undefined ? 
+presetData.bank : 0;
+                documen
+t.getElementById('prese
+tChannelInput').value 
+= presetData.canal !== 
+undefined ? 
+presetData.canal : 1;
+                updateC
+ustomSelect('presetBank
+Input');
+                updateC
+ustomSelect('presetChan
+nelInput');
+                       
+ updateLocalPresetDataF
+romUI();
+                    upd
+ateLocalPresetDataFromU
+I();
+                       
+         input.addEvent
+Listener('input', () 
+=> { 
+updateVisuals(input); u
+pdateLocalPresetDataFro
+mUI(); });
+                       
+         input.addEvent
+Listener('change', () 
+=> { 
+updateVisuals(input); u
+pdateLocalPresetDataFro
+mUI(); });
+                       
+         slider.addEven
+tListener('change', () 
+=> { 
+updateVisuals(slider); 
+updateLocalPresetDataFr
+omUI(); });
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                const 
+presetData = layerPrese
+ts[globalPresetIndex];
+                    
+const layerPresets = al
+lPresetsData[layerIdx] 
+|| [];
+                    
+const globalIdx = curre
+ntPresetColumnIndex * 
+NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                    
+const swData = layerPre
+sets[globalIdx]?.switch
+es?.[switchIndex];
+                    
+try { updateLocalPreset
+DataFromUI(); } catch 
+(_) { }
+                       
+ const singleVal = (pre
+setData?.switches?.[swi
+tchIndex]?.single_value
+ ?? 127);
+                       
+ <label for="swFavorite
+PresetSelect_${switchIn
+dex}">Preset 
+Favorito:</label>
+                       
+ <div class="custom-sel
+ect-wrapper" data-selec
+t-id="swFavoritePresetS
+elect_${switchIndex}">
+                       
+     <select id="swFavo
+ritePresetSelect_${swit
+chIndex}" name="swFavor
+itePresetSelect" class=
+"original-select"></sel
+ect>
+                       
+     aria-pressed="fals
+e">MODO PRESET</button>
+                       
+             
+favBtn.textContent = 
+'MODO PRESET';
+                       
+         try { updateLo
+calPresetDataFromUI(); 
+} catch (_) { }
+                    
+const select = document
+.getElementById(`swFavo
+ritePresetSelect_${swit
+chIndex}`);
+                       
+ for (let c = 0; c < 
+NUM_PRESET_COLUMNS; 
+c++) {
+                       
+     for (let r = 0; r 
+< NUM_PRESET_ROWS; 
+r++) {
+                       
+         // 
+IndexaÃƒÂ§ÃƒÂ£o 
+correta: row-major (r 
+* NUM_PRESET_COLUMNS + 
+c)
+                       
+         const 
+globalIndex = r * 
+NUM_PRESET_COLUMNS + c;
+                       
+ const 
+currentSwitchData = pre
+setData.switches[switch
+Index] || {};
+                    
+const 
+currentSwitchData = pre
+setData.switches[switch
+Index] || {};
+                       
+         try { updateLo
+calPresetDataFromUI(); 
+} catch (_) { }
+                       
+         try { updateLo
+calPresetDataFromUI(); 
+} catch (_) { }
+                    sta
+rtInput.addEventListene
+r('change', () => { 
+syncCc2Start(); updateL
+ocalPresetDataFromUI();
+ });
+                    
+const 
+currentSwitchData = pre
+setData.switches[switch
+Index] || {};
+                       
+ startInput.addEventLis
+tener('change', () => 
+{ syncCc2Start(); updat
+eLocalPresetDataFromUI(
+); });
+                    dsC
+ustomCheck.addEventList
+ener('change', () => { 
+syncDsCustom(); updateL
+ocalPresetDataFromUI();
+ });
+                    
+const currentBase = 
+(presetData.rampTimes 
+&& presetData.rampTimes
+[`sw${swId}`]) ? preset
+Data.rampTimes[`sw${swI
+d}`] : 1000;
+                    
+const currSw = 
+(presetData.switches 
+&& presetData.switches[
+switchIndex]) ? presetD
+ata.switches[switchInde
+x] : {};
+                    
+const currentBase = 
+(presetData.rampTimes 
+&& presetData.rampTimes
+[`sw${swId}`]) ? preset
+Data.rampTimes[`sw${swI
+d}`] : 1000;
+                    
+const currSw = 
+(presetData.switches 
+&& presetData.switches[
+switchIndex]) ? presetD
+ata.switches[switchInde
+x] : {};
+                    if 
+(upEl) { upEl.addEventL
+istener('input', update
+LocalPresetDataFromUI);
+ upEl.addEventListener(
+'change', updateLocalPr
+esetDataFromUI); }
+                    if 
+(dnEl) { dnEl.addEventL
+istener('input', update
+LocalPresetDataFromUI);
+ dnEl.addEventListener(
+'change', updateLocalPr
+esetDataFromUI); }
+                    
+const 
+currentSwitchData = pre
+setData.switches[switch
+Index] || {};
+                    
+const spinItem = 
+(presetData && 
+presetData.extras && 
+presetData.extras.spin 
+&& presetData.extras.sp
+in[spinIndex])
+                       
+ ? presetData.extras.sp
+in[spinIndex]
+                    if 
+(presetData && 
+presetData.extras && pr
+esetData.extras.control
+[controlIndex]) {
+                       
+ generateSingleControlU
+I(dynamicArea, presetDa
+ta.extras.control[contr
+olIndex], 
+controlIndex);
+                    if 
+(presetData && 
+presetData.extras && pr
+esetData.extras.custom[
+customIndex]) {
+                       
+ generateSingleCustomUI
+(dynamicArea, presetDat
+a.extras.custom[customI
+ndex], customIndex, 
+false, false, 
+switchIndex);
+                    
+const 
+currentSwitchData = pre
+setData.switches[switch
+Index] || {};
+                    
+const globalIndex = 
+colIndex * 
+NUM_PRESET_ROWS + 
+rowIndex;
+                    
+const layerPresets = al
+lPresetsData[layerIdx] 
+|| [];
+                    if 
+(globalIndex >= 
+layerPresets.length || 
+!layerPresets[globalInd
+ex] || !layerPresets[gl
+obalIndex].switches[swi
+tchIdx]) {
+                       
+ const defaultSwData = 
+getSingleDefaultPresetD
+ata(colIndex, rowIndex)
+.switches[switchIdx];
+                    
+const switchData = norm
+alizeModesClient(layerP
+resets[globalIndex].swi
+tches[switchIdx], layer
+Presets[globalIndex]?.e
+xtras);
+                    lay
+erPresets[globalIndex].
+switches[switchIdx] = 
+switchData;
+            function up
+datePresetNameColorData
+(colorValue) {
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = 
+allPresetsData[0] || 
+[];
+                const 
+preset = layerPresets[g
+lobalPresetIndex];
+                if 
+(preset) {
+                    pre
+set.nomePresetTextColor
+ = colorValue;
+            function up
+datePresetDisplayBackgr
+oundColorData(colorValu
+e) {
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = 
+allPresetsData[0] || 
+[];
+                const 
+preset = layerPresets[g
+lobalPresetIndex];
+                if 
+(preset) {
+                    pre
+set.backgroundColorConf
+ig = colorValue;
+            function up
+datePresetTagColorData(
+colorValue) {
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = 
+allPresetsData[0] || 
+[];
+                const 
+preset = layerPresets[g
+lobalPresetIndex];
+                if 
+(preset) {
+                    
+preset.backTagColor = 
+colorValue;
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                const 
+preset = layerPresets[g
+lobalPresetIndex];
+                if 
+(preset && 
+preset.switches && pres
+et.switches[currentSwit
+chIndex]) {
+                    pre
+set.switches[currentSwi
+tchIndex].led = 
+colorIndex;
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                const 
+preset = layerPresets[g
+lobalPresetIndex];
+                if 
+(preset && 
+preset.switches && pres
+et.switches[currentSwit
+chIndex]) {
+                    pre
+set.switches[currentSwi
+tchIndex].led2 = 
+colorIndex;
+                const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                const 
+preset = layerPresets[g
+lobalPresetIndex];
+                if 
+(preset && 
+preset.switches && pres
+et.switches[currentSwit
+chIndex]) {
+                    pre
+set.switches[currentSwi
+tchIndex].led_hold = 
+colorIndex;
+            function ap
+plyLiveModeColorToCurre
+ntPresetSwitches() {
+                // 
+Ajusta os 6 SWs do 
+preset atual para usar 
+a cor
+                    
+const globalIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                    
+const layerPresets = al
+lPresetsData[layerIdx] 
+|| [];
+                    if 
+(!layerPresets[globalIn
+dex]) {
+                       
+ layerPresets[globalInd
+ex] = getSingleDefaultP
+resetData(currentPreset
+ColumnIndex, 
+currentPresetRowIndex);
+                    
+const presetData = laye
+rPresets[globalIndex];
+                    if 
+(!Array.isArray(presetD
+ata.switches)) {
+                       
+ presetData.switches = 
+getSingleDefaultPresetD
+ata(currentPresetColumn
+Index, currentPresetRow
+Index).switches;
+                    
+for (let i = 0; i < pre
+setData.switches.length
+; i++) {
+                       
+ if (!presetData.switch
+es[i]) {
+                       
+     
+presetData.switches[i] 
+= getSingleDefaultPrese
+tData(currentPresetColu
+mnIndex, currentPresetR
+owIndex).switches[i];
+                       
+ presetData.switches[i]
+.led = ledIndex;
+                    
+const layerPresets = al
+lPresetsData[layerIdx] 
+|| [];
+                    
+const sw = layerPresets
+[globalIndex]?.switches
+?.[currentSwitchIndex];
+                       
+ const layerPresets = a
+llPresetsData[layerIdx]
+ || [];
+                       
+ const presetData = lay
+erPresets[globalIndex];
+                       
+ const sv = 
+(presetData && 
+presetData.extras && Ar
+ray.isArray(presetData.
+extras.spin) && presetD
+ata.extras.spin[spinInd
+ex])
+                       
+     ? presetData.extra
+s.spin[spinIndex]
+                       
+         updateLocalPre
+setDataFromUI();
+                if (doc
+ument.body.classList.co
+ntains('integrated-pres
+et-editor')) return;
+            function up
+dateLocalPresetDataFrom
+UI(options = {}) {
+                const 
+globalIndex = currentPr
+esetColumnIndex * 
+NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                if (!al
+lPresetsData[sharedLaye
+rIdx]) {
+                    all
+PresetsData[sharedLayer
+Idx] = [];
+                if 
+(globalIndex >= allPres
+etsData[sharedLayerIdx]
+.length || !allPresetsD
+ata[sharedLayerIdx][glo
+balIndex]) {
+                    all
+PresetsData[sharedLayer
+Idx][globalIndex] = get
+SingleDefaultPresetData
+(currentPresetColumnInd
+ex, 
+currentPresetRowIndex);
+                if 
+(globalIndex >= allPres
+etsData[layerIdx].lengt
+h || !allPresetsData[la
+yerIdx][globalIndex]) {
+                    if 
+(!allPresetsData[layerI
+dx][globalIndex]) allPr
+esetsData[layerIdx][glo
+balIndex] = getSingleDe
+faultPresetData(current
+PresetColumnIndex, 
+currentPresetRowIndex);
+                let 
+presetToUpdate = allPre
+setsData[layerIdx][glob
+alIndex];
+                const 
+sharedPresetToUpdate = 
+allPresetsData[sharedLa
+yerIdx][globalIndex];
+                const 
+oldNomePreset = sharedP
+resetToUpdate.nomePrese
+t;
+                const 
+oldNomePresetTextColor 
+= sharedPresetToUpdate.
+nomePresetTextColor;
+                const o
+ldBackgroundColorConfig
+ = sharedPresetToUpdate
+.backgroundColorConfig;
+                const 
+oldBackTagColor = share
+dPresetToUpdate.backTag
+Color;
+                sharedP
+resetToUpdate.nomePrese
+t = document.getElement
+ById('presetNameInput')
+.value.substring(0, 
+10);
+                    
+const 
+presetNameColorRaw = pa
+rseInt(document.getElem
+entById('presetNameColo
+rValue')?.value, 10);
+                    sha
+redPresetToUpdate.nomeP
+resetTextColor = !Numbe
+r.isNaN(presetNameColor
+Raw)
+                       
+ ? (presetNameColorRaw 
+>>> 0) & 0xFFFFFF
+                       
+ : ((typeof 
+oldNomePresetTextColor 
+=== 'number') ? 
+oldNomePresetTextColor 
+: 0xFFFFFF);
+                    sha
+redPresetToUpdate.backg
+roundColorConfig = !Num
+ber.isNaN(displayBackgr
+oundRaw)
+                    
+const presetTagRaw = pa
+rseInt(document.getElem
+entById('presetTagColor
+Value')?.value, 10);
+                    sha
+redPresetToUpdate.backT
+agColor = !Number.isNaN
+(presetTagRaw)
+                       
+ ? (presetTagRaw >>> 
+0) & 0xFFFFFF
+                sharedP
+resetToUpdate.bank = pa
+rseInt(document.getElem
+entById('presetBankInpu
+t').value, 10);
+                    
+const chVal = parseInt(
+document.getElementById
+('presetChannelInput').
+value, 10);
+                    sha
+redPresetToUpdate.canal
+ = (!isNaN(chVal) && 
+chVal >= 0 && chVal <= 
+16) ? chVal : 1;
+                syncSha
+redPresetFieldsForIndex
+(globalIndex);
+                if (pre
+setToUpdate.switches 
+&& presetToUpdate.switc
+hes[currentSwitchIndex]
+) {
+                    
+let currentSwitchData 
+= presetToUpdate.switch
+es[currentSwitchIndex];
+                       
+ const favoriteSelect 
+= document.getElementBy
+Id(`swFavoritePresetSel
+ect_${currentSwitchInde
+x}`);
+                       
+     currentSwitchData.
+favoritePresetIndex = p
+arseInt(favoriteSelect.
+value, 10);
+                       
+     
+currentSwitchData.cc = 
+currentSwitchData.favor
+itePresetIndex;
+                       
+ currentSwitchData.favo
+ritePresetIndex = 
+undefined;
+                       
+     if (!presetToUpdat
+e.rampTimes) presetToUp
+date.rampTimes = { 
+sw1: 1000, sw2: 1000, 
+sw3: 1000, sw4: 1000, 
+sw5: 1000, sw6: 1000 };
+                       
+     presetToUpdate.ram
+pTimes[`sw${swId}`] = (
+Number.isNaN(parseInt(u
+pEl.value, 10)) ? 1000 
+: parseInt(upEl.value, 
+10));
+                       
+     if (!presetToUpdat
+e.rampTimes) presetToUp
+date.rampTimes = { 
+sw1: 1000, sw2: 1000, 
+sw3: 1000, sw4: 1000, 
+sw5: 1000, sw6: 1000 };
+                       
+     presetToUpdate.ram
+pTimes[`sw${swId}`] = 
+vUp;
+                if (pre
+setToUpdate.extras) {
+                    pre
+setToUpdate.extras.envi
+ar_extras = document.ge
+tElementById('extrasSen
+dToggle')?.checked || 
+false;
+                    if 
+(!presetToUpdate.extras
+.custom || !Array.isArr
+ay(presetToUpdate.extra
+s.custom)) {
+                       
+ presetToUpdate.extras.
+custom = getDefaultExtr
+asData().custom;
+                    } 
+else if (presetToUpdate
+.extras.custom.length 
+< 6) {
+                       
+ for (let i = presetToU
+pdate.extras.custom.len
+gth; i < 6; i++) {
+                       
+     presetToUpdate.ext
+ras.custom.push(JSON.pa
+rse(JSON.stringify(defa
+ultCustomBase[i])));
+                    if 
+(!presetToUpdate.extras
+.spin || !Array.isArray
+(presetToUpdate.extras.
+spin)) {
+                       
+ presetToUpdate.extras.
+spin = getDefaultExtras
+Data().spin;
+                    } 
+else if (presetToUpdate
+.extras.spin.length < 
+6) {
+                       
+ for (let i = presetToU
+pdate.extras.spin.lengt
+h; i < 6; i++) {
+                       
+     presetToUpdate.ext
+ras.spin.push(JSON.pars
+e(JSON.stringify(defaul
+tSpinBase[i])));
+                    if 
+(!presetToUpdate.extras
+.control || !Array.isAr
+ray(presetToUpdate.extr
+as.control)) {
+                       
+ presetToUpdate.extras.
+control = getDefaultExt
+rasData().control;
+                    } 
+else if (presetToUpdate
+.extras.control.length 
+< 6) {
+                       
+ for (let i = presetToU
+pdate.extras.control.le
+ngth; i < 6; i++) {
+                       
+     presetToUpdate.ext
+ras.control.push(JSON.p
+arse(JSON.stringify(def
+aultControlBase[i])));
+                       
+ if (presetToUpdate.ext
+ras.spin && spinIndex 
+>= 0 && spinIndex < pre
+setToUpdate.extras.spin
+.length) {
+                       
+     presetToUpdate.ext
+ras.spin[spinIndex].v1 
+= parseInt(document.get
+ElementById(`spinV1_${s
+pinIndex}`)?.value, 
+10) || 0;
+                       
+     presetToUpdate.ext
+ras.spin[spinIndex].v2 
+= parseInt(document.get
+ElementById(`spinV2_${s
+pinIndex}`)?.value, 
+10) || 0;
+                       
+     presetToUpdate.ext
+ras.spin[spinIndex].v3 
+= parseInt(document.get
+ElementById(`spinV3_${s
+pinIndex}`)?.value, 
+10) || 0;
+                       
+ if (presetToUpdate.ext
+ras.control && 
+controlIndex >= 0 && 
+controlIndex < presetTo
+Update.extras.control.l
+ength) {
+                       
+     presetToUpdate.ext
+ras.control[controlInde
+x].cc = parseInt(docume
+nt.getElementById(`cont
+rolCC_${controlIndex}`)
+?.value, 10) || 0;
+                       
+     presetToUpdate.ext
+ras.control[controlInde
+x].modo_invertido = doc
+ument.getElementById(`c
+ontrolInvertToggle_${co
+ntrolIndex}`)?.checked 
+|| false;
+                       
+ if (presetToUpdate.ext
+ras.custom && 
+customIndex >= 0 && 
+customIndex < presetToU
+pdate.extras.custom.len
+gth) {
+                       
+         presetToUpdate
+.extras.custom[customIn
+dex].valor_on = 
+!isNaN(onVal) ? onVal 
+: 127;
+                       
+         presetToUpdate
+.extras.custom[customIn
+dex].valor_off = 
+!isNaN(offVal) ? 
+offVal : 0;
+                       
+         presetToUpdate
+.extras.custom[customIn
+dex].cc = 
+!isNaN(ccVal) ? ccVal 
+: (presetToUpdate.extra
+s.custom[customIndex].c
+c || 0);
+                       
+         presetToUpdate
+.extras.custom[customIn
+dex].canal = 
+(!isNaN(chVal) && 
+chVal >= 0 && chVal <= 
+16) ? chVal : (presetTo
+Update.extras.custom[cu
+stomIndex].canal ?? 1);
+                    if 
+(presetToUpdate.extras.
+pc && Array.isArray(pre
+setToUpdate.extras.pc))
+ {
+                       
+ presetToUpdate.extras.
+pc.forEach((item, i) 
+=> {
+                    if 
+(!presetToUpdate.extras
+.cc || !Array.isArray(p
+resetToUpdate.extras.cc
+)) {
+                       
+ presetToUpdate.extras.
+cc = getDefaultExtrasDa
+ta().cc;
+                    } 
+else if (presetToUpdate
+.extras.cc.length < 2) 
+{
+                       
+ for (let i = presetToU
+pdate.extras.cc.length;
+ i < 2; i++) {
+                       
+     presetToUpdate.ext
+ras.cc.push(JSON.parse(
+JSON.stringify(defaultC
+C[i])));
+                       
+ if (ccNumEl) presetToU
+pdate.extras.cc[i].cc 
+= parseInt(ccNumEl.valu
+e, 10) || 0;
+                       
+ if (ccValEl) presetToU
+pdate.extras.cc[i].valo
+r = parseInt(ccValEl.va
+lue, 10) || 0;
+                       
+     presetToUpdate.ext
+ras.cc[i].canal = 
+(!isNaN(chVal) && 
+chVal >= 0 && chVal <= 
+16) ? chVal : 1;
+            async 
+function saveCurrentPre
+setData(options = {}) {
+                const 
+col = currentPresetColu
+mnIndex; const row = 
+currentPresetRowIndex;
+                const 
+globalIndex = col * 
+NUM_PRESET_ROWS + row;
+                updateL
+ocalPresetDataFromUI({ 
+fromSave: true });
+                if 
+(globalIndex >= allPres
+etsData[layerIdx].lengt
+h || !allPresetsData[la
+yerIdx][globalIndex]) {
+                       
+ document.getElementByI
+d('statusMessage').text
+Content = 'Erro: Dados 
+do preset nao 
+encontrados.';
+                const 
+presetDataToSave = allP
+resetsData[layerIdx][gl
+obalIndex];
+                    if 
+(presetDataToSave?.extr
+as?.combo) delete prese
+tDataToSave.extras.comb
+o;
+                    if 
+(Array.isArray(presetDa
+taToSave?.switches)) {
+                       
+ presetDataToSave.switc
+hes.forEach(sw => {
+                    sta
+tusMessage.textContent 
+= `Salvando preset ${St
+ring.fromCharCode(65 + 
+row)}${col + 1} (Layer 
+${currentLiveLayer})...
+`;
+                    
+const response = await 
+apiFetch(`/save-single-
+preset-data?btn=${col}&
+lvl=${row}&layer=${curr
+entLiveLayer}`, {
+                       
+ method: 'POST', 
+headers: { 
+'Content-Type': 
+'application/json' }, 
+body: JSON.stringify(pr
+esetDataToSave)
+                       
+ await apiFetch(`/refre
+sh-display-only?btn=${c
+urrentPresetColumnIndex
+}&lvl=${currentPresetRo
+wIndex}&layer=${current
+LiveLayer}`);
+                    mar
+kPresetAsSaved(currentL
+iveLayer, col, row);
+                    // 
+Recarrega os dados do 
+preset sem 
+ativar/envio de MIDI 
+(REMOVIDO: causa perda 
+de dados DUAL STOMP 
+CUSTOM se firmware nao 
+enviar de volta)
+                    // 
+await fetchAndLoadSingl
+ePreset(currentPresetCo
+lumnIndex, 
+currentPresetRowIndex, 
+false);
+                       
+     if (!hasCurrentPre
+setUnsavedChanges()) {
+            window.__BF
+MIDI_saveCurrentPresetD
+ata = 
+saveCurrentPresetData;
+            window.save
+CurrentPresetData = 
+saveCurrentPresetData;
+                documen
+t.getElementById('btnSa
+lvar')?.addEventListene
+r('click', 
+saveCurrentPresetData);
+                    sav
+eBtn.addEventListener('
+click', () => saveCurre
+ntPresetData({ 
+trigger: 'manual' }));
+                       
+ document.querySelector
+All('#presetRowSelector
+ .grid-btn-selector').f
+orEach(b => {
+                       
+     if (parseInt(b.dat
+aset.row, 10) === 
+currentPresetRowIndex) 
+b.classList.add('active
+');
+                       
+ document.querySelector
+All('#presetColSelector
+ .grid-btn-selector').f
+orEach(b => {
+                       
+     if (parseInt(b.dat
+aset.col, 10) === curre
+ntPresetColumnIndex) b.
+classList.add('active')
+;
+                    doc
+ument.querySelectorAll(
+'#presetRowSelector .gr
+id-btn-selector').forEa
+ch(btn => {
+                       
+     if (row === 
+currentPresetRowIndex) 
+return;
+                       
+     if (window.presetN
+avLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+     if (window.isPrese
+tLoadInProgress) 
+return;
+                       
+     
+window.presetNavLastTs 
+= now;
+                       
+     
+currentPresetRowIndex 
+= row;
+                       
+     await fetchAndLoad
+SinglePreset(currentPre
+setColumnIndex, 
+currentPresetRowIndex, 
+true);
+                    doc
+ument.querySelectorAll(
+'#presetColSelector .gr
+id-btn-selector').forEa
+ch(btn => {
+                       
+     if (col === curren
+tPresetColumnIndex) 
+return;
+                       
+     if (window.presetN
+avLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+     if (window.isPrese
+tLoadInProgress) 
+return;
+                       
+     
+window.presetNavLastTs 
+= now;
+                       
+     currentPresetColum
+nIndex = col;
+                       
+     await fetchAndLoad
+SinglePreset(currentPre
+setColumnIndex, 
+currentPresetRowIndex, 
+true);
+                    
+const stored = localSto
+rage.getItem('bfmidiPre
+setClipboard');
+                       
+ try { presetClipboard 
+= JSON.parse(stored); 
+} catch (_) { 
+presetClipboard = 
+stored; }
+                // 
+BANK ROW (A..E) 
+selector: advance row 
+and reload preset
+                       
+     if (window.presetN
+avLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+     if (window.isPrese
+tLoadInProgress) 
+return;
+                       
+     
+window.presetNavLastTs 
+= now;
+                       
+     
+suppressModelUpdate = 
+true; // Bloqueia updat
+eLocalPresetDataFromUI 
+durante troca
+                       
+     
+currentPresetRowIndex 
+= 
+(currentPresetRowIndex 
++ 1) % 
+NUM_PRESET_ROWS; // 
+0..4
+                       
+     const rowChar = 
+String.fromCharCode(65 
++ currentPresetRowIndex
+); // A..E
+                       
+     // Desseleciona 
+switch ao trocar de 
+preset
+                       
+     // reload current 
+preset (column,row) 
+and update UI
+                       
+     await fetchAndLoad
+SinglePreset(currentPre
+setColumnIndex, 
+currentPresetRowIndex, 
+true);
+                // 
+PRESET SLOT (1..6) 
+selector: advance 
+column and reload 
+preset
+                       
+     if (window.presetN
+avLastTs && now - 
+window.presetNavLastTs 
+< 250) return;
+                       
+     if (window.isPrese
+tLoadInProgress) 
+return;
+                       
+     
+window.presetNavLastTs 
+= now;
+                       
+     
+suppressModelUpdate = 
+true; // Bloqueia updat
+eLocalPresetDataFromUI 
+durante troca
+                       
+     currentPresetColum
+nIndex = (currentPreset
+ColumnIndex + 1) % 
+NUM_PRESET_COLUMNS; // 
+0..5
+                       
+     
+colLabel.textContent = 
+String(currentPresetCol
+umnIndex + 1); // 1..6
+                       
+     // Desseleciona 
+switch ao trocar de 
+preset
+                       
+     // reload current 
+preset (column,row) 
+and update UI
+                       
+     await fetchAndLoad
+SinglePreset(currentPre
+setColumnIndex, 
+currentPresetRowIndex, 
+true);
+                       
+     try { updateLocalP
+resetDataFromUI(); } 
+catch (_) {}
+                       
+     const col = curren
+tPresetColumnIndex;
+                       
+     const row = 
+currentPresetRowIndex;
+                       
+     const globalIndex 
+= col * 
+NUM_PRESET_ROWS + row;
+                       
+     // Se ainda nÃ£o 
+carregamos esse 
+preset/layer do ESP, 
+usa o fluxo padrÃ£o
+                       
+             presetsLoa
+dedFromServer[layerIdx]
+ &&
+                       
+             presetsLoa
+dedFromServer[layerIdx]
+[globalIndex];
+                       
+                       
+      await fetchAndLoa
+dSinglePreset(col, 
+row, true);
+                       
+                       
+      return; // fetchA
+ndLoadSinglePreset jÃ¡ 
+atualiza toda a UI
+                       
+         
+console.warn('Falha ao 
+recarregar preset ao 
+trocar de layer:', e);
+                       
+     const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                       
+     const presetData 
+= layerPresets[globalIn
+dex] || getSingleDefaul
+tPresetData(col, row);
+                       
+     loadPresetDataToUI
+(col, row);
+                       
+     if (pcCcGrid && 
+presetData.extras?.pc) 
+{
+                       
+         generatePcCcFi
+elds(pcCcGrid, 
+presetData.extras);
+                documen
+t.getElementById('prese
+tBankInput')?.addEventL
+istener('change', updat
+eLocalPresetDataFromUI)
+;
+                documen
+t.getElementById('prese
+tChannelInput')?.addEve
+ntListener('change', up
+dateLocalPresetDataFrom
+UI);
+                    // 
+Determina o modo 
+escolhido e atualiza o 
+modelo local antes de 
+recarregar
+                       
+ const gi = currentPres
+etColumnIndex * 
+NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                       
+ const layerPresets = a
+llPresetsData[layerIdx]
+ || [];
+                       
+ if (layerPresets[gi] 
+&& layerPresets[gi].swi
+tches[currentSwitchInde
+x]) {
+                       
+     layerPresets[gi].s
+witches[currentSwitchIn
+dex].modo = modeValue;
+                    // 
+Recarrega os dados do 
+preset do servidor 
+(extras/switches) 
+(REMOVIDO: causa reset 
+do modo antes de 
+salvar)
+                    // 
+try { await fetchAndLoa
+dSinglePreset(currentPr
+esetColumnIndex, 
+currentPresetRowIndex, 
+false); } catch(_) {}
+                       
+ const globalIndex = cu
+rrentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                    upd
+ateLocalPresetDataFromU
+I();
+                    upd
+ateLocalPresetDataFromU
+I();
+                    upd
+ateLocalPresetDataFromU
+I();
+                documen
+t.getElementById('switc
+hChannel')?.addEventLis
+tener('change', updateL
+ocalPresetDataFromUI);
+                       
+     const gi = current
+PresetColumnIndex * 
+NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                       
+     const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                       
+     if 
+(layerPresets[gi] && la
+yerPresets[gi].switches
+ && layerPresets[gi].sw
+itches[currentSwitchInd
+ex]) {
+                       
+         layerPresets[g
+i].switches[currentSwit
+chIndex].sigla_fx = 
+val;
+                       
+     updateLocalPresetD
+ataFromUI();
+                       
+     updateLocalPresetD
+ataFromUI();
+                       
+     updateLocalPresetD
+ataFromUI();
+                       
+         const 
+globalPresetIndex = cur
+rentPresetColumnIndex 
+* NUM_PRESET_ROWS + 
+currentPresetRowIndex;
+                       
+         const 
+layerPresets = allPrese
+tsData[layerIdx] || [];
+                       
+         const 
+presetData = layerPrese
+ts[globalPresetIndex];
+                       
+         if (sectionId 
+=== 
+'extrasPcCcSection' && 
+presetData?.extras?.pc)
+ {
+                       
+             generatePc
+CcFields(grid, 
+presetData.extras);
+                       
+ updateLocalPresetDataF
+romUI();
+            function up
+dateEspDisplayForPreset
+(col, row) {
+                return 
+apiFetch(`/set-active-c
+onfig-preset?btn=${col}
+&lvl=${row}&layer=${cur
+rentLiveLayer}`);
+                       
+     updateLocalPresetD
+ataFromUI();
+                    
+try { updateLocalPreset
+DataFromUI(); } catch 
+(_) { }
+
+
