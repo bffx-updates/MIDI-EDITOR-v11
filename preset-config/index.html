@@ -9611,6 +9611,28 @@
                 return lower.includes('channel') || lower.includes('_ch');
             }
 
+            function supportsLiveModeOutVirtualCC(id) {
+                return id === 'switchCC' || id === 'switchCC2' || id === 'switchCC3';
+            }
+
+            function appendLiveModeOutVirtualOption(selectEl, normalizedValue) {
+                if (!selectEl) return;
+                const virtualOptions = [
+                    { value: 500, label: 'LIVE-MODE OUT' },
+                    { value: 501, label: 'BANK UP' },
+                    { value: 502, label: 'BANK DOWN' },
+                    { value: 503, label: 'PRESET UP' },
+                    { value: 504, label: 'PRESET DOWN' },
+                ];
+                for (const v of virtualOptions) {
+                    const option = document.createElement('option');
+                    option.value = v.value;
+                    option.textContent = v.value + ' - ' + v.label;
+                    if (normalizedValue === v.value) option.selected = true;
+                    selectEl.appendChild(option);
+                }
+            }
+
             function populateNumericSelect(id, min, max, def, modeOverride) {
                 const sel = document.getElementById(id);
                 sel.innerHTML = '';
@@ -9683,6 +9705,11 @@
                     opt.textContent = txt;
                     if (i === normalizedDef) opt.selected = true;
                     sel.appendChild(opt);
+                }
+
+                if (!isChannelSelect && id.toLowerCase().includes('cc') &&
+                    supportsLiveModeOutVirtualCC(id)) {
+                    appendLiveModeOutVirtualOption(sel, normalizedDef);
                 }
             }
 
@@ -10590,6 +10617,10 @@
                     option.textContent = displayText;
                     if (i === normalizedValue) option.selected = true;
                     originalSelect.appendChild(option);
+                }
+
+                if (inputType === 'cc' && supportsLiveModeOutVirtualCC(id)) {
+                    appendLiveModeOutVirtualOption(originalSelect, normalizedValue);
                 }
                 const wrapper = document.createElement('div');
                 wrapper.className = 'custom-select-wrapper';
