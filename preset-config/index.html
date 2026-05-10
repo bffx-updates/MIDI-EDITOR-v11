@@ -5867,15 +5867,15 @@
                     class="px-4 py-2 bg-blue-900/30 border border-blue-500/50 text-blue-400 rounded-lg hover:bg-blue-900/50 transition-all uppercase text-xs font-bold"
                     id="btnCopiar" onclick="handleCopy()">Copy Foot</button>
                 <button
+                    class="px-4 py-2 bg-purple-900/30 border border-purple-500/50 text-purple-400 rounded-lg hover:bg-purple-900/50 transition-all uppercase text-xs font-bold"
+                    id="btnCopiarLayer" onclick="handleCopyLayer()">Copy Layer</button>
+                <button
+                    class="px-4 py-2 bg-pink-900/30 border border-pink-500/50 text-pink-400 rounded-lg hover:bg-pink-900/50 transition-all uppercase text-xs font-bold"
+                    id="btnCopiarTudo" onclick="handleCopyAll()">Copy Tudo</button>
+                <button
                     class="px-4 py-2 bg-green-900/30 border border-green-500/50 text-green-400 rounded-lg hover:bg-green-900/50 transition-all uppercase text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled="" id="btnColar" onclick="handlePaste()">Colar</button>
             </div>
-            <button class="auto-save-btn active" id="btnAutoSave" type="button">
-                <div class="auto-save-indicator"></div>
-                <span class="auto-save-text">Auto Save</span>
-                <span class="auto-save-state">ON</span>
-            </button>
-            <span class="auto-save-sync-badge sync" id="autoSaveSyncBadge">Sincronizado</span>
             <button
                 class="px-8 py-2 bg-gradient-to-b from-amber-500 to-amber-600 text-black font-black rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all uppercase tracking-wide shadow-[0_0_15px_rgba(245,158,11,0.3)] text-xs md:text-sm transform active:scale-95"
                 id="saveBtnFake" type="button">SALVAR</button>
@@ -7457,7 +7457,7 @@
             let presetClipboard = null;
             const AUTO_SAVE_STORAGE_KEY = 'bfmidi_auto_save_enabled';
             const AUTO_SAVE_DEBOUNCE_MS = 700;
-            let autoSaveEnabled = true;
+            let autoSaveEnabled = false;
             let autoSaveDebounceTimer = null;
             let saveInProgress = false;
             let autoSaveQueued = false;
@@ -7759,9 +7759,42 @@
                 ...MIX_FORMAT_CHOOSER_COLORS_WEB
             ].filter(Boolean);
 
+            // === BACK IMAGES =========================================================
+            // Sentinels 0xFF000001..0xFF000005 sinalizam "use a imagem back<N>" salva
+            // no LittleFS via upload. O firmware renderiza com TJpg_Decoder.
+            const BACK_IMAGE_SENTINEL_BASE = 0xFF000000;
+            const NUM_BACK_IMAGE_SLOTS = 5;
+            function makeBackImageEntry(slot) {
+                const value = (BACK_IMAGE_SENTINEL_BASE | slot) >>> 0;
+                const previewCss = '#2a2a2e';
+                return {
+                    name: `BACK ${slot}`,
+                    value,
+                    storedValue: value,
+                    swatchCss: previewCss,
+                    previewCss,
+                    swatchLabel: `IMG${slot}`
+                };
+            }
+            const BACK_IMAGE_COLORS_WEB = Array.from(
+                { length: NUM_BACK_IMAGE_SLOTS },
+                (_, i) => makeBackImageEntry(i + 1)
+            );
+            function isBackImageSentinelValue(v) {
+                if (typeof v !== 'number') return false;
+                if ((v >>> 0) < BACK_IMAGE_SENTINEL_BASE) return false;
+                const slot = (v >>> 0) & 0xFF;
+                return slot >= 1 && slot <= NUM_BACK_IMAGE_SLOTS;
+            }
+            function backImageSlotFromValue(v) {
+                return (v >>> 0) & 0xFF;
+            }
+
             const PRESET_DIRECT_COLORS_WEB = [
                 makeSection("TRANSPARÊNCIA"),
                 { ...TRANSPARENT_COLOR_WEB, storedValue: DIRECT_COLOR_TRANSPARENT },
+                makeSection("BACK IMAGES"),
+                ...BACK_IMAGE_COLORS_WEB,
                 makeSection("SOLID COLORS"),
                 ...SOLID_COLORS_WEB.map((col, i) => ({ ...col, actualIndex: SOLID_TO_PERFIS_MAP[i], storedValue: col.value })),
                 makeSection("GRADIENT 1"),
@@ -7951,24 +7984,8 @@
             }
 
             function initAutoSaveControls() {
-                try {
-                    const stored = localStorage.getItem(AUTO_SAVE_STORAGE_KEY);
-                    if (stored === '0' || stored === '1') {
-                        autoSaveEnabled = (stored === '1');
-                    }
-                } catch (_) { }
-
-                const btn = document.getElementById('btnAutoSave');
-                if (btn && btn.dataset.boundAutoSave !== '1') {
-                    btn.dataset.boundAutoSave = '1';
-                    btn.removeAttribute('onclick');
-                    btn.addEventListener('click', () => {
-                        setAutoSaveEnabled(!autoSaveEnabled, true);
-                        if (autoSaveEnabled) requestAutoSave('toggle-on');
-                    });
-                }
-                updateAutoSaveButtonUI();
-                setAutoSaveSyncIndicator(autoSaveEnabled ? 'sync' : 'off');
+                // Auto-save desativado: somente o botao SALVAR salva.
+                autoSaveEnabled = false;
             }
 
             function bindAutoSaveDomWatchers() {
@@ -8042,6 +8059,7 @@
                     const layer1Data = allPresetsData[0][globalIndex] || defaultPreset;
                     const layer2Data = allPresetsData[1][globalIndex] || defaultPreset;
                     presetClipboard = {
+                        kind: 'preset',
                         layer1: JSON.parse(JSON.stringify(layer1Data)),
                         layer2: JSON.parse(JSON.stringify(layer2Data)),
                         hasLayer2: true
@@ -8051,6 +8069,7 @@
                     const layerIdx = currentLiveLayer - 1;
                     const layerData = allPresetsData[layerIdx][globalIndex] || defaultPreset;
                     presetClipboard = {
+                        kind: 'preset',
                         layer1: JSON.parse(JSON.stringify(layerData)),
                         hasLayer2: false
                     };
@@ -8062,6 +8081,39 @@
                     document.getElementById('btnColar').disabled = false;
                 } catch (_) { }
                 try { showCopyPasteBanner('COPIADO'); } catch (_) { }
+                toggleFooterOptions();
+            }
+
+            function handleCopyLayer() {
+                const layerIdx = currentLiveLayer - 1;
+                const sourceLayer = allPresetsData[layerIdx] || [];
+                presetClipboard = {
+                    kind: 'layer',
+                    sourceLayer: currentLiveLayer,
+                    presets: JSON.parse(JSON.stringify(sourceLayer))
+                };
+                document.getElementById('statusMessage').textContent = `Layer ${currentLiveLayer} copiado (${sourceLayer.length} presets)!`;
+                try {
+                    localStorage.setItem('bfmidiPresetClipboard', JSON.stringify(presetClipboard));
+                    document.getElementById('btnColar').disabled = false;
+                } catch (_) { }
+                try { showCopyPasteBanner('LAYER COPIADO'); } catch (_) { }
+                toggleFooterOptions();
+            }
+
+            function handleCopyAll() {
+                presetClipboard = {
+                    kind: 'all',
+                    layer1: JSON.parse(JSON.stringify(allPresetsData[0] || [])),
+                    layer2: JSON.parse(JSON.stringify(allPresetsData[1] || []))
+                };
+                const total = (presetClipboard.layer1.length || 0) + (presetClipboard.layer2.length || 0);
+                document.getElementById('statusMessage').textContent = `Todos os presets copiados (${total} no total)!`;
+                try {
+                    localStorage.setItem('bfmidiPresetClipboard', JSON.stringify(presetClipboard));
+                    document.getElementById('btnColar').disabled = false;
+                } catch (_) { }
+                try { showCopyPasteBanner('TUDO COPIADO'); } catch (_) { }
                 toggleFooterOptions();
             }
 
@@ -8078,6 +8130,47 @@
                 const row = currentPresetRowIndex;
                 const globalIndex = col * NUM_PRESET_ROWS + row;
                 const defaultPreset = getSingleDefaultPresetData(col, row);
+
+                // Formato LAYER: cola todos os presets do layer copiado no layer atual
+                if (presetClipboard.kind === 'layer' && Array.isArray(presetClipboard.presets)) {
+                    const layerIdx = currentLiveLayer - 1;
+                    if (!allPresetsData[layerIdx]) allPresetsData[layerIdx] = [];
+                    presetClipboard.presets.forEach((p, i) => {
+                        if (p) allPresetsData[layerIdx][i] = JSON.parse(JSON.stringify(p));
+                    });
+                    loadPresetDataToUI(col, row);
+                    if (currentSwitchIndex >= 0) loadSwitchDataToUI(col, row, currentSwitchIndex);
+                    updateAllFootButtonsUI();
+                    initCustomSelects();
+                    document.getElementById('statusMessage').textContent = `Layer colado em Layer ${currentLiveLayer} (${presetClipboard.presets.length} presets)!`;
+                    try { showCopyPasteBanner('LAYER COLADO'); } catch (_) { }
+                    toggleFooterOptions();
+                    return;
+                }
+
+                // Formato ALL: cola todos os presets dos 2 layers
+                if (presetClipboard.kind === 'all') {
+                    if (Array.isArray(presetClipboard.layer1)) {
+                        if (!allPresetsData[0]) allPresetsData[0] = [];
+                        presetClipboard.layer1.forEach((p, i) => {
+                            if (p) allPresetsData[0][i] = JSON.parse(JSON.stringify(p));
+                        });
+                    }
+                    if (Array.isArray(presetClipboard.layer2)) {
+                        if (!allPresetsData[1]) allPresetsData[1] = [];
+                        presetClipboard.layer2.forEach((p, i) => {
+                            if (p) allPresetsData[1][i] = JSON.parse(JSON.stringify(p));
+                        });
+                    }
+                    loadPresetDataToUI(col, row);
+                    if (currentSwitchIndex >= 0) loadSwitchDataToUI(col, row, currentSwitchIndex);
+                    updateAllFootButtonsUI();
+                    initCustomSelects();
+                    document.getElementById('statusMessage').textContent = `Todos os presets colados!`;
+                    try { showCopyPasteBanner('TUDO COLADO'); } catch (_) { }
+                    toggleFooterOptions();
+                    return;
+                }
 
                 // Verificar se o clipboard tem o formato novo (com layer1/layer2) ou antigo
                 const isNewFormat = presetClipboard.hasLayer2 !== undefined;
@@ -8126,6 +8219,8 @@
             // Expose footer handlers globally for inline onclick attributes
             window.toggleFooterOptions = toggleFooterOptions;
             window.handleCopy = handleCopy;
+            window.handleCopyLayer = handleCopyLayer;
+            window.handleCopyAll = handleCopyAll;
             window.handlePaste = handlePaste;
 
             const MODE_OPTIONS_WEB = [
@@ -9964,6 +10059,15 @@
                     updateLocalPresetDataFromUI();
                 }, PRESET_DIRECT_COLORS_WEB, { gradientPalette: true });
 
+                createPanel('colorPanelOverlay_BackLayers', 'colorPanel_BackLayers', 'selectedBackLayersColorPreview', (colorValue, idx, color) => {
+                    const box = document.getElementById('selectedBackLayersColorPreviewBox');
+                    if (box) applyColorPreview(box, color || colorValue, 'bar');
+                    const hidden = document.getElementById('backLayersColorValue');
+                    if (hidden) hidden.value = String(colorValue);
+                    updateBackLayersColorData(colorValue);
+                    updateLocalPresetDataFromUI();
+                }, PRESET_DIRECT_COLORS_WEB, { gradientPalette: true });
+
                 createPanel('colorPanelOverlay_PresetTag', 'colorPanel_PresetTag', 'selectedPresetTagColorPreview', (colorValue, idx, color) => {
                     const box = document.getElementById('selectedPresetTagColorPreviewBox');
                     if (box) applyColorPreview(box, color || colorValue, 'bar');
@@ -11056,8 +11160,29 @@
                     if (backLayersColorValue) backLayersColorValue.value = String(defaultPData.backLayersColor);
                     const presetTagColorValue = document.getElementById('presetTagColorValue');
                     if (presetTagColorValue) presetTagColorValue.value = String(defaultPData.backTagColor);
-                    document.getElementById('presetBankInput').value = defaultPData.bank;
                     document.getElementById('presetChannelInput').value = defaultPData.canal;
+                    // Em MODO AVANCADO, repopula bank labels pelo canal do preset
+                    if (globalMidiMode === "MODO AVANCADO") {
+                        const chMode = getModeForChannel(defaultPData.canal);
+                        const bankSelectId = 'presetBankInput';
+                        if (chMode === "GLOBAL" || chMode === "MX5" || chMode === "NANO CORTEX" || chMode === "QUAD CORTEX" || chMode === "SYNERGY AMPS" || chMode === "VTR NARCISO" || chMode === "VTR LOKI" || chMode === "VTR KAILANI") {
+                            populateNumericSelect(bankSelectId, 0, PRESET_BANK_MAX, defaultPData.bank, chMode);
+                        } else if (chMode === "AMPERO AS2") populateBankLabels(bankSelectId, bank_AS2_Names, defaultPData.bank);
+                        else if (chMode === "HX STOMP") populateBankLabels(bankSelectId, bank_HX_STOMP_Names, defaultPData.bank);
+                        else if (chMode === "AMPERO MINI") populateBankLabels(bankSelectId, bank_AMPERO_MINI_Names, defaultPData.bank);
+                        else if (chMode === "A. STAGE 2") populateBankLabels(bankSelectId, bank_ASTG2_Names, defaultPData.bank);
+                        else if (chMode === "GP-200LT") populateBankLabels(bankSelectId, bank_GP200LT_Names, defaultPData.bank);
+                        else if (chMode === "VALETON GP5") populateBankLabels(bankSelectId, bank_VALETON_GP5_Names, defaultPData.bank);
+                        else if (chMode === "POCKET MASTER") populateBankLabels(bankSelectId, bank_POCKET_MASTER_Names, defaultPData.bank);
+                        else if (chMode === "KEMPER PLAYER") populateBankLabels(bankSelectId, bank_KEMPER_PLAYER_Names, defaultPData.bank);
+                        else if (chMode === "TONEX") populateBankLabels(bankSelectId, bank_TONEX_Names, defaultPData.bank);
+                        else if (chMode === "AMPERO MP350") populateBankLabels(bankSelectId, bank_AMPERO_MP350_Names, defaultPData.bank);
+                        else if (chMode === "BigSky") populateBankLabels(bankSelectId, bank_BIGSKY_Names, defaultPData.bank);
+                        else if (chMode === "BlueSky") populateBankLabels(bankSelectId, bank_BLUESKY_Names, defaultPData.bank);
+                        else if (chMode === "TimeLine") populateBankLabels(bankSelectId, bank_TIMELINE_Names, defaultPData.bank);
+                        else populateNumericSelect(bankSelectId, 0, PRESET_BANK_MAX, defaultPData.bank, chMode);
+                    }
+                    document.getElementById('presetBankInput').value = defaultPData.bank;
                     updateCustomSelect('presetBankInput');
                     updateCustomSelect('presetChannelInput');
                     return;
@@ -11074,8 +11199,31 @@
                 if (displayBackgroundColorValue) displayBackgroundColorValue.value = String((typeof presetData.backgroundColorConfig === 'number') ? presetData.backgroundColorConfig : 0x000000);
                 const presetTagColorValue = document.getElementById('presetTagColorValue');
                 if (presetTagColorValue) presetTagColorValue.value = String((typeof presetData.backTagColor === 'number') ? presetData.backTagColor : 0xFFB300);
-                document.getElementById('presetBankInput').value = presetData.bank !== undefined ? presetData.bank : 0;
-                document.getElementById('presetChannelInput').value = presetData.canal !== undefined ? presetData.canal : 1;
+                const presetCanal = presetData.canal !== undefined ? presetData.canal : 1;
+                const presetBank = presetData.bank !== undefined ? presetData.bank : 0;
+                document.getElementById('presetChannelInput').value = presetCanal;
+                // Em MODO AVANCADO, repopula bank labels pelo canal do preset
+                if (globalMidiMode === "MODO AVANCADO") {
+                    const chMode = getModeForChannel(presetCanal);
+                    const bankSelectId = 'presetBankInput';
+                    if (chMode === "GLOBAL" || chMode === "MX5" || chMode === "NANO CORTEX" || chMode === "QUAD CORTEX" || chMode === "SYNERGY AMPS" || chMode === "VTR NARCISO" || chMode === "VTR LOKI" || chMode === "VTR KAILANI") {
+                        populateNumericSelect(bankSelectId, 0, PRESET_BANK_MAX, presetBank, chMode);
+                    } else if (chMode === "AMPERO AS2") populateBankLabels(bankSelectId, bank_AS2_Names, presetBank);
+                    else if (chMode === "HX STOMP") populateBankLabels(bankSelectId, bank_HX_STOMP_Names, presetBank);
+                    else if (chMode === "AMPERO MINI") populateBankLabels(bankSelectId, bank_AMPERO_MINI_Names, presetBank);
+                    else if (chMode === "A. STAGE 2") populateBankLabels(bankSelectId, bank_ASTG2_Names, presetBank);
+                    else if (chMode === "GP-200LT") populateBankLabels(bankSelectId, bank_GP200LT_Names, presetBank);
+                    else if (chMode === "VALETON GP5") populateBankLabels(bankSelectId, bank_VALETON_GP5_Names, presetBank);
+                    else if (chMode === "POCKET MASTER") populateBankLabels(bankSelectId, bank_POCKET_MASTER_Names, presetBank);
+                    else if (chMode === "KEMPER PLAYER") populateBankLabels(bankSelectId, bank_KEMPER_PLAYER_Names, presetBank);
+                    else if (chMode === "TONEX") populateBankLabels(bankSelectId, bank_TONEX_Names, presetBank);
+                    else if (chMode === "AMPERO MP350") populateBankLabels(bankSelectId, bank_AMPERO_MP350_Names, presetBank);
+                    else if (chMode === "BigSky") populateBankLabels(bankSelectId, bank_BIGSKY_Names, presetBank);
+                    else if (chMode === "BlueSky") populateBankLabels(bankSelectId, bank_BLUESKY_Names, presetBank);
+                    else if (chMode === "TimeLine") populateBankLabels(bankSelectId, bank_TIMELINE_Names, presetBank);
+                    else populateNumericSelect(bankSelectId, 0, PRESET_BANK_MAX, presetBank, chMode);
+                }
+                document.getElementById('presetBankInput').value = presetBank;
                 updateCustomSelect('presetBankInput');
                 updateCustomSelect('presetChannelInput');
             }
@@ -13751,6 +13899,14 @@
                 const preset = layerPresets[globalPresetIndex];
                 if (preset) {
                     preset.backgroundColorConfig = colorValue;
+                }
+            }
+            function updateBackLayersColorData(colorValue) {
+                const globalPresetIndex = currentPresetColumnIndex * NUM_PRESET_ROWS + currentPresetRowIndex;
+                const layerPresets = allPresetsData[0] || [];
+                const preset = layerPresets[globalPresetIndex];
+                if (preset) {
+                    preset.backLayersColor = colorValue;
                 }
             }
             function updatePresetTagColorData(colorValue) {

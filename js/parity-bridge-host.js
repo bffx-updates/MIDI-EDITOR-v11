@@ -208,6 +208,8 @@ export class ParityBridgeHost {
       ip: "192.168.4.1",
       boardName: info.boardName || "BFMIDI-2 6S",
       boards: Array.isArray(info.boards) ? info.boards.map(String) : [],
+      // isBFMIDI3 nao vem no USB serial; deriva do array boards (refletem o #ifdef BFMIDI3 do firmware).
+      isBFMIDI3: Array.isArray(info.boards) && info.boards.some((b) => String(b).startsWith("BFMIDI-3")),
       invertTela: Boolean(info.invertTela),
       buildDate: info.buildDate || "",
       usbHostStatus: info.usbHostStatus || "Desconectado",
@@ -633,7 +635,8 @@ export class ParityBridgeHost {
           return jsonResult({ ok: false, msg: "slot invalido" }, 400);
         }
         const form = init.body;
-        if (!(form instanceof FormData)) {
+        // Duck-typing: FormData de iframe nao passa em instanceof FormData do parent
+        if (!form || typeof form.get !== "function") {
           return jsonResult({ ok: false, msg: "esperado multipart com campo file" }, 400);
         }
         const file = form.get("file");

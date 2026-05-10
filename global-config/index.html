@@ -3723,12 +3723,23 @@
 
         async function uploadFileToSlot(file, slot, dims) {
             const slotEl = document.querySelector(`.back-img-slot[data-slot="${slot}"]`);
+            // Abre editor de crop/brilho/contraste antes do upload
+            let blob;
+            try {
+                blob = await openCropEditor(file, dims, slot);
+            } catch (err) {
+                setBackStatus(`erro: ${err.message || err}`, true);
+                return;
+            }
+            if (!blob) {
+                // Cancelado pelo usuario
+                setBackStatus('');
+                return;
+            }
             if (slotEl) slotEl.classList.add('uploading');
-            setBackStatus(`processando BACK ${slot}...`);
+            setBackStatus(`enviando BACK ${slot}...`);
             let success = false;
             try {
-                const blob = await resizeImageToJpeg(file, dims.w, dims.h, 0.85);
-                if (!blob) throw new Error('falha ao processar imagem');
                 const fd = new FormData();
                 fd.append('file', blob, `back${slot}.jpg`);
                 const r = await fetch(`/api/back/upload?slot=${slot}`, { method: 'POST', body: fd });
@@ -3743,6 +3754,230 @@
                 if (slotEl) slotEl.classList.remove('uploading');
                 if (success) patchSlotUI(slot, true, dims);
             }
+        }
+
+        // ====================================================================
+        // EDITOR DE IMAGEM (crop interativo + brilho/contraste/rotacao)
+        // Retorna Promise<Blob|null>; null = cancelado pelo usuario
+        // ====================================================================
+        function openCropEditor(file, dims, slot) {
+            return new Promise((resolve, reject) => {
+                const dW = dims.w, dH = dims.h;
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('falha ao ler imagem')); };
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    buildModal(img, dW, dH, slot, resolve);
+                };
+                img.src = url;
+            });
+        }
+
+        function buildModal(img, dW, dH, slot, resolve) {
+            // ---------- Estado ----------
+            const state = {
+                zoom: 100, panX: 0, panY: 0,
+                brightness: 0, contrast: 0,
+                rotation: 0  // graus: 0/90/180/270
+            };
+
+            // ---------- Overlay ----------
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:10000;
+                display:flex; align-items:center; justify-content:center;
+                backdrop-filter:blur(6px);
+            `;
+
+            const panel = document.createElement('div');
+            panel.style.cssText = `
+                background:#1a1a1d; border:1px solid #333; border-radius:12px;
+                padding:20px; max-width:min(95vw, ${dW + 80}px); width:auto;
+                box-shadow:0 20px 60px rgba(0,0,0,0.6); color:#ddd;
+                font-family:system-ui, -apple-system, sans-serif;
+            `;
+            overlay.appendChild(panel);
+
+            // ---------- Header ----------
+            const header = document.createElement('div');
+            header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;';
+            header.innerHTML = `
+                <div style="font-size:14px; font-weight:bold; color:#fff;">Editar BACK ${slot} <span style="color:#888; font-weight:normal;">— ${dW}x${dH}</span></div>
+                <div style="font-size:11px; color:#888;">Arraste para reposicionar</div>
+            `;
+            panel.appendChild(header);
+
+            // ---------- Canvas ----------
+            const canvas = document.createElement('canvas');
+            canvas.width = dW; canvas.height = dH;
+            const maxCanvasW = Math.min(window.innerWidth - 100, 720);
+            const cssScale = Math.min(1, maxCanvasW / dW);
+            canvas.style.cssText = `
+                width:${dW * cssScale}px; height:${dH * cssScale}px;
+                background:#000; display:block; margin:0 auto 14px;
+                border:2px solid #444; border-radius:6px; cursor:grab; touch-action:none;
+                box-shadow:0 8px 24px rgba(0,0,0,0.5);
+            `;
+            panel.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+
+            // ---------- Sliders ----------
+            const sliderRow = (label, id, min, max, step, value) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:12px;';
+                row.innerHTML = `
+                    <label style="width:80px; color:#aaa;">${label}</label>
+                    <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}" style="flex:1; accent-color:#39a0ff;">
+                    <span id="${id}_val" style="width:50px; text-align:right; color:#fff; font-variant-numeric:tabular-nums;">${value}</span>
+                `;
+                return row;
+            };
+
+            panel.appendChild(sliderRow('Zoom', 'cropZoom', 50, 400, 1, 100));
+            panel.appendChild(sliderRow('Brilho', 'cropBri', -100, 100, 1, 0));
+            panel.appendChild(sliderRow('Contraste', 'cropCon', -100, 100, 1, 0));
+
+            // ---------- Botoes ----------
+            const btnRow = document.createElement('div');
+            btnRow.style.cssText = 'display:flex; gap:8px; margin-top:14px; justify-content:space-between; flex-wrap:wrap;';
+            btnRow.innerHTML = `
+                <div style="display:flex; gap:6px;">
+                    <button id="cropRotL" type="button" style="padding:8px 12px; background:#2a2a2e; border:1px solid #444; border-radius:6px; color:#ddd; cursor:pointer;">↺ 90°</button>
+                    <button id="cropRotR" type="button" style="padding:8px 12px; background:#2a2a2e; border:1px solid #444; border-radius:6px; color:#ddd; cursor:pointer;">↻ 90°</button>
+                    <button id="cropReset" type="button" style="padding:8px 12px; background:#2a2a2e; border:1px solid #444; border-radius:6px; color:#ddd; cursor:pointer;">Reset</button>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button id="cropCancel" type="button" style="padding:8px 18px; background:transparent; border:1px solid #666; border-radius:6px; color:#ccc; cursor:pointer;">Cancelar</button>
+                    <button id="cropApply" type="button" style="padding:8px 24px; background:linear-gradient(180deg,#f59e0b,#d97706); border:none; border-radius:6px; color:#000; font-weight:bold; cursor:pointer;">Aplicar</button>
+                </div>
+            `;
+            panel.appendChild(btnRow);
+
+            document.body.appendChild(overlay);
+
+            // ---------- Render ----------
+            function render() {
+                const baseScale = (state.rotation === 90 || state.rotation === 270)
+                    ? Math.max(dW / img.height, dH / img.width)
+                    : Math.max(dW / img.width, dH / img.height);
+                const eff = baseScale * (state.zoom / 100);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, dW, dH);
+                ctx.save();
+                ctx.filter = `brightness(${100 + state.brightness}%) contrast(${100 + state.contrast}%)`;
+                ctx.translate(dW / 2 + state.panX, dH / 2 + state.panY);
+                ctx.rotate(state.rotation * Math.PI / 180);
+                const drawW = img.width * eff;
+                const drawH = img.height * eff;
+                ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+                ctx.restore();
+            }
+
+            function bindSlider(id, key, formatter) {
+                const el = document.getElementById(id);
+                const valEl = document.getElementById(id + '_val');
+                el.addEventListener('input', () => {
+                    state[key] = parseInt(el.value, 10);
+                    valEl.textContent = formatter ? formatter(state[key]) : String(state[key]);
+                    render();
+                });
+            }
+            bindSlider('cropZoom', 'zoom', v => v + '%');
+            bindSlider('cropBri', 'brightness', v => (v > 0 ? '+' : '') + v);
+            bindSlider('cropCon', 'contrast', v => (v > 0 ? '+' : '') + v);
+
+            // ---------- Drag pan ----------
+            let dragging = false, lastX = 0, lastY = 0;
+            const onDown = (e) => {
+                dragging = true;
+                canvas.style.cursor = 'grabbing';
+                const p = pointer(e);
+                lastX = p.x; lastY = p.y;
+                e.preventDefault();
+            };
+            const onMove = (e) => {
+                if (!dragging) return;
+                const p = pointer(e);
+                state.panX += (p.x - lastX) / cssScale;
+                state.panY += (p.y - lastY) / cssScale;
+                lastX = p.x; lastY = p.y;
+                render();
+            };
+            const onUp = () => { dragging = false; canvas.style.cursor = 'grab'; };
+            const pointer = (e) => e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
+            canvas.addEventListener('mousedown', onDown);
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+            canvas.addEventListener('touchstart', onDown, { passive: false });
+            window.addEventListener('touchmove', onMove, { passive: false });
+            window.addEventListener('touchend', onUp);
+
+            // Wheel = zoom
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -5 : 5;
+                state.zoom = Math.max(50, Math.min(400, state.zoom + delta));
+                document.getElementById('cropZoom').value = state.zoom;
+                document.getElementById('cropZoom_val').textContent = state.zoom + '%';
+                render();
+            }, { passive: false });
+
+            // ---------- Botoes ----------
+            document.getElementById('cropRotL').addEventListener('click', () => {
+                state.rotation = (state.rotation + 270) % 360;
+                state.panX = 0; state.panY = 0;
+                render();
+            });
+            document.getElementById('cropRotR').addEventListener('click', () => {
+                state.rotation = (state.rotation + 90) % 360;
+                state.panX = 0; state.panY = 0;
+                render();
+            });
+            document.getElementById('cropReset').addEventListener('click', () => {
+                state.zoom = 100; state.panX = 0; state.panY = 0;
+                state.brightness = 0; state.contrast = 0; state.rotation = 0;
+                document.getElementById('cropZoom').value = 100;
+                document.getElementById('cropBri').value = 0;
+                document.getElementById('cropCon').value = 0;
+                document.getElementById('cropZoom_val').textContent = '100%';
+                document.getElementById('cropBri_val').textContent = '0';
+                document.getElementById('cropCon_val').textContent = '0';
+                render();
+            });
+
+            const cleanup = () => {
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+                window.removeEventListener('touchmove', onMove);
+                window.removeEventListener('touchend', onUp);
+                document.body.removeChild(overlay);
+            };
+
+            document.getElementById('cropCancel').addEventListener('click', () => {
+                cleanup();
+                resolve(null);
+            });
+            document.getElementById('cropApply').addEventListener('click', () => {
+                canvas.toBlob(b => {
+                    cleanup();
+                    resolve(b);
+                }, 'image/jpeg', 0.85);
+            });
+
+            // ESC fecha
+            const onKey = (e) => {
+                if (e.key === 'Escape') {
+                    cleanup();
+                    document.removeEventListener('keydown', onKey);
+                    resolve(null);
+                }
+            };
+            document.addEventListener('keydown', onKey);
+
+            // Aguarda layout do canvas antes do primeiro render (Chrome ignora ctx.filter
+            // antes do canvas estar montado no DOM em alguns casos)
+            requestAnimationFrame(() => requestAnimationFrame(render));
         }
 
         function resizeImageToJpeg(file, targetW, targetH, quality) {
