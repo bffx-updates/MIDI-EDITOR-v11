@@ -612,6 +612,65 @@ export class ParityBridgeHost {
         return jsonResult({ ok: true });
       }
 
+      // ----- BACK IMAGES (paridade com /api/back/* via comandos USB-serial) ---
+      if (pathname === "/api/back/list" && method === "GET") {
+        const data = await this.callCommand("back_list");
+        return jsonResult({ slots: data.slots || [] });
+      }
+
+      if (pathname === "/api/back/delete" && method === "POST") {
+        const slot = intParam(url.searchParams, "slot", 0);
+        if (slot < 1 || slot > 5) {
+          return jsonResult({ ok: false, msg: "slot invalido" }, 400);
+        }
+        const data = await this.callCommand("back_delete", { slot });
+        return jsonResult({ ok: data.deleted !== false, slot });
+      }
+
+      if (pathname === "/api/back/upload" && method === "POST") {
+        const slot = intParam(url.searchParams, "slot", 0);
+        if (slot < 1 || slot > 5) {
+          return jsonResult({ ok: false, msg: "slot invalido" }, 400);
+        }
+        const form = init.body;
+        if (!(form instanceof FormData)) {
+          return jsonResult({ ok: false, msg: "esperado multipart com campo file" }, 400);
+        }
+        const file = form.get("file");
+        if (!file || typeof file.arrayBuffer !== "function") {
+          return jsonResult({ ok: false, msg: "campo file ausente" }, 400);
+        }
+        const buf = new Uint8Array(await file.arrayBuffer());
+
+        // Chunks de 6KB binario => ~8KB base64, dentro do BFMIDI_EDITOR_MAX_LINE (16KB)
+        const CHUNK_BYTES = 6 * 1024;
+        let offset = 0;
+        let lastBytes = 0;
+        if (buf.length === 0) {
+          // upload vazio: envia um unico chunk final com data="" para cancelar e limpar
+          await this.callCommand("back_upload_chunk", {
+            slot, offset: 0, data: "", final: true,
+          });
+          return jsonResult({ ok: false, slot, bytes: 0, msg: "upload vazio" });
+        }
+        while (offset < buf.length) {
+          const remain = buf.length - offset;
+          const chunkSize = Math.min(CHUNK_BYTES, remain);
+          const slice = buf.subarray(offset, offset + chunkSize);
+          // Constroi string binaria por loop (evita stack overflow do spread em arrays grandes)
+          let binStr = "";
+          for (let i = 0; i < slice.length; i++) binStr += String.fromCharCode(slice[i]);
+          const b64 = btoa(binStr);
+          const isFinal = offset + chunkSize >= buf.length;
+          const resp = await this.callCommand("back_upload_chunk", {
+            slot, offset, data: b64, final: isFinal,
+          });
+          lastBytes = resp.bytes ?? lastBytes;
+          offset += chunkSize;
+        }
+        return jsonResult({ ok: true, slot, bytes: lastBytes || buf.length, msg: "ok" });
+      }
+
       if (pathname.startsWith("/api/")) {
         return jsonResult(
           {
