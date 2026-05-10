@@ -9858,6 +9858,7 @@
             function populateBankLabels(id, arr, def) {
                 const sel = document.getElementById(id);
                 sel.innerHTML = '';
+                sel.dataset.dirty = '1';
                 const normalizedDef = parseInt(def, 10);
                 arr.forEach((lbl, idx) => {
                     const opt = document.createElement('option');
