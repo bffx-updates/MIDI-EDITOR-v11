@@ -13703,6 +13703,13 @@
                 const selectedValueSpan = wrapper.querySelector('.custom-select-selected-value');
                 const optionsDiv = wrapper.querySelector('.custom-select-options');
                 if (!selectedValueSpan || !optionsDiv) return;
+                // Se as options do select mudaram (dirty), rebuilda as custom options
+                if (originalSelect.dataset.dirty === '1') {
+                    if (typeof populateCustomOptions === 'function') {
+                        populateCustomOptions(originalSelect, optionsDiv, selectedValueSpan, wrapper);
+                    }
+                    originalSelect.dataset.dirty = '';
+                }
                 const currentValue = originalSelect.value;
                 const selectedOption = Array.from(originalSelect.options).find(opt => opt.value === currentValue);
 
